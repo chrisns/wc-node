@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html ng-app>
+<head>
+    <title>WC</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular.min.js"></script>
+    <script type="text/javascript" src="/js/base.js"></script>
+    <script src="https://apis.google.com/js/client.js?onload=wcinit"></script>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
+    <link href="/css/styles.css" media="screen" rel="stylesheet" type="text/css">
+
+</head>
+<body>
+    <a href="javascript:void(0);" class="btn" id="signinButton">Sign in</a>
+    <div id="outputLog"></div>
+
+    <form action="javascript:void(0);">
+        <input id="id" /><input id="getGreeting" type="submit" class="btn btn-small" value="Get Greeting">
+    </form>
+    
+    <form action="javascript:void(0);">
+        <input id="listGreeting" type="submit" class="btn btn-small" value="List Greetings">
+    </form>
+    
+    <form action="javascript:void(0);">
+        <h2>Multiply Greetings</h2>
+        <input id="greeting" placeholder="Greeting"/>
+        <input id="count" placeholder="Count"/>
+        <input id="multiplyGreetings" type="submit" class="btn btn-small" value="Submit">
+    </form>
+    
+    <form action="javascript:void(0);">
+        <input id="authedGreeting" type="submit" class="btn btn-small" disabled value="Authenticated Greeting">
+    </form>
+
+</body>
+</html>
