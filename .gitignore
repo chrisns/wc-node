@@ -4,3 +4,4 @@ static/css
 static/js
 .sass-cache
 .grunt
+*.pyc
