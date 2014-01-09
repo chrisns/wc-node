@@ -7,7 +7,6 @@
   "scripts": { 
     "start": "../google_appengine/dev_appserver.py .",
     "test": "grunt jasmine",
-    "install": "if cd lib/SpiffWorkflow; then git pull; else git clone git@github.com:knipknap/SpiffWorkflow.git lib/SpiffWorkflow; fi "
   },
   "repository": "",
   "author": "CNS",

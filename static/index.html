@@ -2,7 +2,9 @@
 <html ng-app>
 <head>
     <title>WC</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/ember.js/1.2.0/ember.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.3.0/handlebars.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
     <script type="text/javascript" src="/js/base.js"></script>
     <script src="https://apis.google.com/js/client.js?onload=wcinit"></script>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
@@ -13,6 +15,12 @@
 <body>
     <a href="javascript:void(0);" class="btn" id="signinButton">Sign in</a>
     <div id="outputLog"></div>
+<script type="text/x-handlebars">
+        {{input type="text" value=email placeholder="Email"}}
+        {{input type="text" value=title placeholder="Title"}}
+        {{input type="text" value=forename placeholder="Forename"}}
+        {{input type="text" value=surname placeholder="Surname"}}
+    </script>
 
     <form action="javascript:void(0);">
         <input id="id" /><input id="getGreeting" type="submit" class="btn btn-small" value="Get Greeting">

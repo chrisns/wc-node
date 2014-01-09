@@ -1,96 +1,133 @@
+from google.appengine.ext import ndb
 import endpoints
+from endpoints_proto_datastore.ndb import EndpointsModel
 from protorpc import messages
 from protorpc import message_types
 from protorpc import remote
 
-from google.appengine.ext import ndb
 
 
 WEB_CLIENT_ID = '84086224013-u450n6r4dkgr51v3pom39cqgsefrnm83.apps.googleusercontent.com'
+WEB_CLIENT_ID = '292824132082.apps.googleusercontent.com'
 ANDROID_CLIENT_ID = 'replace this with your Android client ID'
 IOS_CLIENT_ID = 'replace this with your iOS client ID'
 
 
-# package = 'wc'
+class Account(EndpointsModel):
+  _message_fields_schema = ('title', 'forename', 'surname')
+  owner    = ndb.UserProperty()
+  title    = ndb.StringProperty()
+  forename = ndb.StringProperty()
+  surname  = ndb.StringProperty()
+  created  = ndb.DateTimeProperty(auto_now_add=True)
+  updated  = ndb.DateTimeProperty(auto_now=True)
 
 
-class Greeting(messages.Message):
-    """Greeting that stores a message."""
-    message = messages.StringField(1)
+# class Execution(ndb.Expando):
+#     date = ndb.DateTimeProperty(auto_now_add=True)
+#     owner = ndb.UserProperty()
+#     def to_message(self):
+#     #   # Use datastore ID as ID for the Entry-Message
+#     #   # Convert date to String for JSON output
+#       return ExecutionMessage(
+#                    name=self.name,
+#                    date=self.date.strftime("%Y-%m-%dT%H:%M:%S"))
+#     @classmethod
+#     def query_entries(cls):
+#         return cls.query()
+
+# class ExecutionMessage(messages.Message):
+#     name = messages.StringField(1, required=True)
+#     date = messages.DateTimeField(2)
+
+# class ExecutionCollection(messages.Message):
+#     items = messages.MessageField(ExecutionMessage, 1, repeated=True)
 
 
-class GreetingCollection(messages.Message):
-    """Collection of Greetings."""
-    items = messages.MessageField(Greeting, 1, repeated=True)
-
-
-STORED_GREETINGS = GreetingCollection(items=[
-    Greeting(message='hello world!'),
-    Greeting(message='goodbye world!'),
-])
 
 
 @endpoints.api(name='wc', version='v1',
                allowed_client_ids=[WEB_CLIENT_ID, ANDROID_CLIENT_ID,
-                                   IOS_CLIENT_ID],
-               audiences=[WEB_CLIENT_ID])
+                                   IOS_CLIENT_ID, endpoints.API_EXPLORER_CLIENT_ID],
+               audiences=[WEB_CLIENT_ID, endpoints.API_EXPLORER_CLIENT_ID])
 
 class WCApi(remote.Service):
 
-    MULTIPLY_METHOD_RESOURCE = endpoints.ResourceContainer(
-            Greeting,
-            times=messages.IntegerField(2, variant=messages.Variant.INT32,
-                                        required=True))
+    # create/update an account
+    @Account.method(user_required=True,
+                    path='user', http_method='POST', name='account.update')
+    def AccountUpdate(self, Account):
+      ExistingAccount = Account.query(ndb.UserProperty('owner') == endpoints.get_current_user()).fetch()
+      if ExistingAccount:
+        Account._CopyFromEntity(ExistingAccount[0])
+      Account.put()
+      return Account
 
-    @endpoints.method(MULTIPLY_METHOD_RESOURCE, Greeting,
-                      path='hellogreeting/{times}', http_method='POST',
-                      name='greetings.multiply')
-    def greetings_multiply(self, request):
-        return Greeting(message=request.message * request.times)
-
-    @endpoints.method(message_types.VoidMessage, GreetingCollection,
-                      path='hellogreeting', http_method='GET',
-                      name='greetings.listGreeting')
-    def greetings_list(self, unused_request):
-        return STORED_GREETINGS
-
-    ID_RESOURCE = endpoints.ResourceContainer(
-            message_types.VoidMessage,
-            id=messages.IntegerField(1, variant=messages.Variant.INT32))
-
-    @endpoints.method(ID_RESOURCE, Greeting,
-                      path='hellogreeting/{id}', http_method='GET',
-                      name='greetings.getGreeting')
-    def greeting_get(self, request):
-        print Account(id=endpoints.get_current_user().email(), greeting = STORED_GREETINGS.items[request.id].message).put()
-        try:
-            return STORED_GREETINGS.items[request.id]
-        except (IndexError, TypeError):
-            raise endpoints.NotFoundException('Greeting %s not found.' %
-                                              (request.id,))
-
-    @endpoints.method(message_types.VoidMessage, Greeting,
-                      path='hellogreeting/authed', http_method='POST',
-                      name='greetings.authed')
-    def greeting_authed(self, request):
-        current_user = endpoints.get_current_user()
-        email = (current_user.email() if current_user is not None
-                 else 'Anonymous')
-        # print "hihi"
-        # print get_current_user().user_id()
-        # print 
-        # key = ndb.Key("user", email)
-        # print UserEntity.query_book(ancestor_key=key).fetch(20)
-        # return Greeting(message=UserEntity.query_book(ancestor_key=key).fetch(1))
-        # Account(email=endpoints.get_current_user().email(), greeting = STORED_GREETINGS.items[request.id].message).put()
-        # print Account(id=).get()
-        # print key('Account', endpoints.get_current_user().email()).get()
-        account = Account.get_by_id(id=endpoints.get_current_user().email()).greeting
-        # print account.greeting
-        return Greeting(message='hello %s %s' % (email, account,))
+    # get an account
+    @Account.method(request_fields=(), user_required=True, http_method='GET', 
+                          path='user', name='account.get')
+    def AccountGet(self, Account):
+      ExistingAccount = Account.query(ndb.UserProperty('owner') == endpoints.get_current_user()).fetch()
+      if ExistingAccount:
+        Account._CopyFromEntity(ExistingAccount[0])
+      return Account
 
 
-APPLICATION = endpoints.api_server([WCApi])
+
+    # @Account.query_method(user_required=True,
+    #                       path='user', name='account.get')
+    # def AccountGet(self, query):
+    #   return query.filter(Account.owner == endpoints.get_current_user())
+
+
+
+    # @endpoints.method(message_types.VoidMessage, Greeting,
+    #                   path='hellogreeting/authed', http_method='POST',
+    #                   name='greetings.authed')
+    # def greeting_authed(self, request):
+    #     current_user = endpoints.get_current_user()
+    #     email = (current_user.email() if current_user is not None
+    #              else 'Anonymous')
+    #     # print "hihi"
+    #     # print get_current_user().user_id()
+    #     # print 
+    #     # key = ndb.Key("user", email)
+    #     # print UserEntity.query_book(ancestor_key=key).fetch(20)
+    #     # return Greeting(message=UserEntity.query_book(ancestor_key=key).fetch(1))
+    #     # Account(email=endpoints.get_current_user().email(), greeting = STORED_GREETINGS.items[request.id].message).put()
+    #     # print Account(id=).get()
+    #     # print key('Account', endpoints.get_current_user().email()).get()
+    #     # account = Account.get_by_id(id=endpoints.get_current_user().email()).greeting
+    #     # print account.greeting
+    #     return Greeting(message='hello %s %s' % (email, account,))
+
+
+
+    # @endpoints.method(message_types.VoidMessage, ExecutionCollection,
+    #                   path='wfList', http_method='GET',
+    #                   name='wf.listExecutions')
+    # def list_executions(self, unused_request):#
+    #     # Account.get_by_id(id=endpoints.get_current_user().email()).greeting
+    #     # test  = Execution(owner=endpoints.get_current_user(), name='Some Name')
+    #     # test.put()
+    #     # print test
+    #     # print(Execution.query())
+    #     # return ExecutionCollection(Execution.query())
+    #     # query = Execution.query().fetch()
+    #     # print query
+
+    #     # items = [execution for execution in query.fetch()]
+    #     # print items
+    #     # items = Execution.query
+    #     # print Execution.list()
+    #     items = Execution.query_entries()
+
+    #     # items = [entity.to_message() for entity in query.fetch()]
+    #     # items = [ExecutionMessage(name=p.name, date=p.date) for p in Execution.query()]
+    #     return ExecutionCollection(items=items)
+    #     return STORED_GREETINGS
+
+APPLICATION = endpoints.api_server([WCApi], restricted=False)
 
 
 ## API Endpoints
@@ -121,6 +158,11 @@ If no parameters are defined then will return and reset the messages
 
 """
 
-class Account(ndb.Model):
-  greeting = ndb.StringProperty() 
-  # email = ndb.StringProperty()
+# new_account = Account(owner=current_user, id=current_user.user_id(), name='Some Name')
+# existing_account = Account.get_by_id(current_user.user_id())
+
+
+
+
+  # title = messages.StringField(1, required=True)
+  # body = messages.StringField(2)
