@@ -13,8 +13,7 @@
       jrgGoogleAuth.login({'extraInfo':{'user_id':true, 'emails':true}, 'callback':{'evtName':evtGoogleLogin, 'args':[]} });
     };
 
-    // $scope.googleInfo;
-
+    $scope.googleInfo;
     // @param {Object} googleInfo
       // @param {Object} token Fields directly returned from google, with the most important being access_token (but there are others not documented here - see google's documentation for full list)
         // @param {String} access_token
@@ -28,6 +27,7 @@
 
       $scope.$on(evtGoogleLogin, function(evt, googleInfo) {
         $scope.googleInfo = googleInfo;
+        console.log($scope.googleInfo.extraInfo.emailPrimary);
       });
 
       var checkbox, textbox;
