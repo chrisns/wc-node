@@ -1,45 +1,46 @@
-<!DOCTYPE html>
-<html ng-app>
+<!doctype html>
+<html ng-app="app">
 <head>
-    <title>WC</title>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/ember.js/1.2.0/ember.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.3.0/handlebars.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-    <script type="text/javascript" src="/js/base.js"></script>
-    <script src="https://apis.google.com/js/client.js?onload=wcinit"></script>
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
-    <link href="/css/styles.css" media="screen" rel="stylesheet" type="text/css">
+  <title>WC</title>
+  <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css"/>
+  <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css"/>
+  <link rel="stylesheet" type="text/css" href="css/styles.css"/>
+
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+  <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="//code.angularjs.org/1.2.14/angular.min.js"></script>
+  <script type="text/javascript" src="//kelp404.github.io/angular-form-builder/dist/angular-form-builder.js"></script>
+  <script type="text/javascript" src="//kelp404.github.io/angular-form-builder/dist/angular-form-builder-components.js"></script>
+  <script type="text/javascript" src="//kelp404.github.io/angular-validator/dist/angular-validator.js"></script>
+  <script type="text/javascript" src="//kelp404.github.io/angular-validator/dist/angular-validator-rules.js"></script>
+  <script type="text/javascript" src="//jackrabbitsgroup.github.io/angular-google-auth/google-auth.min.js"></script>
+  <script type="text/javascript" src="js/base.js"></script>
+  <script type="text/javascript" src="https://apis.google.com/js/client.js"></script>
+
 
 </head>
-<body>
-    <a href="javascript:void(0);" class="btn" id="signinButton">Sign in</a>
-    <div id="outputLog"></div>
-<script type="text/x-handlebars">
-        {{input type="text" value=email placeholder="Email"}}
-        {{input type="text" value=title placeholder="Title"}}
-        {{input type="text" value=forename placeholder="Forename"}}
-        {{input type="text" value=surname placeholder="Surname"}}
-    </script>
+<body class="container" ng-controller="WcController">
+  <div class="row">
+    <button class="btn" ng-click="googleLogin()" id="signinButton">Sign in</button>
+  </div>
+  <div id="outputLog"></div>
 
-    <form action="javascript:void(0);">
-        <input id="id" /><input id="getGreeting" type="submit" class="btn btn-small" value="Get Greeting">
+  <div class="row">
+    <h2>Form</h2>
+    <hr/>
+    <form class="form-horizontal">
+      <div ng-model="input" fb-form="capture" fb-default="captureValue"></div>
+      <div class="form-group">
+        <div class="col-md-8 col-md-offset-4">
+          <input type="submit" ng-click="submit()" class="btn btn-default"/>
+        </div>
+      </div>
     </form>
-    
-    <form action="javascript:void(0);">
-        <input id="listGreeting" type="submit" class="btn btn-small" value="List Greetings">
-    </form>
-    
-    <form action="javascript:void(0);">
-        <h2>Multiply Greetings</h2>
-        <input id="greeting" placeholder="Greeting"/>
-        <input id="count" placeholder="Count"/>
-        <input id="multiplyGreetings" type="submit" class="btn btn-small" value="Submit">
-    </form>
-    
-    <form action="javascript:void(0);">
-        <input id="authedGreeting" type="submit" class="btn btn-small" disabled value="Authenticated Greeting">
-    </form>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12 footer"></div>
+  </div>
 
 </body>
 </html>

@@ -56,7 +56,8 @@ module.exports = function(grunt) {
           sourceMappingURL: '/js/source-map.js',
           sourceMap: 'static/js/source-map.js',
           sourceMapRoot: '/',
-          preserveComments: false
+          preserveComments: false,
+          mangle: false
         },
 
         src: [

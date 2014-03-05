@@ -6,7 +6,7 @@
   "main": "static/scripts/base.js",
   "scripts": { 
     "start": "../google_appengine/dev_appserver.py .",
-    "test": "grunt jasmine",
+    "test": "grunt jasmine"
   },
   "repository": "",
   "author": "CNS",
