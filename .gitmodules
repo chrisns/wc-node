@@ -1,0 +1,3 @@
+[submodule "SpiffWorkflow"]
+	path = SpiffWorkflow
+	url = git@github.com:chrisns/SpiffWorkflow.git
