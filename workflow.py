@@ -129,7 +129,16 @@ class TestWorkflowSpec(WorkflowSpec):
         last.connect(end)
 
 from SpiffWorkflow import Workflow
+from SpiffVisualizer import dotVisualizer
+# from SpiffWorkflow.storage import JSONSerializer
+
+serializer = dotVisualizer()
+# serializer = JSONSerializer()
 spec = TestWorkflowSpec()
-wf = Workflow(spec)
-wf.dump()
-# print wf().dump()
+# wf = Workflow(spec)
+# print(spec.dump())
+# spec.serialize(serializer)
+print(spec.serialize(serializer))
+# print(wf.serialize(serializer))
+# print wf.get_dump()
+# print(wf.dump())

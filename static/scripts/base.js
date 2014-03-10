@@ -8,8 +8,8 @@
     jrgGoogleAuth.init({'client_id':googleClientId, 'scopeHelp':['login', 'email',]});
 
     //do actual login
-    var evtGoogleLogin ="evtGoogleLogin";
-    $scope.googleLogin =function() {
+    var evtGoogleLogin = "evtGoogleLogin";
+    $scope.googleLogin = function() {
       jrgGoogleAuth.login({'extraInfo':{'emails':true}, 'callback':{'evtName':evtGoogleLogin, 'args':[]} });
     };
 /*
@@ -38,8 +38,6 @@
         label: 'Name',
         placeholder: 'Your name',
         description: '',
-        editable: false,
-        // required: true,
       },
       {
         component: 'textInput',
@@ -47,7 +45,6 @@
         placeholder: 'Your face',
         description: 'faces',
         required: true,
-        name: 'f',
       },
       {
         component: 'radio',
@@ -68,7 +65,6 @@
     });
 
     $scope.removeFormEntry = function(entry) {
-      console.log(entry.index);
       $builder.removeFormObject('capture', entry.index);
     }
 
@@ -80,7 +76,6 @@
 
         // on success of submit empty the form and get the next one
         for (var i = ($builder.forms.capture.length - 1); i >= 0; i--) {
-          console.log($builder.forms.capture[i]);
           $builder.removeFormObject('capture', $builder.forms.capture[i].index);
         }
         return true;

@@ -18,6 +18,7 @@ grunt sass
 grunt uglify
 grunt watch
 
+apt-get install python-gvgen
 
 Start
 -----
