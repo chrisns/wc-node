@@ -129,7 +129,7 @@ class TestWorkflowSpec(WorkflowSpec):
         last.connect(end)
 
 from SpiffWorkflow import Workflow
-from SpiffVisualizer import dotVisualizer
+from SpiffWorkflow.storage import dotVisualizer
 # from SpiffWorkflow.storage import JSONSerializer
 
 serializer = dotVisualizer()
