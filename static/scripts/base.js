@@ -1,7 +1,13 @@
 (function () {
   'use strict';
 
-  angular.module('app', ['builder', 'builder.components', 'validator.rules', 'jackrabbitsgroup.angular-google-auth']).controller('WcController', function($scope, $builder, $validator, jrgGoogleAuth) {
+  angular.module('app', ['builder', 'builder.components', 'validator.rules', 'jackrabbitsgroup.angular-google-auth'])
+  .controller('WcController', myController);
+
+
+
+  
+  function myController($scope, $builder, $validator, jrgGoogleAuth) {
 
 
     var googleClientId = '84086224013-u450n6r4dkgr51v3pom39cqgsefrnm83.apps.googleusercontent.com';
@@ -66,7 +72,7 @@
 
     $scope.removeFormEntry = function(entry) {
       $builder.removeFormObject('capture', entry.index);
-    }
+    };
 
 
     $scope.submit = function() {
@@ -86,5 +92,5 @@
     };
 
 
-  });
+  }
 }());

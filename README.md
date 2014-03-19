@@ -13,7 +13,8 @@ brew doctor
 brew install node
 npm install
 gem install sass --pre
-npm install -g grunt-cli
+gem install compass
+npm install -g grunt-cli jshint
 grunt sass
 grunt uglify
 grunt watch
