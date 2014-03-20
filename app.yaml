@@ -7,10 +7,10 @@ threadsafe: true
 # Handlers tell App Engine how to route requests to your application.
 handlers:
 - url: /
-  static_dir: dist
-- url: /
   static_files: dist/index.html
   upload: dist/index.html
+- url: /*
+  static_dir: dist
 
 # This handler routes requests to your APIs to your Endpoints code.
 # See https://developers.google.com/appengine/docs/python/endpoints/
