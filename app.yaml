@@ -45,11 +45,24 @@ pagespeed:
   - ImageAddDimensions
 
 skip_files:
-  - node_modules
-  - app
-  - spec
-  - ^(.*/)?.*\.md$
-  - ^(.*/)?.*\.php$
-  - ^(.*/)?.*\.map$
+  - ^(.*/)?#.*#$
+  - ^(.*/)?.*/RCS/.*$
   - ^(.*/)?.*\.coffee$
+  - ^(.*/)?.*\.gzip$
+  - ^(.*/)?.*\.lock$
+  - ^(.*/)?.*\.map$
+  - ^(.*/)?.*\.md$
+  - ^(.*/)?.*\.mdown$
+  - ^(.*/)?.*\.php$
+  - ^(.*/)?.*\.py[co]$
   - ^(.*/)?.*\.scss$
+  - ^(.*/)?.*~$
+  - ^(.*/)?\..*$
+  - ^(.*/)?Gemfile$
+  - ^(.*/)?Rakefile$
+  - ^.*CHANGES.*$
+  - ^.*LICENCE.*$
+  - ^.*LICENSE.*$
+  - app
+  - node_modules
+  - spec
