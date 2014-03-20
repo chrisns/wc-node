@@ -48,3 +48,8 @@ skip_files:
   - node_modules
   - app
   - spec
+  - ^(.*/)?.*\.md$
+  - ^(.*/)?.*\.php$
+  - ^(.*/)?.*\.map$
+  - ^(.*/)?.*\.coffee$
+  - ^(.*/)?.*\.scss$
