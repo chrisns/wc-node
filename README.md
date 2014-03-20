@@ -9,15 +9,19 @@ Install
 -------
 
 ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
+
 brew doctor
+
 brew install node
+
 npm install
-gem install sass --pre
-gem install compass
-npm install -g grunt-cli jshint
-grunt sass
-grunt uglify
-grunt watch
+
+gem install sass compass
+
+npm install -g grunt-cli jshint bower karma-jasmine phantomjs
+
+grunt
+
 
 apt-get install python-gvgen
 
