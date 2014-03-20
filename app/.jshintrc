@@ -17,12 +17,15 @@
         "requirejs",
         "define",
         "jquery",
-        "notify"
+        "notify",
+        "angular",
+        "module"
     ],
   "globals": [
     "exports",
     "require",
     "requirejs",
+    "angular",
     "module",
     "jquery"
   ]
