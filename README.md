@@ -18,7 +18,7 @@ npm install
 
 gem install sass compass
 
-npm install -g grunt-cli jshint bower karma-jasmine phantomjs
+npm install -g grunt-cli jshint bower karma-jasmine
 
 grunt
 
@@ -27,7 +27,8 @@ apt-get install python-gvgen
 
 Start
 -----
-npm start
+grunt serve
+../google_appengine/dev_appserver.py . 
 
 
 Author
