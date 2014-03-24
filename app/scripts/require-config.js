@@ -28,19 +28,19 @@ requirejs.config({
     'angular-cookies': ['angular'],
     'angular-sanitize': ['angular'],
     'angular-validator' : {
-      deps: ['angular-form-builder']
-    },
-    'angular-validator-rules' : {
-      deps: ['angular-validator']
-    },
-    'angular-form-builder-components' : {
-      deps: ['angular-form-builder']
-    },
-    'angular-form-builder' : {
       deps: [
         'angular',
+        'angular-validator-rules'
+      ]
+    },
+    'angular-validator-rules' : ['angular'],
+    'angular-form-builder-components' : ['angular'],
+    'angular-form-builder' : {
+      deps: [
+        'angular-validator',
+        'angular-form-builder-components',
+        'angular',
         'jquery',
-        'angular-validator'
       ]
     }
   }
@@ -49,16 +49,18 @@ requirejs.config({
 require([
   'scripts/app',
   'jquery',
+  'angular-cookies',
   'bootstrap',
   'angular',
   'angular-resource',
   'angular-route',
   'angular-sanitize',
-  'angular-cookies'
+  'angular-form-builder',
+  'angular-validator'
 ], function(
   app) {
   'use strict';
-  console.log(app, 'i have loaded okay');
+  // console.log(app, 'i have loaded okay');
 
   angular.bootstrap(document, ['wcApp']);
 

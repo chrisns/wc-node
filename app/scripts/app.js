@@ -12,9 +12,8 @@ define([
     'ngResource',
     'ngSanitize',
     'ngRoute',
-    'angular-form-builder',
-    'angular-validator',
-    'angular-validator-rules'
+    'builder',
+    'validator',
   ])
   .controller('MainCtrl', MainCtrl)
   .config(Router);

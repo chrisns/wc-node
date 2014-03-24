@@ -1,7 +1,7 @@
 define(['angular'], function () {
   'use strict';
 
-  return function MainCtrl($scope, $ngCookies, $ngResource, $ngSanitize, $ngRoute, $builder, $validator, $validator.rules) {
+  return function MainCtrl($scope, $ngRoute, $builder, $validator) {
     console.log('MainCtrl had loaded');
     console.log($scope);
     $scope.awesomeThings = [
@@ -16,7 +16,7 @@ define(['angular'], function () {
         placeholder: 'Your name',
         description: '',
       },
-      {
+      { 
         component: 'textInput',
         label: 'Face',
         placeholder: 'Your face',

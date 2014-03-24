@@ -4,7 +4,7 @@ define([
 ], function(
   templateHTML
 ) {
-  "use strict";
+  'use strict';
 
   function router ($routeProvider) {
     $routeProvider
