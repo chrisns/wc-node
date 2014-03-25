@@ -1,14 +1,7 @@
 define(['angular'], function () {
   'use strict';
 
-  return function MainCtrl($scope, $ngRoute, $builder, $validator) {
-    console.log('MainCtrl had loaded');
-    console.log($scope);
-    $scope.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma'
-    ];
+  return function MainCtrl($scope, $builder, $validator) {
     var formjson = [
       {
         component: 'textInput',

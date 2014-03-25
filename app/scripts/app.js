@@ -1,19 +1,20 @@
 define([
   'scripts/controllers/main',
-  'scripts/config/router'
+  'scripts/config/router',
+  'gapi'
 ], function (
   MainCtrl,
-  Router
+  Router,
+  ApiManager
 ) {
   'use strict';
 
   var module = angular.module('wcApp', [
-    'ngCookies',
-    'ngResource',
-    'ngSanitize',
     'ngRoute',
     'builder',
+    'builder.components',
     'validator',
+    'gapi'
   ])
   .controller('MainCtrl', MainCtrl)
   .config(Router);

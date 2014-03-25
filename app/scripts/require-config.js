@@ -13,7 +13,10 @@ requirejs.config({
     'angular-form-builder-components': 'bower_components/angular-form-builder/dist/angular-form-builder-components',
     'angular-validator': 'bower_components/angular-validator/dist/angular-validator',
     'angular-validator-rules': 'bower_components/angular-validator/dist/angular-validator-rules',
-    'gae-client': '//apis.google.com/js/client.js',
+    'async': 'bower_components/requirejs-plugins/src/async',
+    'gapi': 'scripts/gapi',
+    'gapi-config': 'scripts/config/gapi-config',
+    'propertyParser': 'bower_components/requirejs-plugins/src/propertyParser',
   },
   shim: {
     'bootstrap' : {
@@ -27,6 +30,7 @@ requirejs.config({
     'angular-route': ['angular'],
     'angular-cookies': ['angular'],
     'angular-sanitize': ['angular'],
+    'gae-client': ['angular'],
     'angular-validator' : {
       deps: [
         'angular',
@@ -56,7 +60,8 @@ require([
   'angular-route',
   'angular-sanitize',
   'angular-form-builder',
-  'angular-validator'
+  'angular-validator',
+  'gapi'
 ], function(
   app) {
   'use strict';
