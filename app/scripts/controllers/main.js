@@ -46,9 +46,8 @@ define(['angular'], function () {
       FB.getLoginStatus(function(response) {
         $scope.authenticated = response.status;
       });
-      alert("hi");
-    })
-$scope.authenticated = FB.getLoginStatus();
+    });
+    $scope.authenticated = FB.getLoginStatus();
 
     $scope.submit = function() {
       return $validator.validate($scope, 'capture').success(function() {

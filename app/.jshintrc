@@ -20,7 +20,8 @@
     "notify",
     "angular",
     "module",
-    "gapi"
+    "gapi",
+    "FB"
     ],
   "globals": [
     "exports",
@@ -29,6 +30,7 @@
     "angular",
     "module",
     "jquery",
-    "gapi"
+    "gapi",
+    "FB"
   ]
 }
