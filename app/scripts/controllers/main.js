@@ -9,7 +9,7 @@ define(['angular'], function () {
         placeholder: 'Your name',
         description: '',
       },
-      { 
+      {
         component: 'textInput',
         label: 'Face',
         placeholder: 'Your face',
@@ -37,7 +37,16 @@ define(['angular'], function () {
     $scope.removeFormEntry = function(entry) {
       $builder.removeFormObject('capture', entry.index);
     };
-
+      // console.log(gapiConfig);
+    $scope.signin = function() {
+      FB.login(null, {scope: 'email'});
+      // gapi.auth.authorize({client_id: 'aa', scope: 'ff', immediate: false});
+    };
+    FB.Event.subscribe('auth.statusChange', function() {
+      $scope.authenticated = FB.getLoginStatus();
+      alert("hi");
+    })
+$scope.authenticated = FB.getLoginStatus();
 
     $scope.submit = function() {
       return $validator.validate($scope, 'capture').success(function() {

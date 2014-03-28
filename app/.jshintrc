@@ -13,13 +13,14 @@
   "unused": true,
   "trailing"      : true,    // true: Prohibit trailing whitespaces
   "predef"        : [  // Extra globals.
-        "require",
-        "requirejs",
-        "define",
-        "jquery",
-        "notify",
-        "angular",
-        "module"
+    "require",
+    "requirejs",
+    "define",
+    "jquery",
+    "notify",
+    "angular",
+    "module",
+    "gapi"
     ],
   "globals": [
     "exports",
@@ -27,6 +28,7 @@
     "requirejs",
     "angular",
     "module",
-    "jquery"
+    "jquery",
+    "gapi"
   ]
 }

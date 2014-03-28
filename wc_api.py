@@ -4,6 +4,7 @@ from endpoints_proto_datastore.ndb import EndpointsModel
 from protorpc import messages
 from protorpc import message_types
 from protorpc import remote
+from google.appengine.api import users
 
 
 
@@ -72,7 +73,13 @@ class WCApi(remote.Service):
         Account._CopyFromEntity(ExistingAccount[0])
       return Account
 
-
+    # get a login url
+    @endpoints.method(message_types.VoidMessage,
+                      path='user/login', http_method='GET',
+                      name='account.login')
+    def AccountLogin(self, Account):
+      return 'hi'
+      return users.create_login_url('/')
 
     # @Account.query_method(user_required=True,
     #                       path='user', name='account.get')

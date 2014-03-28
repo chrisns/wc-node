@@ -1,22 +1,23 @@
 requirejs.config({
-  baseUrl: './',
+  baseUrl: '/scripts/',
   paths: {
-    'jquery': 'bower_components/jquery/jquery',
-    'bootstrap': 'bower_components/sass-bootstrap/dist/js/bootstrap',
-    'angular': 'bower_components/angular/angular',
-    'angular-resource':'bower_components/angular-resource/angular-resource',
-    'angular-cookies':'bower_components/angular-cookies/angular-cookies',
-    'angular-sanitize':'bower_components/angular-sanitize/angular-sanitize',
-    'angular-route':'bower_components/angular-route/angular-route',
-    'text': 'bower_components/requirejs-plugins/lib/text',
-    'angular-form-builder': 'bower_components/angular-form-builder/dist/angular-form-builder',
-    'angular-form-builder-components': 'bower_components/angular-form-builder/dist/angular-form-builder-components',
-    'angular-validator': 'bower_components/angular-validator/dist/angular-validator',
-    'angular-validator-rules': 'bower_components/angular-validator/dist/angular-validator-rules',
-    'async': 'bower_components/requirejs-plugins/src/async',
-    'gapi': 'scripts/gapi',
-    'gapi-config': 'scripts/config/gapi-config',
-    'propertyParser': 'bower_components/requirejs-plugins/src/propertyParser',
+    'jquery': '../bower_components/jquery/jquery',
+    'bootstrap': '../bower_components/sass-bootstrap/dist/js/bootstrap',
+    'angular': '../bower_components/angular/angular',
+    'angular-resource':'../bower_components/angular-resource/angular-resource',
+    'angular-cookies':'../bower_components/angular-cookies/angular-cookies',
+    'angular-sanitize':'../bower_components/angular-sanitize/angular-sanitize',
+    'angular-route':'../bower_components/angular-route/angular-route',
+    'text': '../bower_components/requirejs-plugins/lib/text',
+    'angular-form-builder': '../bower_components/angular-form-builder/dist/angular-form-builder',
+    'angular-form-builder-components': '../bower_components/angular-form-builder/dist/angular-form-builder-components',
+    'angular-validator': '../bower_components/angular-validator/dist/angular-validator',
+    'angular-validator-rules': '../bower_components/angular-validator/dist/angular-validator-rules',
+    'appengine':'https://apis.google.com/js/client.js?onload=javascript:void(0)',
+    'gapi': './gapi',
+    'app':'./app',
+    'fb': '//connect.facebook.net/en_US/all',
+    // 'gapi-config': 'config/gapi-config',
   },
   shim: {
     'bootstrap' : {
@@ -30,13 +31,19 @@ requirejs.config({
     'angular-route': ['angular'],
     'angular-cookies': ['angular'],
     'angular-sanitize': ['angular'],
-    'gae-client': ['angular'],
     'angular-validator' : {
       deps: [
         'angular',
         'angular-validator-rules'
       ]
     },
+    'facebook' : {
+      exports: 'fb'
+    },
+    'gapi' : {
+      exports: 'gapi'
+    },
+    'app' : ['angular', 'appengine', 'angular-resource', 'angular-route', 'bootstrap'],
     'angular-validator-rules' : ['angular'],
     'angular-form-builder-components' : ['angular'],
     'angular-form-builder' : {
@@ -47,11 +54,12 @@ requirejs.config({
         'jquery',
       ]
     }
-  }
+  },
+  deps : ['gapi'],
 });
 
 require([
-  'scripts/app',
+  'app',
   'jquery',
   'angular-cookies',
   'bootstrap',
@@ -61,13 +69,16 @@ require([
   'angular-sanitize',
   'angular-form-builder',
   'angular-validator',
-  'gapi'
+  'gapi',
+  'fb',
 ], function(
-  app) {
+  ) {
   'use strict';
   // console.log(app, 'i have loaded okay');
-
-  angular.bootstrap(document, ['wcApp']);
+FB.init({
+    appId      : '665447500158300',
+  });
+  // angular.bootstrap(document, ['wcApp']);
 
 
 });

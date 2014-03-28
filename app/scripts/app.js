@@ -1,11 +1,10 @@
 define([
-  'scripts/controllers/main',
-  'scripts/config/router',
-  'gapi'
+  'controllers/main',
+  'config/router',
+  // 'config/gapi-config'
 ], function (
   MainCtrl,
-  Router,
-  ApiManager
+  Router
 ) {
   'use strict';
 
@@ -14,11 +13,9 @@ define([
     'builder',
     'builder.components',
     'validator',
-    'gapi'
   ])
   .controller('MainCtrl', MainCtrl)
   .config(Router);
-
 
   return module;
 
