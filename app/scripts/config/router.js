@@ -1,5 +1,5 @@
 define([
-  'text!views/main.html',
+  'text!/views/main.html',
   'angular'
 ], function(
   templateHTML

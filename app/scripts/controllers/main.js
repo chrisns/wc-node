@@ -43,7 +43,9 @@ define(['angular'], function () {
       // gapi.auth.authorize({client_id: 'aa', scope: 'ff', immediate: false});
     };
     FB.Event.subscribe('auth.statusChange', function() {
-      $scope.authenticated = FB.getLoginStatus();
+      FB.getLoginStatus(function(response) {
+        $scope.authenticated = response.status;
+      });
       alert("hi");
     })
 $scope.authenticated = FB.getLoginStatus();
