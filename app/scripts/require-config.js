@@ -15,7 +15,8 @@ requirejs.config({
     'appengine':'https://apis.google.com/js/client.js?onload=javascript:void(0)',
     'gapi': 'gapi',
     'app': 'app',
-    'fb': '//connect.facebook.net/en_US/all',
+    // 'fb': '//connect.facebook.net/en_US/all',
+    'facebook': '/bower_components/angular-facebook/lib/angular-facebook',
     // 'gapi-config': 'config/gapi-config',
   },
   shim: {
@@ -37,6 +38,7 @@ requirejs.config({
       ]
     },
     'facebook' : {
+      deps: ['angular'],
       exports: 'fb'
     },
     'gapi' : {
@@ -69,15 +71,14 @@ require([
   'angular-form-builder',
   'angular-validator',
   'gapi',
-  'fb',
+  // 'fb',
+  'facebook'
 ], function(
   ) {
   'use strict';
-  // console.log(app, 'i have loaded okay');
-FB.init({
-    appId      : '665447500158300',
-  });
+
+  // FB.init({
+    // appId : '665447500158300',
+  // });
   // angular.bootstrap(document, ['wcApp']);
-
-
 });

@@ -10,12 +10,16 @@ define([
 
   var module = angular.module('wcApp', [
     'ngRoute',
+    'facebook',
     'builder',
     'builder.components',
-    'validator',
+    'validator'
   ])
   .controller('MainCtrl', MainCtrl)
-  .config(Router);
+  .config(Router)
+  .config(['FacebookProvider', function(FacebookProvider) {
+     FacebookProvider.init('665447500158300');
+  }]);
 
   return module;
 

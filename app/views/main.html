@@ -1,14 +1,14 @@
 <div class="header">
   <ul class="nav nav-pills pull-right">
-    <li class="active"><a ng-href="#">Home</a></li>
-    <li><a ng-href="#">About</a></li>
-    <li><a ng-href="#">Contact</a></li>
+    <li><a data-ng-show="user.id">Welcome back {{user.first_name}}!</a></li>
+    <li><input class="btn btn-small btn-success" type="submit" ng-click="IntentLogin()" data-ng-hide="user.id" class="btn btn-default" value="Login" /></li>
+    <li><input class="btn btn-small btn-success" type="submit" ng-click="logout()" data-ng-show="user.id" class="btn btn-default" value="Logout" /></li>
   </ul>
   <h3 class="text-muted">wc</h3>
 </div>
 
 <div class="jumbotron">
-  <input class="btn btn-lg btn-success" type="submit" ng-click="signin()" class="btn btn-default" value="Login" />
+  <h1 data-ng-show="user.id">Welcome back {{user.name}}</h1>
   <!-- <h1>'Allo, 'Allo!</h1> -->
 </div>
 
