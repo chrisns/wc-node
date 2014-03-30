@@ -5,16 +5,6 @@ define(['angular'], function () {
     var formjson = [
       {
         component: 'textInput',
-        label: 'Access Token',
-      },
-      {
-        component: 'textInput',
-        label: 'Name',
-        placeholder: 'Your name',
-        description: '',
-      },
-      {
-        component: 'textInput',
         label: 'Name',
         placeholder: 'Your name',
         description: '',
@@ -47,9 +37,6 @@ define(['angular'], function () {
     $scope.removeFormEntry = function(entry) {
       $builder.removeFormObject('capture', entry.index);
     };
-
-    // $scope.captureValue[];
-
 
     // Define user empty data :/
     $scope.user = {};
