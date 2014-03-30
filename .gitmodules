@@ -4,3 +4,6 @@
 [submodule "remotes/SpiffWorkflow"]
 	path = remotes/SpiffWorkflow
 	url = git@github.com:chrisns/SpiffWorkflow.git
+[submodule "remotes/endpoints-proto-datastore"]
+	path = remotes/endpoints-proto-datastore
+	url = git@github.com:GoogleCloudPlatform/endpoints-proto-datastore.git
