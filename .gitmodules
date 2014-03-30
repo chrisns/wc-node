@@ -1,3 +1,6 @@
-[submodule "SpiffWorkflow"]
+[submodule "remotes/facebook-sdk"]
+	path = remotes/facebook-sdk
+	url = git@github.com:pythonforfacebook/facebook-sdk.git
+[submodule "remotes/SpiffWorkflow"]
 	path = remotes/SpiffWorkflow
-	url = git@github.org:chrisns/SpiffWorkflow
+	url = git@github.com:chrisns/SpiffWorkflow.git
