@@ -54,39 +54,33 @@ define(['angular'], function () {
           $scope.facebookReady = true;
           Facebook.getLoginStatus(function(response) {
             if (response.status == 'connected') {
-              $scope.authResponse = response.authResponse;
               $scope.me();
+              $scope.updateAccessToken();
             }
           });
         }
     );
 
     /**
-     * IntentLogin
+     * Login
      */
-    $scope.IntentLogin = function() {
-      Facebook.getLoginStatus(function(response) {
+    $scope.login = function() {
+      Facebook.login(function(response) {
         if (response.status == 'connected') {
-          $scope.authResponse = response.authResponse;
           $scope.me();
+          $scope.updateAccessToken();
         }
-        else
-          $scope.login();
       });
     };
 
 
-    /**
-     * Login
-     */
-     $scope.login = function() {
-       Facebook.login(function(response) {
-        if (response.status == 'connected') {
-          $scope.me();
-        }
+    $scope.updateAccessToken = function() {
+      Facebook.getLoginStatus(function(response) {
+        $scope.$apply(function() {
+          $scope.authResponse = response.authResponse;
+        });
       });
-     };
-
+    };
    /**
     * me
     */
@@ -95,7 +89,6 @@ define(['angular'], function () {
         $scope.$apply(function() {
           $scope.user = response;
         });
-
       });
     };
 

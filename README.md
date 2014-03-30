@@ -14,6 +14,12 @@ brew doctor
 
 brew install node
 
+curl https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py -o - | python
+sudo easy_install virtualenv
+virtualenv --no-site-packages .
+bin/easy_install zc.buildout
+./bin/python bootstrap.py
+
 npm install
 
 gem install sass compass

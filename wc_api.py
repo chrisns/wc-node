@@ -5,8 +5,7 @@ from protorpc import messages
 from protorpc import message_types
 from protorpc import remote
 from google.appengine.api import users
-
-
+import .remotes.facebook_sdk.facebook
 
 WEB_CLIENT_ID = '84086224013-u450n6r4dkgr51v3pom39cqgsefrnm83.apps.googleusercontent.com'
 WEB_CLIENT_ID = '292824132082.apps.googleusercontent.com'
@@ -44,6 +43,28 @@ class Account(EndpointsModel):
 # class ExecutionCollection(messages.Message):
 #     items = messages.MessageField(ExecutionMessage, 1, repeated=True)
 
+
+def get_request_class(messageCls):
+    return endpoints.ResourceContainer(messageCls, 
+                               user_id=messages.IntegerField(2, required=False),
+                               user_token=messages.StringField(3, required=False)) 
+def authenticated_required(endpoint_method):
+    """
+    Decorator that check if API calls are authenticated
+    """
+    def check_login(self, request, *args, **kwargs):
+        try:
+            user_id = request.user_id
+            user_token = request.user_token
+            if (user_id is not None and user_token is not None):
+                # Validate user 
+
+                (user, timestamp) = User.get_by_auth_token(user_id, user_token)
+                if user is not None:
+                    return endpoint_method(self, request, user, *args, **kwargs )
+            raise endpoints.UnauthorizedException('Invalid user_id or access_token')
+        except:
+            raise endpoints.UnauthorizedException('Invalid access token')
 
 
 

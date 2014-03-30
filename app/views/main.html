@@ -1,7 +1,7 @@
 <div class="header">
   <ul class="nav nav-pills pull-right">
     <li><a data-ng-show="user.id">Welcome back {{user.first_name}}!</a></li>
-    <li><input class="btn btn-small btn-success" type="submit" ng-click="IntentLogin()" data-ng-hide="user.id" class="btn btn-default" value="Login" /></li>
+    <li><input class="btn btn-small btn-success" type="submit" ng-click="login()" data-ng-hide="user.id" class="btn btn-default" value="Login" /></li>
     <li><input class="btn btn-small btn-success" type="submit" ng-click="logout()" data-ng-show="user.id" class="btn btn-default" value="Logout" /></li>
   </ul>
   <h3 class="text-muted">wc</h3>
@@ -9,6 +9,7 @@
 
 <div class="jumbotron">
   <h1 data-ng-show="user.id">Welcome back {{user.name}}</h1>
+<img src="http://graph.facebook.com/{{user.id}}/picture"/>
   <!-- <h1>'Allo, 'Allo!</h1> -->
 </div>
 
@@ -17,8 +18,8 @@
       <div ng-model="input" fb-form="capture" fb-default="captureValue"></div>
       <div class="form-group">
         <div class="col-md-8 col-md-offset-4">
-          <input type="hidden" name="accesstoken" value="{{authResponse.accessToken}}"/>
-          <input type="hidden" name="userid" value="{{user.id}}"/>
+          <input type="text" name="user_token" value="{{authResponse.accessToken}}"/>
+          <input type="text" name="user_id" value="{{authResponse.userID}}"/>
           <input class="btn btn-lg btn-success" type="submit" ng-click="submit()" class="btn btn-default"/>
         </div>
       </div>
