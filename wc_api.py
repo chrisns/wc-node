@@ -5,7 +5,12 @@ from protorpc import messages
 from protorpc import message_types
 from protorpc import remote
 from google.appengine.api import users
-import .remotes.facebook_sdk.facebook
+import sys
+sys.path.append("remotes/facebook-sdk")
+sys.path.append("remotes/SpiffWorkflow")
+sys.path.append("remotes/requests")
+from facebook import *
+from SpiffWorkflow import *
 
 WEB_CLIENT_ID = '84086224013-u450n6r4dkgr51v3pom39cqgsefrnm83.apps.googleusercontent.com'
 WEB_CLIENT_ID = '292824132082.apps.googleusercontent.com'
