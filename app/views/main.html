@@ -7,10 +7,10 @@
   <h3 class="text-muted">wc</h3>
 </div>
 
-<div class="jumbotron">
+<!--<div class="jumbotron">
   <h1 data-ng-show="user.id">Welcome back {{user.name}}</h1>
 <img src="http://graph.facebook.com/{{user.id}}/picture"/>
-  <!-- <h1>'Allo, 'Allo!</h1> -->
+-->
 </div>
 
 <div class="row marketing">
@@ -20,11 +20,11 @@
         <div class="col-md-8 col-md-offset-4">
           <input type="text" name="user_token" value="{{authResponse.accessToken}}"/>
           <input type="text" name="user_id" value="{{authResponse.userID}}"/>
-          <input class="btn btn-lg btn-success" type="submit" ng-click="submit()" class="btn btn-default"/>
+          <input class="btn btn-lg btn-success" type="submit" ng-click="submit()" class="btn btn-default" ng-disabled="submitInProgress"/>
         </div>
       </div>
     </form>
-
+<pre>{{lastServerResponse}}</pre>
 
 <div class="footer">
 </div>

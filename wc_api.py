@@ -6,11 +6,12 @@ from protorpc import message_types
 from protorpc import remote
 from google.appengine.api import users
 import sys
-sys.path.append("remotes/facebook-sdk")
 sys.path.append("remotes/SpiffWorkflow")
-sys.path.append("remotes/requests")
-from facebook import *
 from SpiffWorkflow import *
+import logging
+import httplib
+import urllib2
+import json
 
 WEB_CLIENT_ID = '84086224013-u450n6r4dkgr51v3pom39cqgsefrnm83.apps.googleusercontent.com'
 WEB_CLIENT_ID = '292824132082.apps.googleusercontent.com'
@@ -47,29 +48,13 @@ class Account(EndpointsModel):
 
 # class ExecutionCollection(messages.Message):
 #     items = messages.MessageField(ExecutionMessage, 1, repeated=True)
+class PostMessage(messages.Message):
+  title = messages.StringField(1, required=True)
+  body = messages.StringField(2)
 
-
-def get_request_class(messageCls):
-    return endpoints.ResourceContainer(messageCls, 
-                               user_id=messages.IntegerField(2, required=False),
-                               user_token=messages.StringField(3, required=False)) 
-def authenticated_required(endpoint_method):
-    """
-    Decorator that check if API calls are authenticated
-    """
-    def check_login(self, request, *args, **kwargs):
-        try:
-            user_id = request.user_id
-            user_token = request.user_token
-            if (user_id is not None and user_token is not None):
-                # Validate user 
-
-                (user, timestamp) = User.get_by_auth_token(user_id, user_token)
-                if user is not None:
-                    return endpoint_method(self, request, user, *args, **kwargs )
-            raise endpoints.UnauthorizedException('Invalid user_id or access_token')
-        except:
-            raise endpoints.UnauthorizedException('Invalid access token')
+class Request(messages.Message):
+  userID = messages.StringField(1, required=True)
+  token = messages.StringField(2, required=True)
 
 
 
@@ -77,36 +62,18 @@ def authenticated_required(endpoint_method):
                allowed_client_ids=[WEB_CLIENT_ID, ANDROID_CLIENT_ID,
                                    IOS_CLIENT_ID, endpoints.API_EXPLORER_CLIENT_ID],
                audiences=[WEB_CLIENT_ID, endpoints.API_EXPLORER_CLIENT_ID])
-
 class WCApi(remote.Service):
 
-    # create/update an account
-    @Account.method(user_required=True,
-                    path='user', http_method='POST', name='account.update')
-    def AccountUpdate(self, Account):
-      ExistingAccount = Account.query(ndb.UserProperty('owner') == endpoints.get_current_user()).fetch()
-      if ExistingAccount:
-        Account._CopyFromEntity(ExistingAccount[0])
-      Account.put()
-      return Account
+  def checkAuthentication(self, request):
+    if ((json.load(urllib2.urlopen('https://graph.facebook.com/me?fields=id&access_token=' + request.token))['id']) != request.userID):
+      raise endpoints.UnauthorizedException('Invalid user_id or access_token')
 
-    # get an account
-    @Account.method(request_fields=(), user_required=True, http_method='GET', 
-                          path='user', name='account.get')
-    def AccountGet(self, Account):
-      ExistingAccount = Account.query(ndb.UserProperty('owner') == endpoints.get_current_user()).fetch()
-      if ExistingAccount:
-        Account._CopyFromEntity(ExistingAccount[0])
-      return Account
 
-    # get a login url
-    @endpoints.method(message_types.VoidMessage,
-                      path='user/login', http_method='GET',
-                      name='account.login')
-    def AccountLogin(self, Account):
-      return 'hi'
-      return users.create_login_url('/')
-
+  @endpoints.method(Request, PostMessage,
+                    name='execution.submit', path='execution', http_method='POST',)
+  def list_posts(self, request):
+    self.checkAuthentication(request)
+    return PostMessage(title=request.userID, body="there")
     # @Account.query_method(user_required=True,
     #                       path='user', name='account.get')
     # def AccountGet(self, query):

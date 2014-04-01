@@ -109,13 +109,21 @@ define(['angular'], function () {
 
     $scope.submit = function() {
       return $validator.validate($scope, 'capture').success(function() {
+        $scope.submitInProgress = true;
+        gapi.client.wc.execution.submit({userID:$scope.authResponse.userID, token: $scope.authResponse.accessToken}).execute(function(response){
+          $scope.submitInProgress = false;
+          $scope.lastServerResponse = response;
+          if (response.error != undefined) {
+            console.error(response.error.message);
+            return false;
+          }
+          // on success of submit empty the form and get the next one
+          for (var i = ($builder.forms.capture.length - 1); i >= 0; i--) {
+            $builder.removeFormObject('capture', $builder.forms.capture[i].index);
+          }
+          // @TODO: build new form
 
-        // @TODO:submit it
-
-        // on success of submit empty the form and get the next one
-        for (var i = ($builder.forms.capture.length - 1); i >= 0; i--) {
-          $builder.removeFormObject('capture', $builder.forms.capture[i].index);
-        }
+        });
         return true;
       }).error(function() {
         // display validation errors
