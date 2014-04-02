@@ -18,8 +18,6 @@
       <div ng-model="input" fb-form="capture" fb-default="captureValue"></div>
       <div class="form-group">
         <div class="col-md-8 col-md-offset-4">
-          <input type="text" name="user_token" value="{{authResponse.accessToken}}"/>
-          <input type="text" name="user_id" value="{{authResponse.userID}}"/>
           <input class="btn btn-lg btn-success" type="submit" ng-click="submit()" class="btn btn-default" ng-disabled="submitInProgress"/>
         </div>
       </div>
