@@ -1,15 +1,14 @@
-# -*- coding: utf-8 -*-
-from __future__ import print_function, absolute_import, division
-
-from __future__ import division
 import sys
 sys.path.append("remotes/SpiffWorkflow")
 sys.path.append("remotes/gvgen")
 
+from SpiffWorkflow import Workflow
 from SpiffWorkflow.specs import *
 from SpiffWorkflow.operators import *
+from SpiffWorkflow.storage import dotVisualizer
+from SpiffWorkflow.storage import JSONSerializer
 
-class TestWorkflowSpec(WorkflowSpec):
+class MyWorkflowSpec(WorkflowSpec):
     def __init__(self):
         WorkflowSpec.__init__(self)
         # Build one branch.
@@ -132,12 +131,8 @@ class TestWorkflowSpec(WorkflowSpec):
         end = Simple(self, 'End')
         last.connect(end)
 
-from SpiffWorkflow import Workflow
-from SpiffWorkflow.storage import dotVisualizer
-from SpiffWorkflow.storage import JSONSerializer
 
-
-spec = TestWorkflowSpec()
+spec = MyWorkflowSpec()
 
 print("outputting workflow to Workflow.dot");
 open("Workflow.dot", "w").write(spec.serialize(dotVisualizer()))
