@@ -2,6 +2,10 @@
 from __future__ import print_function, absolute_import, division
 
 from __future__ import division
+import sys
+sys.path.append("remotes/SpiffWorkflow")
+sys.path.append("remotes/gvgen")
+
 from SpiffWorkflow.specs import *
 from SpiffWorkflow.operators import *
 
@@ -130,15 +134,14 @@ class TestWorkflowSpec(WorkflowSpec):
 
 from SpiffWorkflow import Workflow
 from SpiffWorkflow.storage import dotVisualizer
-# from SpiffWorkflow.storage import JSONSerializer
+from SpiffWorkflow.storage import JSONSerializer
 
-serializer = dotVisualizer()
-# serializer = JSONSerializer()
+
 spec = TestWorkflowSpec()
-# wf = Workflow(spec)
-# print(spec.dump())
-# spec.serialize(serializer)
-print(spec.serialize(serializer))
-# print(wf.serialize(serializer))
-# print wf.get_dump()
-# print(wf.dump())
+
+print("outputting workflow to Workflow.dot");
+open("Workflow.dot", "w").write(spec.serialize(dotVisualizer()))
+
+print("outputting workflow to Workflow.JSON");
+open("Workflow.json", "w").write(spec.serialize(JSONSerializer()))
+
