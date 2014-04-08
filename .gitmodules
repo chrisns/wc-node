@@ -4,3 +4,6 @@
 [submodule "remotes/endpoints-proto-datastore"]
 	path = remotes/endpoints-proto-datastore
 	url = git@github.com:GoogleCloudPlatform/endpoints-proto-datastore.git
+[submodule "remotes/gvgen"]
+	path = remotes/gvgen
+	url = https://github.com/chrisns/gvgen.git
