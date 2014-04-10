@@ -4,6 +4,7 @@ sys.path.append("remotes/gvgen")
 
 from SpiffWorkflow import Workflow
 from SpiffWorkflow.specs import *
+from WorkflowSpecs import *
 from SpiffWorkflow.operators import *
 from SpiffWorkflow.storage import dotVisualizer
 from SpiffWorkflow.storage import JSONSerializer
@@ -31,30 +32,25 @@ if(tasks[0].task_spec.name == "Start"):
 def processAllTasks(wf):
     for task in wf.get_tasks(Task.READY):
         wf.complete_task_from_id(task.id)
+    print wf.get_tasks(Task.READY)
+    print " "
 
 processAllTasks(wf)
-print wf.get_tasks(Task.READY)
+
 
 processAllTasks(wf)
-print wf.get_tasks(Task.READY)
 
 processAllTasks(wf)
-print wf.get_tasks(Task.READY)
 
 processAllTasks(wf)
-print wf.get_tasks(Task.READY)
 
 processAllTasks(wf)
-print wf.get_tasks(Task.READY)
 
-# task_start = tasks[0]
-# wf.complete_task_from_id(task_start.id)
-# tasks = wf.get_tasks(Task.READY)
+tasks = wf.get_tasks(Task.READY)
 
 
 
 print(tasks)
 
-# wf.dump()
+wf.dump()
 print("Workflow is is_completed" if wf.is_completed() else "Workflow is not yet complete")
-# print spec.serialize(dotVisualizer())

@@ -4,6 +4,7 @@ sys.path.append("remotes/gvgen")
 
 from SpiffWorkflow import Workflow
 from SpiffWorkflow.specs import *
+from WorkflowSpecs import *
 from SpiffWorkflow.operators import *
 from SpiffWorkflow.storage import dotVisualizer
 from SpiffWorkflow.storage import JSONSerializer
@@ -12,10 +13,12 @@ class MyWorkflowSpec(WorkflowSpec):
     def __init__(self):
         WorkflowSpec.__init__(self)
         # Build one branch.
-        a1 = Simple(self, 'task_a1')
+        # a2 = Simple(self, 'task_a1')
+        a1 = Evaluate(self, 'print', args=["helloworld", ["hi there"]])
         self.start.connect(a1)
 
         a2 = Simple(self, 'task_a2')
+        # a2 = Execute(self, 'Ping', args=["ping", "-t", "1", "127.0.0.1"])
         a1.connect(a2)
 
         # Build another branch.
