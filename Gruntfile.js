@@ -14,6 +14,8 @@ module.exports = function (grunt) {
 
   // Time how long tasks take. Can help when optimizing build times
   require('time-grunt')(grunt);
+  grunt.loadNpmTasks('grunt-exec');
+  grunt.loadNpmTasks('grunt-jsonlint');
 
   // Define the configuration for all the tasks
   grunt.initConfig({
@@ -54,9 +56,23 @@ module.exports = function (grunt) {
           '.tmp/styles/{,*/}*.css',
           '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
         ]
+      },
+      python: {
+        files: ['workflow.py'],
+        tasks: ['exec:regenWorkflow', 'jsonlint:workflow']
       }
     },
 
+    exec: {
+      regenWorkflow: {
+        cmd: 'python workflow.py'
+      }
+    },
+    jsonlint: {
+      workflow: {
+        src: [ 'Workflow.json' ]
+      }
+    },
     // The actual grunt server settings
     connect: {
       options: {
@@ -396,7 +412,9 @@ module.exports = function (grunt) {
     'uglify',
     // 'rev',
     'usemin',
-    'htmlmin'
+    'htmlmin',
+    'exec:regenWorkflow',
+    'jsonlint:workflow'
   ]);
 
   grunt.registerTask('default', [
