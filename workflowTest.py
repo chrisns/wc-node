@@ -37,7 +37,6 @@ def processAllTasks(wf):
 
 processAllTasks(wf)
 
-
 processAllTasks(wf)
 
 processAllTasks(wf)
@@ -48,9 +47,13 @@ processAllTasks(wf)
 
 tasks = wf.get_tasks(Task.READY)
 
+from SpiffWorkflow.storage import JSONSerializer
 
+savedJSON = wf.serialize(JSONSerializer())
 
-print(tasks)
+restoredWF = JSONSerializer().deserialize_workflow(savedJSON)
 
-wf.dump()
+restoredWF.dump();
+
+# wf.dump()
 print("Workflow is is_completed" if wf.is_completed() else "Workflow is not yet complete")

@@ -13,8 +13,8 @@ class MyWorkflowSpec(WorkflowSpec):
     def __init__(self):
         WorkflowSpec.__init__(self)
         # Build one branch.
-        # a2 = Simple(self, 'task_a1')
-        a1 = Evaluate(self, 'print', args=["helloworld", ["hi there"]])
+        a1 = Simple(self, 'task_a1')
+        # a1 = Evaluate(self, 'print', args=["helloworld", ["hi there"]])
         self.start.connect(a1)
 
         a2 = Simple(self, 'task_a2')
