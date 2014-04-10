@@ -1,5 +1,6 @@
 from google.appengine.ext import ndb
 import endpoints
+sys.path.append("remotes/endpoints-proto-datastore")
 from endpoints_proto_datastore.ndb import EndpointsModel
 from protorpc import messages
 from protorpc import message_types
