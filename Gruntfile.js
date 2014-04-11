@@ -59,13 +59,20 @@ module.exports = function (grunt) {
       },
       python: {
         files: ['workflow.py'],
-        tasks: ['exec:regenWorkflow', 'jsonlint:workflow']
+        tasks: ['exec:regenWorkflow', 'jsonlint:workflow', 'exec:pythonTests']
+      },
+      pythontests: {
+        files: ['tests/*.py'],
+        tasks: ['exec:pythonTests']
       }
     },
 
     exec: {
       regenWorkflow: {
         cmd: 'python workflow.py'
+      },
+      pythonTests: {
+        cmd: "python -m unittest discover . '*_test.py' -v"
       }
     },
     jsonlint: {
