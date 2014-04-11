@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import division
 from .Evaluate import Evaluate
+from .UserInput import UserInput
 
 import inspect
 __all__ = [name for name, obj in list(locals().items())
