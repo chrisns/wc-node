@@ -1,0 +1,13 @@
+pyunit in grunt build
+
+
+return current list of required inputs
+  save responses
+  return validation rules for required inputs
+  validate responses in python
+  render inputs in JS
+    validate input before sending to BE
+
+store executions in ndb
+  load execution by id
+  list stored executions that belong to user

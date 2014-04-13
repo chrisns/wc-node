@@ -1,16 +1,21 @@
+#!/usr/bin/env python
+"""REST api - this is the only python entry point for the app"""
+import sys
+sys.path.append("/Applications/GoogleAppEngineLauncher.app/Contents/Resources/GoogleAppEngine-default.bundle/Contents/Resources/google_appengine")
+sys.path.append("/Applications/GoogleAppEngineLauncher.app/Contents/Resources/GoogleAppEngine-default.bundle/Contents/Resources/google_appengine/lib/endpoints-1.0")
+sys.path.append("remotes/endpoints-proto-datastore")
+sys.path.append("remotes/SpiffWorkflow")
+
 from google.appengine.ext import ndb
 import endpoints
-sys.path.append("remotes/endpoints-proto-datastore")
-from endpoints_proto_datastore.ndb import EndpointsModel
+
+# from endpoints_proto_datastore.ndb import EndpointsModel
 from protorpc import messages
-from protorpc import message_types
+# from protorpc import message_types
 from protorpc import remote
-from google.appengine.api import users
-import sys
-sys.path.append("remotes/SpiffWorkflow")
 from SpiffWorkflow import *
 import logging
-import httplib
+# import httplib
 import urllib2
 import json
 
@@ -20,14 +25,19 @@ ANDROID_CLIENT_ID = 'replace this with your Android client ID'
 IOS_CLIENT_ID = 'replace this with your iOS client ID'
 
 
-class Account(EndpointsModel):
-  _message_fields_schema = ('title', 'forename', 'surname')
-  owner    = ndb.UserProperty()
-  title    = ndb.StringProperty()
-  forename = ndb.StringProperty()
-  surname  = ndb.StringProperty()
-  created  = ndb.DateTimeProperty(auto_now_add=True)
-  updated  = ndb.DateTimeProperty(auto_now=True)
+class Execution(ndb.Expando):
+    """Models an individual execution"""
+    owner = ndb.IntegerProperty(12, required=True)
+
+
+# class Account(EndpointsModel):
+    # _message_fields_schema = ('title', 'forename', 'surname')
+    # owner    = ndb.UserProperty()
+    # title    = ndb.StringProperty()
+    # forename = ndb.StringProperty()
+    # surname  = ndb.StringProperty()
+    # created  = ndb.DateTimeProperty(auto_now_add=True)
+    # updated  = ndb.DateTimeProperty(auto_now=True)
 
 
 # class Execution(ndb.Expando):
@@ -49,32 +59,32 @@ class Account(EndpointsModel):
 
 # class ExecutionCollection(messages.Message):
 #     items = messages.MessageField(ExecutionMessage, 1, repeated=True)
-class PostMessage(messages.Message):
-  title = messages.StringField(1, required=True)
-  body = messages.StringField(2)
+# class PostMessage(messages.Message):
+#     title = messages.StringField(1, required=True)
+#     body = messages.StringField(2)
 
-class Request(messages.Message):
-  userID = messages.StringField(1, required=True)
-  token = messages.StringField(2, required=True)
+# class Request(messages.Message):
+#     userID = messages.StringField(1, required=True)
+#     token = messages.StringField(2, required=True)
+
+def check_authentication(request):
+    """ check authentication of incoming request against facebook oauth entry point """
+    if (json.load(urllib2.urlopen('https://graph.facebook.com/me?fields=id&access_token=' + request.token))['id']) != request.userID:
+        raise endpoints.UnauthorizedException('Invalid user_id or access_token')
 
 
-
-@endpoints.api(name='wc', version='v1',
-               allowed_client_ids=[WEB_CLIENT_ID, ANDROID_CLIENT_ID,
-                                   IOS_CLIENT_ID, endpoints.API_EXPLORER_CLIENT_ID],
-               audiences=[WEB_CLIENT_ID, endpoints.API_EXPLORER_CLIENT_ID])
+@endpoints.api(name='wc', 
+            version='v1',
+            allowed_client_ids=[WEB_CLIENT_ID, ANDROID_CLIENT_ID, IOS_CLIENT_ID, endpoints.API_EXPLORER_CLIENT_ID],
+            audiences=[WEB_CLIENT_ID, endpoints.API_EXPLORER_CLIENT_ID])
 class WCApi(remote.Service):
+    """ API definition """
 
-  def checkAuthentication(self, request):
-    if ((json.load(urllib2.urlopen('https://graph.facebook.com/me?fields=id&access_token=' + request.token))['id']) != request.userID):
-      raise endpoints.UnauthorizedException('Invalid user_id or access_token')
-
-
-  @endpoints.method(Request, PostMessage,
+    @endpoints.method(Request, PostMessage,
                     name='execution.submit', path='execution', http_method='POST',)
-  def list_posts(self, request):
-    self.checkAuthentication(request)
-    return PostMessage(title=request.userID, body="there")
+    def list_posts(self, request):
+        check_authentication(request)
+        return PostMessage(title=request.userID, body="there")
     # @Account.query_method(user_required=True,
     #                       path='user', name='account.get')
     # def AccountGet(self, query):
