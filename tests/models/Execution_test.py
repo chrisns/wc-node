@@ -1,36 +1,61 @@
 #!/usr/bin/env python
-"""Execution model test"""
-"""Probably a good resource for seeing how to access a stored execution"""
+"""Execution model test
+Probably a good resource for seeing how to access a stored execution"""
+
+import sys
+sys.path.insert(0, "/Applications/GoogleAppEngineLauncher.app/Contents/Resources/GoogleAppEngine-default.bundle/Contents/Resources/google_appengine")
+import dev_appserver
+dev_appserver.fix_sys_path()
 
 import unittest
-from models import Execution
+from google.appengine.ext import testbed
+from google.appengine.ext import ndb
 
+
+from models import Execution
 
 class ExecutionTests(unittest.TestCase):
     """Test we can store stuff in an Execution"""
     def setUp(self):
-        app_id = '_'
-        datastore_file = '/dev/null'
-        from google.appengine.api import apiproxy_stub_map,datastore_file_stub
-        apiproxy_stub_map.apiproxy = apiproxy_stub_map.APIProxyStubMap() 
-        stub = datastore_file_stub.DatastoreFileStub(app_id, datastore_file, '/')
-        apiproxy_stub_map.apiproxy.RegisterStub('datastore_v3', stub)
-        
-        self.execution = Execution(owner=100)
+        self.testbed = testbed.Testbed()
+        self.testbed.activate()
+        self.testbed.init_datastore_v3_stub()
+        self.testbed.init_memcache_stub()
 
     def tearDown(self):
-        self.execution = None
+        self.testbed.deactivate()
 
-    def test_execution_exists(self):
-        self.assertIsInstance(self.execution, Execution)
+    def test_requires_owner(self):
+        """check that executions require a owner"""
+        self.assertRaises(TypeError, Execution())
 
-    def test_execution_has_key(self):
-        self.execution.put()
-        print self.execution.__dict__
-        # self.execution._validate()
-        print self.execution.key
-        self.assertIsInstance(self.execution, Execution)
-        
+    # def test_owner_must_be_integer(self):
+    #     self.assertRaises(datastore_errors.BadValueError, Execution(owner="a"))
+
+    def test_valid_execution(self):
+        """check we can make an execution"""
+        execution = Execution(owner=100)
+        self.assertIsInstance(execution, Execution)
+
+    def test_can_have_a_urlsafe_key(self):
+        """ check we generate urlsafe keys from executions """
+        urlsafe_key = Execution(owner=100).put().urlsafe()
+        self.assertIsInstance(urlsafe_key, str)
+        self.assertEqual(len(urlsafe_key), 42)
+
+    def test_execution_can_load(self):
+        """ check we can load executions back """
+        urlsafe_key = Execution(owner=100, test="value").put().urlsafe()
+        restored_execution = ndb.Key(urlsafe=urlsafe_key).get()
+        self.assertEqual(restored_execution.owner, 100)
+        self.assertEqual(restored_execution.test, "value")
+
+    def test_storage_workflow_execution(self):
+        """check that we can put a workflow execution into a execution and then restore it"""
+        # todo
+        pass
+
 
 if __name__ == '__main__':
     unittest.main()
+
