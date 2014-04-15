@@ -55,6 +55,20 @@ class ExecutionTests(unittest.TestCase):
         # todo
         pass
 
+    def test_list_executions(self):
+        """ check that we can list executions belonging to a user and no other"""
+        Execution(owner=100).put()
+        Execution(owner=100).put()
+        Execution(owner=100).put()
+        Execution(owner=300).put()
+        self.assertEqual(count_of_executions, 3) # todo
+
+    def test_deleting_execution(self):
+        """ check that we can make an execution and then destroy it and then no longer retrive """
+        urlsafe_key = Execution(owner=100, test="value").put().urlsafe()
+        ndb.Key(urlsafe=urlsafe_key).delete()
+        pass
+
 
 if __name__ == '__main__':
     unittest.main()
