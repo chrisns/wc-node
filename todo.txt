@@ -1,6 +1,3 @@
-pyunit in grunt build
-
-
 return current list of required inputs
   save responses
   return validation rules for required inputs
@@ -8,7 +5,7 @@ return current list of required inputs
   render inputs in JS
     validate input before sending to BE
 
-store executions in ndb
+--store executions in ndb
   load execution by id
   list stored executions that belong to user
 
@@ -18,3 +15,5 @@ service status page that queries all gae services we use and facebook to test an
 ga event for each workflow step processed in FE
 
 pretty custom dashboard integrated with ga
+
+properly create models for execution, task specs etc so that they can be stored in NDB better

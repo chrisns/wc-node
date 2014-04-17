@@ -2,14 +2,22 @@
 """This is for asserting some principals of how we use workflow so is a good resource to refer to if you're trying to figure why things are broken"""
 
 import sys
+sys.path.insert(0, "/Applications/GoogleAppEngineLauncher.app/Contents/Resources/GoogleAppEngine-default.bundle/Contents/Resources/google_appengine")
+import dev_appserver
+dev_appserver.fix_sys_path()
+
 sys.path.append("./remotes/SpiffWorkflow")
 sys.path.append("./remotes/gvgen")
+from models import Execution
 
+from google.appengine.ext import testbed
+from google.appengine.ext import ndb
 from SpiffWorkflow import Workflow
 from SpiffWorkflow.specs import *
 from WorkflowSpecs import *
 from SpiffWorkflow.operators import *
 from SpiffWorkflow.storage import JSONSerializer
+from SpiffWorkflow.storage import DictionarySerializer
 from SpiffWorkflow.Task import *
 import unittest
 import json
@@ -50,10 +58,15 @@ class WorkflowFunctionalTests(unittest.TestCase):
     def setUp(self):
         self.spec = TestWorkflowSpec()
         self.workflow = Workflow(self.spec)
+        self.testbed = testbed.Testbed()
+        self.testbed.activate()
+        self.testbed.init_datastore_v3_stub()
+        self.testbed.init_memcache_stub()
 
     def tearDown(self):
         self.spec = None
         self.workflow = None
+        self.testbed.deactivate()
 
     def test_valid_json_spec(self):
         """test the basics of the json serializer/deserializer on the spec"""
@@ -68,9 +81,20 @@ class WorkflowFunctionalTests(unittest.TestCase):
         self.assertTrue(json_deserialized_spec)
 
     def test_valid_json_workflow(self):
-        """test the basics of the json serializer/deserializer on the workflow"""
+        """test the basics of the json serializer/deserializer on the workflow
+            we don't do this in the real world"""
         json_serialized_wf = self.workflow.serialize(JSONSerializer())
         self.assertTrue(json.loads(json_serialized_wf))
+
+
+    def test_valid_pickle_workflow(self):
+        """test the basics of the pickling serializer/deserializer on the workflow storing to ndb"""
+        data = self.workflow.serialize(DictionarySerializer())
+        urlsafe_key = Execution(owner=100, data=data).put().urlsafe()
+        restored_data = ndb.Key(urlsafe=urlsafe_key).get().data
+        self.assertEqual(data, restored_data)
+        restored_execution = DictionarySerializer().deserialize_workflow(restored_data)
+        self.assertEqual(restored_execution.get_tasks(Task.READY)[0].task_spec.name, 'Start')
 
     def test_simple_workflow_flight(self):
         """test a flight through the workflow"""
