@@ -5,19 +5,26 @@ sys.path.append("/Applications/GoogleAppEngineLauncher.app/Contents/Resources/Go
 sys.path.append("/Applications/GoogleAppEngineLauncher.app/Contents/Resources/GoogleAppEngine-default.bundle/Contents/Resources/google_appengine/lib/endpoints-1.0")
 sys.path.append("remotes/endpoints-proto-datastore")
 sys.path.append("remotes/SpiffWorkflow")
+sys.path.append("./remotes/gvgen")
 
 from google.appengine.ext import ndb
 import endpoints
 
 # from endpoints_proto_datastore.ndb import EndpointsModel
 from protorpc import messages
-# from protorpc import message_types
+from protorpc import message_types
 from protorpc import remote
 from SpiffWorkflow import *
 import logging
 # import httplib
 import urllib2
 import json
+from SpiffWorkflow.operators import *
+from SpiffWorkflow.storage import JSONSerializer
+from SpiffWorkflow.storage import DictionarySerializer
+from SpiffWorkflow.Task import *
+from WorkflowSpecs import *
+
 
 WEB_CLIENT_ID = '84086224013-u450n6r4dkgr51v3pom39cqgsefrnm83.apps.googleusercontent.com'
 WEB_CLIENT_ID = '292824132082.apps.googleusercontent.com'
@@ -25,9 +32,9 @@ ANDROID_CLIENT_ID = 'replace this with your Android client ID'
 IOS_CLIENT_ID = 'replace this with your iOS client ID'
 
 
-class Execution(ndb.Expando):
-    """Models an individual execution"""
-    owner = ndb.IntegerProperty(12, required=True)
+# class Execution(ndb.Expando):
+#     """Models an individual execution"""
+#     owner = ndb.IntegerProperty(12, required=True)
 
 
 # class Account(EndpointsModel):
@@ -64,8 +71,13 @@ class Execution(ndb.Expando):
 #     body = messages.StringField(2)
 
 # class Request(messages.Message):
-#     userID = messages.StringField(1, required=True)
-#     token = messages.StringField(2, required=True)
+#     userID = messages.StringField(required=True)
+#     token = messages.StringField(required=True)
+#     execution_id = messages.StringField(required=True)
+#     data = messages.StringField(1, required=True)
+
+class Response(messages.Message):
+    input_required = messages.StringField(20, repeated=True)
 
 def check_authentication(request):
     """ check authentication of incoming request against facebook oauth entry point """
@@ -80,11 +92,35 @@ def check_authentication(request):
 class WCApi(remote.Service):
     """ API definition """
 
-    @endpoints.method(Request, PostMessage,
+    @endpoints.method(message_types.VoidMessage, Response,
                     name='execution.submit', path='execution', http_method='POST',)
-    def list_posts(self, request):
-        check_authentication(request)
-        return PostMessage(title=request.userID, body="there")
+    def execution_response(self, request):
+        """ restore execution if one exists with given uuid else make one """
+        # check_authentication(request)
+        if hasattr(request, 'execution_id'):
+            restored_data = ndb.Key(urlsafe=request.execution_id).get()
+            if restored_data in locals():
+                execution = DictionarySerializer().deserialize_workflow(restored_data.data)
+        else:
+            spec_file = open("Workflow.json", "r").read()
+            spec = JSONSerializer().deserialize_workflow_spec(spec_file)
+
+            execution = Workflow(spec)
+
+        execution.complete_all()
+        input_required = []
+        for waiting_task in execution._get_waiting_tasks():
+            if isinstance(waiting_task.task_spec, UserInput):
+                input_required = input_required + waiting_task.task_spec.args
+            logging.error(waiting_task.task_spec.__class__)
+        return Response(input_required=input_required)
+
+
+    # @endpoints.method(Request, PostMessage,
+    #                 name='execution.submit', path='execution', http_method='POST',)
+    # def list_posts(self, request):
+    #     check_authentication(request)
+    #     return PostMessage(title=request.userID, body="there")
     # @Account.query_method(user_required=True,
     #                       path='user', name='account.get')
     # def AccountGet(self, query):
@@ -165,15 +201,3 @@ If no parameters are defined then will return and reset the messages
 @return:     de-duped array of messages to show to user
 
   return
-
-
-"""
-
-# new_account = Account(owner=current_user, id=current_user.user_id(), name='Some Name')
-# existing_account = Account.get_by_id(current_user.user_id())
-
-
-
-
-  # title = messages.StringField(1, required=True)
-  # body = messages.StringField(2)
