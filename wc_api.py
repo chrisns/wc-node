@@ -187,17 +187,17 @@ APPLICATION = endpoints.api_server([WCApi], restricted=False)
 # storage(GET/POST/DELETE)
 
 ## WF helpers
-""" 
-def messages(type, msg):
+# """ 
+# def messages(type, msg):
 
-Set and retrieve messages to show to user, maintained in session storage
-If no parameters are defined then will return and reset the messages
+# Set and retrieve messages to show to user, maintained in session storage
+# If no parameters are defined then will return and reset the messages
 
-@type  type: integer
-@param type: constant of the type (debug/info/notice/warn/error/fatal)
-@type: msg:  string
-@param msg:  message to display to end user
-@rtype:      array
-@return:     de-duped array of messages to show to user
+# @type  type: integer
+# @param type: constant of the type (debug/info/notice/warn/error/fatal)
+# @type: msg:  string
+# @param msg:  message to display to end user
+# @rtype:      array
+# @return:     de-duped array of messages to show to user
 
-  return
+#   return
