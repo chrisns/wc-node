@@ -113,8 +113,8 @@ define(['angular'], function () {
         gapi.client.wc.execution.submit({userID:$scope.authResponse.userID, token: $scope.authResponse.accessToken}).execute(function(response){
           $scope.submitInProgress = false;
           $scope.lastServerResponse = response;
-          if (response.error != undefined) {
-            console.error(response.error.message);
+          if (response.error !== undefined) {
+            // console.error(response.error.message);
             return false;
           }
           // on success of submit empty the form and get the next one
