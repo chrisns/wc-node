@@ -64,6 +64,5 @@ skip_files:
   - ^.*CHANGES.*$
   - ^.*LICENCE.*$
   - ^.*LICENSE.*$
-  - app
   - node_modules
   - spec
