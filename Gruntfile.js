@@ -76,7 +76,7 @@ module.exports = function (grunt) {
         cmd: 'python workflow.py'
       },
       pythonTests: {
-        cmd: 'python -m unittest discover . '*_test.py' -v'
+        cmd: 'python -m unittest discover . \'*_test.py\' -v'
       }
     },
     jsonlint: {
