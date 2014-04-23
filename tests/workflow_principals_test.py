@@ -2,7 +2,9 @@
 """This is for asserting some principals of how we use workflow so is a good resource to refer to if you're trying to figure why things are broken"""
 
 import sys
-sys.path.insert(0, "/Applications/GoogleAppEngineLauncher.app/Contents/Resources/GoogleAppEngine-default.bundle/Contents/Resources/google_appengine")
+sys.path.append("/Applications/GoogleAppEngineLauncher.app/Contents/Resources/GoogleAppEngine-default.bundle/Contents/Resources/google_appengine")
+sys.path.append("/home/new-user/Downloads/cns/google_appengine")
+sys.path.append("/opt/jenkins/google_appengine")
 import dev_appserver
 dev_appserver.fix_sys_path()
 
