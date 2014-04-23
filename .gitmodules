@@ -7,6 +7,3 @@
 [submodule "remotes/gvgen"]
 	path = remotes/gvgen
 	url = https://github.com/chrisns/gvgen.git
-[submodule "remotes/googleappengine"]
-	path = remotes/googleappengine
-	url = https://github.com/chrisns/googleappengine.git
