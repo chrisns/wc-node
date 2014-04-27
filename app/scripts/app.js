@@ -1,9 +1,11 @@
 define([
   'controllers/main',
+  // 'services/login-service',
   'config/router',
   // 'config/gapi-config'
 ], function (
   MainCtrl,
+  LoginService,
   Router
 ) {
   'use strict';
@@ -15,6 +17,7 @@ define([
     'builder.components',
     'validator'
   ])
+  // .service('loginService', LoginService)
   .controller('MainCtrl', MainCtrl)
   .config(Router)
   .config(['FacebookProvider', function(FacebookProvider) {
