@@ -5,7 +5,7 @@ define([
   // 'config/gapi-config'
 ], function (
   MainCtrl,
-  LoginService,
+  // LoginService,
   Router
 ) {
   'use strict';
