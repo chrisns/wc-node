@@ -77,12 +77,17 @@ IOS_CLIENT_ID = 'replace this with your iOS client ID'
 #     data = messages.StringField(1, required=True)
 
 class Response(messages.Message):
+    execution_id = messages.StringField(36)
     input_required = messages.StringField(20, repeated=True)
 
 def check_authentication(request):
     """ check authentication of incoming request against facebook oauth entry point """
     if (json.load(urllib2.urlopen('https://graph.facebook.com/me?fields=id&access_token=' + request.token))['id']) != request.userID:
         raise endpoints.UnauthorizedException('Invalid user_id or access_token')
+    if hasattr(request, 'execution_id'):
+        if (ndb.Key(urlsafe=request.execution_id).get().owner != request.userID):
+            raise endpoints.UnauthorizedException('Incorrect Owner')
+
 
 
 @endpoints.api(name='wc', 
@@ -92,28 +97,64 @@ def check_authentication(request):
 class WCApi(remote.Service):
     """ API definition """
 
+    # @endpoints.method(message_types.VoidMessage, Response,
+    #                 name='execution.submit', path='execution', http_method='POST',)
+    # def execution_response(self, request):
+    #     """ restore execution if one exists with given uuid else make one """
+    #     # check_authentication(request)
+    #     if hasattr(request, 'execution_id'):
+    #         restored_data = ndb.Key(urlsafe=request.execution_id).get()
+    #         if restored_data in locals():
+    #             execution = DictionarySerializer().deserialize_workflow(restored_data.data)
+    #     else:
+    #         spec_file = open("Workflow.json", "r").read()
+    #         spec = JSONSerializer().deserialize_workflow_spec(spec_file)
+
+    #         execution = Workflow(spec)
+
+    #     execution.complete_all()
+    #     input_required = []
+    #     for waiting_task in execution._get_waiting_tasks():
+    #         if isinstance(waiting_task.task_spec, UserInput):
+    #             input_required = input_required + waiting_task.task_spec.args
+    #         logging.error(waiting_task.task_spec.__class__)
+    #     return Response(input_required=input_required)
+
     @endpoints.method(message_types.VoidMessage, Response,
-                    name='execution.submit', path='execution', http_method='POST',)
-    def execution_response(self, request):
-        """ restore execution if one exists with given uuid else make one """
-        # check_authentication(request)
+                    name='execution.resume', path='execution', http_method='POST',)
+    def execution_resume(self, request):
         if hasattr(request, 'execution_id'):
-            restored_data = ndb.Key(urlsafe=request.execution_id).get()
-            if restored_data in locals():
+            execution_object = ndb.Key(urlsafe=request.execution_id).get()
+            if execution_object in locals():
                 execution = DictionarySerializer().deserialize_workflow(restored_data.data)
         else:
             spec_file = open("Workflow.json", "r").read()
             spec = JSONSerializer().deserialize_workflow_spec(spec_file)
-
+            execution_object = Execution(owner=request.userID)
             execution = Workflow(spec)
 
         execution.complete_all()
-        input_required = []
         for waiting_task in execution._get_waiting_tasks():
             if isinstance(waiting_task.task_spec, UserInput):
-                input_required = input_required + waiting_task.task_spec.args
-            logging.error(waiting_task.task_spec.__class__)
-        return Response(input_required=input_required)
+                for input_required in waiting_task.task_spec.args :
+                    if hasattr(request, input_required):
+                        waiting_task.set_data(**{input_required : getattr(request, input_required)})
+        
+        execution.complete_all()
+
+        execution_object.data = execution.serialize(DictionarySerializer())
+        urlsafe_key = execution_object.put().urlsafe()
+
+        # get the next set of inputs required to be populated
+        inputs_required = []
+        for waiting_task in execution._get_waiting_tasks():
+            if isinstance(waiting_task.task_spec, UserInput):
+                for input_required in waiting_task.task_spec.args :
+                    inputs_required = inputs_required + waiting_task.task_spec.args
+
+
+
+        return Response(inputs_required = inputs_required, execution_id = urlsafe_key)
 
 
     # @endpoints.method(Request, PostMessage,
