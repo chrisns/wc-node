@@ -130,6 +130,14 @@ class WCApi(remote.Service):
                     name='execution.resume', path='execution', http_method='POST',)
     def execution_resume(self, request):
         """ Resume a workflow execution """
+
+        return Response(
+            execution_id = "1234",
+            # workflow_step = ["aa", "bb"],
+            # user_message = ["aa", "bb"],
+            # input_required = ["aa", "bb"],
+        )
+
         if not hasattr(request, 'execution_id'):
             spec_file = open("Workflow.json", "r").read()
             spec = JSONSerializer().deserialize_workflow_spec(spec_file)
