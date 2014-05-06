@@ -16,7 +16,7 @@ All:
 	npm install
 	gem install sass compass
 	npm install -g grunt-cli jshint bower karma-jasmine
-	easy_install pylint
+	easy_install pylint WebTest
 
 ## Test
 	grunt test

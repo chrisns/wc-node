@@ -79,10 +79,10 @@ IOS_CLIENT_ID = 'replace this with your iOS client ID'
 
 class Response(messages.Message):
     """ API Response data class """
-    execution_id = messages.StringField(36, repeated=True, required=False)
-    workflow_step = messages.StringField(20, repeated=True, required=True)
-    user_message = messages.StringField(2048, repeated=True, required=False)
-    input_required = messages.StringField(20, repeated=True, required=False)
+    execution_id = messages.StringField(1, required=False)
+    workflow_step = messages.StringField(2, repeated=True)
+    user_message = messages.StringField(3, repeated=True)
+    input_required = messages.StringField(4, repeated=True)
 
 
 def check_authentication(request):
