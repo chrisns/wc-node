@@ -87,7 +87,10 @@ class Response(messages.Message):
 
 def check_authentication(request):
     """ check authentication of incoming request against facebook oauth entry point """
-    if (json.load(urllib2.urlopen('https://graph.facebook.com/me?fields=id&access_token=' + request.token))['id']) != request.userID:
+    try:
+        if (json.load(urllib2.urlopen('https://graph.facebook.com/me?fields=id&access_token=' + request.token))['id']) != request.userID:
+            raise endpoints.UnauthorizedException('Invalid user_id or access_token')
+    except ValueError, e:
         raise endpoints.UnauthorizedException('Invalid user_id or access_token')
     if hasattr(request, 'execution_id'):
         if ndb.Key(urlsafe=request.execution_id).get().owner != request.userID:
