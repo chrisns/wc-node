@@ -26,6 +26,7 @@ import json
 import webtest
 
 import wc_api
+from mock import patch, Mock
 
 class TestApiTests(unittest.TestCase):
     """do some basic functional tests on the workflow to prove our assumptions on how it works"""
@@ -37,10 +38,16 @@ class TestApiTests(unittest.TestCase):
         app = endpoints.api_server([wc_api.WCApi], restricted=False)
         self.app = webtest.TestApp(app)
 
-    def api(self, method, args=None, status_code=200, content_type='application/json'):
+    def api(self, method, args=None, status_code=200, content_type='application/json', auth_required = False):
         """ helper to make api calls """
         if args is None: 
             args = []
+        if auth_required == True:
+            args['user_id'] = 1234
+            args['token'] = 'lala'
+            a = Mock()
+            a.read.side_effect = [json.dumps({'id' : 1234})]
+            mock_urlopen.return_value = a
         response = self.app.post_json('/_ah/spi/WCApi.' + method, args)
         self.assertEqual(response.headers['content-type'], content_type)
         self.assertEqual(response.status_code, status_code)
