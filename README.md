@@ -16,7 +16,7 @@ All:
 	npm install
 	gem install sass compass
 	npm install -g grunt-cli jshint bower karma-jasmine
-	ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future easy_install pylint WebTest pil
+	ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future easy_install pylint WebTest pil mock
 
 ## Test
 	grunt test
