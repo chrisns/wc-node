@@ -29,6 +29,9 @@ module.exports = function (grunt) {
 
     // Watches files for changes and runs tasks based on the changed files
     watch: {
+      options: {
+         spawn: false
+      },
       js: {
         files: ['<%= yeoman.app %>/scripts/{,*/}*.js'],
         tasks: ['newer:jshint:all'],
@@ -58,16 +61,12 @@ module.exports = function (grunt) {
         ]
       },
       python: {
-        files: ['models/*.py', 'WorkflowSpecs/*.py', '*.py'],
+        files: ['**/*.py'],
         tasks: ['exec:pythonTests']
       },
       wf: {
         files: ['workflow.py'],
-        tasks: ['exec:pythonTests', 'exec:regenWorkflow', 'jsonlint:workflow']
-      },
-      pythontests: {
-        files: ['tests/*.py', 'tests/*/*.py'],
-        tasks: ['exec:pythonTests']
+        tasks: ['exec:regenWorkflow', 'jsonlint:workflow']
       }
     },
 
@@ -380,26 +379,6 @@ module.exports = function (grunt) {
     }
   });
 
-
-  grunt.registerTask('serve', function (target) {
-    if (target === 'dist') {
-      return grunt.task.run(['build', 'connect:dist:keepalive']);
-    }
-
-    grunt.task.run([
-      'clean:server',
-      'bower-install',
-      'concurrent:server',
-      'autoprefixer',
-      'connect:livereload',
-      'watch'
-    ]);
-  });
-
-  grunt.registerTask('server', function () {
-    grunt.log.warn('The `server` task has been deprecated. Use `grunt serve` to start a server.');
-    grunt.task.run(['serve']);
-  });
 
   grunt.registerTask('test', [
     'clean:server',
