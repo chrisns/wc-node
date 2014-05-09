@@ -84,6 +84,11 @@ class Response(messages.Message):
     user_message = messages.StringField(3, repeated=True)
     input_required = messages.StringField(4, repeated=True)
 
+class ExecutionSummary(messages.Message):
+    execution_id = messages.StringField(1, required=True)
+
+class ListOfExecutions(messages.Message):
+    executions = messages.MessageField(ExecutionSummary, 1, repeated=True)
 
 def check_authentication(request):
     """ check authentication of incoming request against facebook oauth entry point """
@@ -127,6 +132,16 @@ class WCApi(remote.Service):
     #             input_required = input_required + waiting_task.task_spec.args
     #         logging.error(waiting_task.task_spec.__class__)
     #     return Response(input_required=input_required)
+
+    @endpoints.method(message_types.VoidMessage, ListOfExecutions,
+                    name='execution.list', path='execution_list', http_method='POST',)
+    def execution_list(self, request):
+        """ List workflow executions """
+        query = Execution.query(Execution.owner == 1234)
+        response = ListOfExecutions()
+        for key in query.iter(keys_only=True):
+            response.executions.append(ExecutionSummary(execution_id=key.urlsafe()))
+        return response
 
 
     @endpoints.method(message_types.VoidMessage, Response,

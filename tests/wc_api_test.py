@@ -38,10 +38,11 @@ class TestApiTests(unittest.TestCase):
         app = endpoints.api_server([wc_api.WCApi], restricted=False)
         self.app = webtest.TestApp(app)
 
-    def api(self, method, args=None, status_code=200, content_type='application/json', auth_required = False):
+    @patch('wc_api.urllib2.urlopen')
+    def api(self, mock_urlopen, method, args=None, status_code=200, content_type='application/json', auth_required = False):
         """ helper to make api calls """
         if args is None: 
-            args = []
+            args = {}
         if auth_required == True:
             args['user_id'] = 1234
             args['token'] = 'lala'
@@ -56,6 +57,19 @@ class TestApiTests(unittest.TestCase):
         else:
             return response.body
 
+    def test_list_executions(self):
+        """ check that we can list executions belonging to a user and no other"""
+        Execution(owner=1234).put()
+        Execution(owner=1234).put()
+        key_to_check_is_present = Execution(owner=1234).put().urlsafe()
+        key_to_check_is_not_present = Execution(owner=300).put().urlsafe()
+        resp = self.api(method='execution_list', auth_required=True)
+        self.assertEqual(len(resp['executions']), 3)
+        # self.assertEqual(len(resp['executions']), 3)
+        print resp['executions'][2]
+        print key_to_check_is_present
+        self.assertIn(key_to_check_is_present, resp['executions'])
+
     def tearDown(self):
         self.testbed.deactivate()
 
@@ -63,7 +77,7 @@ class TestApiTests(unittest.TestCase):
         """ test responses """
         resp = self.api(method='execution_resume', args={"execution_id" : 12})
         
-        print resp
+        # print resp
 
 if __name__ == '__main__':
     unittest.main()
