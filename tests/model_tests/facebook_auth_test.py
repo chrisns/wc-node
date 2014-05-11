@@ -21,29 +21,30 @@ class FacebookAuthTests(unittest.TestCase):
 
     @patch('wc_api.urllib2.urlopen')
     def test_facebook_auth_fail_non_same_id(self, mock_urlopen):
-        request_structure = namedtuple('MyStruct', 'userID token')
-        request = request_structure(userID = 1234, token = 'lala')
-        a = Mock()
-        a.read.side_effect = [json.dumps({'id' : 12342})]
-        mock_urlopen.return_value = a
+        """ test that authentication fails when the token isn't for the user_id given """
+        request_structure = namedtuple('MyStruct', 'user_id token')
+        request = request_structure(user_id=1234, token='lala')
+        mock = Mock()
+        mock.read.side_effect = [json.dumps({'id' : 12342})]
+        mock_urlopen.return_value = mock
         self.assertRaises(endpoints.UnauthorizedException, wc_api.check_authentication, request)
 
     @patch('wc_api.urllib2.urlopen')
     def test_facebook_auth_fail_no_response(self, mock_urlopen):
-        request_structure = namedtuple('MyStruct', 'userID token')
-        request = request_structure(userID = 1234, token = 'lala')
-        a = Mock()
-        a.read.side_effect = ['no_json']
-        mock_urlopen.return_value = a
+        request_structure = namedtuple('MyStruct', 'user_id token')
+        request = request_structure(user_id=1234, token='lala')
+        mock = Mock()
+        mock.read.side_effect = ['no_json']
+        mock_urlopen.return_value = mock
         self.assertRaises(endpoints.UnauthorizedException, wc_api.check_authentication, request)
 
     @patch('wc_api.urllib2.urlopen')
     def test_facebook_auth_success(self, mock_urlopen):
-        request_structure = namedtuple('MyStruct', 'userID token')
-        request = request_structure(userID = 1234, token = 'lala')
-        a = Mock()
-        a.read.side_effect = [json.dumps({'id' : 1234})]
-        mock_urlopen.return_value = a
+        request_structure = namedtuple('MyStruct', 'user_id token')
+        request = request_structure(user_id=1234, token='lala')
+        mock = Mock()
+        mock.read.side_effect = [json.dumps({'id' : 1234})]
+        mock_urlopen.return_value = mock
         self.assertIsNone(wc_api.check_authentication(request))
 
 
