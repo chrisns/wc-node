@@ -11,7 +11,6 @@ from google.appengine.ext import ndb
 import endpoints
 
 # from endpoints_proto_datastore.ndb import EndpointsModel
-from protorpc import messages
 from protorpc import message_types
 from protorpc import remote
 from SpiffWorkflow import *
@@ -67,40 +66,35 @@ IOS_CLIENT_ID = 'replace this with your iOS client ID'
 
 # class ExecutionCollection(messages.Message):
 #     items = messages.MessageField(ExecutionMessage, 1, repeated=True)
-class PostMessage(messages.Message):
-    title = messages.StringField(1, required=True)
-    body = messages.StringField(2)
 
-class execution_list_request(messages.Message):
-    user_id = messages.IntegerField(1, required=True)
-    token = messages.StringField(2, required=True)
 
-class Response(messages.Message):
-    """ API Response data class """
-    execution_id = messages.StringField(1, required=False)
-    workflow_step = messages.StringField(2, repeated=True)
-    user_message = messages.StringField(3, repeated=True)
-    input_required = messages.StringField(4, repeated=True)
-
-class ExecutionSummary(messages.Message):
-    execution_id = messages.StringField(1, required=True)
-
-class execution_list_response(messages.Message):
-    executions = messages.MessageField(ExecutionSummary, 1, repeated=True)
 
 def check_authentication(request):
-    print request
     """ check authentication of incoming request against facebook oauth entry point """
     try:
         if (json.load(urllib2.urlopen('https://graph.facebook.com/me?fields=id&access_token=' + request.token))['id']) != request.user_id:
             raise endpoints.UnauthorizedException('Invalid user_id or access_token')
     except ValueError:
         raise endpoints.UnauthorizedException('Invalid user_id or access_token')
-    if hasattr(request, 'execution_id'):
+    if hasattr(request, 'execution_id') and request.execution_id is not None:
         if ndb.Key(urlsafe=request.execution_id).get().owner != request.user_id:
             raise endpoints.UnauthorizedException('Incorrect Owner')
+       
+def get_inputs_required(execution):
+    """ returns required inputs given an execution """
+    inputs_required = []
+    for waiting_task in execution._get_waiting_tasks():
+        if isinstance(waiting_task.task_spec, UserInput):
+            inputs_required += waiting_task.task_spec.args
+    return inputs_required
 
-
+def get_execution_new():
+    """ returns a new execution """
+    spec_file = open("Workflow.json", "r").read()
+    spec = JSONSerializer().deserialize_workflow_spec(spec_file)
+    execution = Workflow(spec)
+    execution.complete_all()
+    return execution
 
 @endpoints.api(name='wc',
             version='v1',
@@ -110,62 +104,69 @@ class WCApi(remote.Service):
     """ API definition """
 
     @endpoints.method(execution_list_request, execution_list_response,
-                    name='execution.list', path='execution_list', http_method='POST')
+                    name='execution.list', path='execution/list', http_method='POST')
     def execution_list(self, request):
         """ List workflow executions """
-        # check_authentication(request)
-        print request.user_id
+        check_authentication(request)
         query = Execution.query(Execution.owner == 1234)
         response = execution_list_response()
         for key in query.iter(keys_only=True):
-            response.executions.append(ExecutionSummary(execution_id=key.urlsafe()))
+            response.executions.append(execution_list_summary_response(execution_id=key.urlsafe()))
         return response
 
+    @endpoints.method(execution_new_request, execution_new_response,
+                    name='execution.new', path='execution/new', http_method='POST')
+    def execution_new(self, request):
+        """ Returns the first inputs required from workflow """
+        check_authentication(request)
 
+        execution = get_execution_new()
+        inputs_required = get_inputs_required(execution)
 
-    @endpoints.method(message_types.VoidMessage, Response,
-                    name='execution.resume', path='execution', http_method='POST')
-    def execution_resume(self, request):
-        """ Resume a workflow execution """
-
-        return Response(
-            execution_id = "1234",
-            # workflow_step = ["aa", "bb"],
-            # user_message = ["aa", "bb"],
-            # input_required = ["aa", "bb"],
+        return execution_new_response(
+            inputs_required=inputs_required, 
         )
 
-        if not hasattr(request, 'execution_id'):
-            spec_file = open("Workflow.json", "r").read()
-            spec = JSONSerializer().deserialize_workflow_spec(spec_file)
+    @endpoints.method(execution_delete_request, message_types.VoidMessage,
+                    name='execution.delete', path='execution/delete', http_method='POST')
+    def execution_delete(self, request):
+        """ Deletes the given execution """
+        check_authentication(request)
+        ndb.Key(urlsafe=request.execution_id).delete()
+        return message_types.VoidMessage()
+
+    @endpoints.method(execution_resume_request, Response,
+                    name='execution.resume', path='execution/resume', http_method='POST')
+    def execution_resume(self, request):
+        """ Resume a workflow execution """
+        check_authentication(request)
+
+        if request.execution_id is None:
             execution_object = Execution(owner=request.user_id)
-            execution = Workflow(spec)
-            urlsafe_key = None
+            execution = get_execution_new()
         else:
             execution_object = ndb.Key(urlsafe=request.execution_id).get()
             execution = DictionarySerializer().deserialize_workflow(execution_object.data)
-            execution.complete_all()
+
+        execution.complete_all()
+
+        if len(request.data) is not 0:
             for waiting_task in execution._get_waiting_tasks():
                 if isinstance(waiting_task.task_spec, UserInput):
-                    for input_required in waiting_task.task_spec.args:
-                        if hasattr(request, input_required):
-                            waiting_task.set_data(**{input_required : getattr(request, input_required)})
-            
+                    for response_data in request.data:
+                        if response_data.key in waiting_task.task_spec.args:
+                            for value in response_data.value:
+                                waiting_task.set_data(**{response_data.key : value})
             execution.complete_all()
 
-            execution_object.data = execution.serialize(DictionarySerializer())
-            urlsafe_key = execution_object.put().urlsafe()
+        execution_object.data = execution.serialize(DictionarySerializer())
 
-        # get the next set of inputs required to be populated
-        inputs_required = []
-        for waiting_task in execution._get_waiting_tasks():
-            if isinstance(waiting_task.task_spec, UserInput):
-                for input_required in waiting_task.task_spec.args:
-                    inputs_required = inputs_required + waiting_task.task_spec.args
+        urlsafe_key = execution_object.put().urlsafe()
 
-
-
-        return Response(inputs_required=inputs_required, execution_id=urlsafe_key)
+        return Response(
+            inputs_required=get_inputs_required(execution), 
+            execution_id=urlsafe_key
+        )
 
     # @endpoints.method(message_types.VoidMessage, Response,
     #                 name='execution.submit', path='execution', http_method='POST',)
