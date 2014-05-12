@@ -88,6 +88,14 @@ def get_inputs_required(execution):
             inputs_required += waiting_task.task_spec.args
     return inputs_required
 
+def get_tasks_required(execution):
+    """ returns required tasks given an execution """
+    tasks_waiting = []
+    for waiting_task in execution._get_waiting_tasks():
+        if isinstance(waiting_task.task_spec, UserInput):
+            tasks_waiting.append(waiting_task.task_spec.name)
+    return tasks_waiting
+
 def get_execution_new():
     """ returns a new execution """
     spec_file = open("Workflow.json", "r").read()
@@ -135,7 +143,7 @@ class WCApi(remote.Service):
         ndb.Key(urlsafe=request.execution_id).delete()
         return message_types.VoidMessage()
 
-    @endpoints.method(execution_resume_request, Response,
+    @endpoints.method(execution_resume_request, execution_resume_response,
                     name='execution.resume', path='execution/resume', http_method='POST')
     def execution_resume(self, request):
         """ Resume a workflow execution """
@@ -160,11 +168,11 @@ class WCApi(remote.Service):
             execution.complete_all()
 
         execution_object.data = execution.serialize(DictionarySerializer())
-
         urlsafe_key = execution_object.put().urlsafe()
 
-        return Response(
+        return execution_resume_response(
             inputs_required=get_inputs_required(execution), 
+            workflow_step=get_tasks_required(execution),
             execution_id=urlsafe_key
         )
 

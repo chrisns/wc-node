@@ -48,10 +48,24 @@ class execution_resume_request(messages.Message):
     execution_id = messages.StringField(3, required=False)
     data = messages.MessageField(execution_list_data_request, 4, repeated=True)
 
+class input_option(messages.Message):
+    name = messages.StringField(1, required=True)
+    value = messages.StringField(2, required=True)
+
+class input(messages.Message):
+    name = messages.StringField(1, required=True)
+    label = messages.StringField(2)
+    input_type = messages.StringField(3, required=True)
+    placeholder = messages.StringField(4)
+    description = messages.StringField(5)
+    options = messages.MessageField(input_option, 6, repeated=True)
+    validator = messages.StringField(7)
+    autocomplete_path = messages.StringField(8)
+    default_value = messages.StringField(8)
 
 
 
-class Response(messages.Message):
+class execution_resume_response(messages.Message):
     """ API Response data class """
     execution_id = messages.StringField(1, required=False)
     workflow_step = messages.StringField(2, repeated=True)
