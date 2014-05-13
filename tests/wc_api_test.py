@@ -44,7 +44,7 @@ class TestApiTests(unittest.TestCase):
         app = endpoints.api_server([wc_api.WCApi], restricted=False)
         self.app = webtest.TestApp(app)
 
-    @patch('__builtin__.open')
+    @patch('wc_api.get_workflow_spec_file_handler')
     @patch('urllib2.urlopen')
     def api(self, mock_urlopen=None, mock_file_open=None, method=None, args=None, status_code=200, content_type='application/json', auth_required = False):
         """ helper to make api calls """
@@ -60,8 +60,6 @@ class TestApiTests(unittest.TestCase):
         file_mock = Mock()
         file_mock.read.side_effect = [TestWorkflowSpec().serialize(JSONSerializer())]
         mock_file_open.return_value = file_mock
-
-        # response = self.app.post('/_ah/spi/WCApi.' + method, json.dumps(args), content_type = 'application/json')
         response = self.app.post_json('/_ah/spi/WCApi.' + method, args)
         self.assertEqual(response.headers['content-type'], content_type)
         self.assertEqual(response.status_code, status_code)
@@ -95,8 +93,7 @@ class TestApiTests(unittest.TestCase):
         resp = self.api(method='execution_delete', auth_required=True, args={'execution_id': key})
         self.assertIsNone(ndb.Key(urlsafe=key).get())
 
-    # @patch('__builtin__.open')
-    def test_execution_resume(self, mock_open=None):
+    def test_execution_resume(self):
         """ check that we can resume an execution"""
         data = [{
             'key': 'name',

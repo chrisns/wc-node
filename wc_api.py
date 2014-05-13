@@ -83,10 +83,28 @@ def check_authentication(request):
 def get_inputs_required(execution):
     """ returns required inputs given an execution """
     inputs_required = []
+    inputs_matrix = json.loads(open("inputs.json", "r").read())
     for waiting_task in execution._get_waiting_tasks():
         if isinstance(waiting_task.task_spec, UserInput):
-            inputs_required += waiting_task.task_spec.args
+            for input_required in waiting_task.task_spec.args:
+                if input_required in inputs_matrix:
+                    inputs_required.append(build_from_mapped_obj(input_required, inputs_matrix[input_required]))
+                else:
+                    raise Exception('Unmapped workflow step')
     return inputs_required
+
+def build_from_mapped_obj(name = None, obj = None):
+    return user_input(
+        name = name,
+        label = obj['label'] if 'label' in obj else None,
+        input_type = obj['input_type'] if 'input_type' in obj else None,
+        placeholder = obj['placeholder'] if 'placeholder' in obj else None,
+        description = obj['description'] if 'description' in obj else None,
+        options = obj['options'] if 'options' in obj else [],
+        validator = obj['validator'] if 'validator' in obj else None,
+        autocomplete_path = obj['autocomplete_path'] if 'autocomplete_path' in obj else None,
+        default_value = obj['default_value'] if 'default_value' in obj else None,
+    )
 
 def get_tasks_required(execution):
     """ returns required tasks given an execution """
@@ -98,11 +116,14 @@ def get_tasks_required(execution):
 
 def get_execution_new():
     """ returns a new execution """
-    spec_file = open("Workflow.json", "r").read()
+    spec_file = get_workflow_spec_file_handler().read()
     spec = JSONSerializer().deserialize_workflow_spec(spec_file)
     execution = Workflow(spec)
     execution.complete_all()
     return execution
+
+def get_workflow_spec_file_handler():
+    return open("Workflow.json", "r")
 
 @endpoints.api(name='wc',
             version='v1',
@@ -148,7 +169,6 @@ class WCApi(remote.Service):
     def execution_resume(self, request):
         """ Resume a workflow execution """
         check_authentication(request)
-
         if request.execution_id is None:
             execution_object = Execution(owner=request.user_id)
             execution = get_execution_new()
@@ -171,8 +191,8 @@ class WCApi(remote.Service):
         urlsafe_key = execution_object.put().urlsafe()
 
         return execution_resume_response(
-            inputs_required=get_inputs_required(execution), 
             workflow_step=get_tasks_required(execution),
+            inputs_required=get_inputs_required(execution),
             execution_id=urlsafe_key
         )
 
