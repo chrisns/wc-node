@@ -24,6 +24,7 @@ from SpiffWorkflow.storage import DictionarySerializer
 from SpiffWorkflow.Task import *
 from WorkflowSpecs import *
 from models import *
+import random, string
 
 
 WEB_CLIENT_ID = '84086224013-u450n6r4dkgr51v3pom39cqgsefrnm83.apps.googleusercontent.com'
@@ -277,6 +278,27 @@ class WCApi(remote.Service):
     #     # items = [ExecutionMessage(name=p.name, date=p.date) for p in Execution.query()]
     #     return ExecutionCollection(items=items) 
     #     return STORED_GREETINGS
+    @endpoints.method(message_types.VoidMessage, service_status_response,
+                    name='service_status', path='service_status', http_method='GET')
+    def service_status(self, request):
+        """ return service status """
+        response = service_status_response(ndb=0, fb=0)
+        try:
+            if ndb.Key("execution", string.join(random.sample(string.digits, 8))).get() is None:
+                response.ndb = 1
+        except Exception:
+            pass
+        try:
+            dummy_request = {"token": "123", "user_id": 123}
+            check_authentication(dummy_request)
+        except endpoints.UnauthorizedException:
+            print "here"
+            response.fb = 1
+        except Exception:
+            print Exception
+            pass
+
+        return response
 
 APPLICATION = endpoints.api_server([WCApi], restricted=False)
 

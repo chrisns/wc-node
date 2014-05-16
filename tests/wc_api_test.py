@@ -109,7 +109,16 @@ class TestApiTests(unittest.TestCase):
             'value': ['hi','there']
         }]
         resp = self.api(method='execution_resume', auth_required=True, args={'data': data})
-        print resp
+        # print resp
 
+
+    def test_service_status(self):
+        """ check that we can resume an execution"""
+        resp = self.api(method='service_status')
+        import random, string
+        dummy_key = string.join(random.sample(string.digits, 8))
+        execution_object = ndb.Key("execution", dummy_key).get()
+        print execution_object
+        print resp
 if __name__ == '__main__':
     unittest.main()

@@ -70,3 +70,10 @@ class execution_resume_response(messages.Message):
     workflow_step = messages.StringField(2, repeated=True)
     user_message = messages.StringField(3, repeated=True)
     inputs_required = messages.MessageField(user_input, 4, repeated=True)
+
+
+
+
+class service_status_response(messages.Message):
+    ndb = messages.IntegerField(1, required=True)
+    fb = messages.IntegerField(2, required=True)
