@@ -114,11 +114,8 @@ class TestApiTests(unittest.TestCase):
 
     def test_service_status(self):
         """ check that we can resume an execution"""
-        resp = self.api(method='service_status')
-        import random, string
-        dummy_key = string.join(random.sample(string.digits, 8))
-        execution_object = ndb.Key("execution", dummy_key).get()
-        print execution_object
-        print resp
+        expected = dict(fb='1', ndb='1')
+        actual = self.api(method='service_status')
+        self.assertEqual(actual, expected)
 if __name__ == '__main__':
     unittest.main()

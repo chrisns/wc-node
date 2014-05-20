@@ -282,6 +282,7 @@ class WCApi(remote.Service):
                     name='service_status', path='service_status', http_method='GET')
     def service_status(self, request):
         """ return service status """
+        from collections import namedtuple
         response = service_status_response(ndb=0, fb=0)
         try:
             if ndb.Key("execution", string.join(random.sample(string.digits, 8))).get() is None:
@@ -289,13 +290,14 @@ class WCApi(remote.Service):
         except Exception:
             pass
         try:
-            dummy_request = {"token": "123", "user_id": 123}
+            dummy_request_structure = namedtuple('MyStruct', 'user_id token')
+            dummy_request = dummy_request_structure(user_id=1234, token='lala')
             check_authentication(dummy_request)
         except endpoints.UnauthorizedException:
-            print "here"
             response.fb = 1
+        except TypeError:
+            response.fb = 1            
         except Exception:
-            print Exception
             pass
 
         return response

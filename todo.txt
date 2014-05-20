@@ -10,7 +10,7 @@ return current list of required inputs
   list stored executions that belong to user
 
 
-service status page that queries all gae services we use and facebook to test and show where there may be an issue
+-- service status page that queries all gae services we use and facebook to test and show where there may be an issue
 
 ga event for each workflow step processed in FE
 
