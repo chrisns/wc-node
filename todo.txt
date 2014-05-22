@@ -21,3 +21,11 @@ properly create models for execution, task specs etc so that they can be stored 
 
 include input format in workflow model so it can be versioned accordingly
 ingest bpmn modelled workflow
+
+
+use json-schema in python with https://github.com/Julian/jsonschema/ in BE
+implement https://github.com/jdorn/json-editor in frontend
+
+python code coverage output from unit tests
+
+move away from rpc

@@ -5,6 +5,7 @@ sys.path.append("/Applications/GoogleAppEngineLauncher.app/Contents/Resources/Go
 sys.path.append("/Applications/GoogleAppEngineLauncher.app/Contents/Resources/GoogleAppEngine-default.bundle/Contents/Resources/google_appengine/lib/endpoints-1.0")
 sys.path.append("remotes/endpoints-proto-datastore")
 sys.path.append("remotes/SpiffWorkflow")
+sys.path.append("remotes/jsonschema")
 sys.path.append("./remotes/gvgen")
 
 from google.appengine.ext import ndb
@@ -25,6 +26,8 @@ from SpiffWorkflow.Task import *
 from WorkflowSpecs import *
 from models import *
 import random, string
+from jsonschema.validators import Draft4Validator
+from jsonschema.exceptions import best_match
 
 
 WEB_CLIENT_ID = '84086224013-u450n6r4dkgr51v3pom39cqgsefrnm83.apps.googleusercontent.com'
@@ -81,31 +84,21 @@ def check_authentication(request):
         if ndb.Key(urlsafe=request.execution_id).get().owner != request.user_id:
             raise endpoints.UnauthorizedException('Incorrect Owner')
        
-def get_inputs_required(execution):
+def get_filtered_schema(execution):
     """ returns required inputs given an execution """
-    inputs_required = []
-    inputs_matrix = json.loads(open("inputs.json", "r").read())
+    inputs_required = dict()
+    inputs_matrix = get_schema()['properties']
     for waiting_task in execution._get_waiting_tasks():
         if isinstance(waiting_task.task_spec, UserInput):
             for input_required in waiting_task.task_spec.args:
                 if input_required in inputs_matrix:
-                    inputs_required.append(build_from_mapped_obj(input_required, inputs_matrix[input_required]))
+                    inputs_required[input_required] = inputs_matrix[input_required]
                 else:
-                    raise Exception('Unmapped workflow step')
+                    raise Exception('Unmapped workflow step', input_required)
     return inputs_required
 
-def build_from_mapped_obj(name = None, obj = None):
-    return user_input(
-        name = name,
-        label = obj['label'] if 'label' in obj else None,
-        input_type = obj['input_type'] if 'input_type' in obj else None,
-        placeholder = obj['placeholder'] if 'placeholder' in obj else None,
-        description = obj['description'] if 'description' in obj else None,
-        options = obj['options'] if 'options' in obj else [],
-        validator = obj['validator'] if 'validator' in obj else None,
-        autocomplete_path = obj['autocomplete_path'] if 'autocomplete_path' in obj else None,
-        default_value = obj['default_value'] if 'default_value' in obj else None,
-    )
+def get_schema():
+    return json.loads(open("schema.json", "r").read())
 
 def get_tasks_required(execution):
     """ returns required tasks given an execution """
@@ -151,10 +144,10 @@ class WCApi(remote.Service):
         check_authentication(request)
 
         execution = get_execution_new()
-        inputs_required = get_inputs_required(execution)
-
+        inputs_required = get_filtered_schema(execution)
+        print inputs_required
         return execution_new_response(
-            inputs_required=inputs_required, 
+            inputs_required=json.dumps(inputs_required), 
         )
 
     @endpoints.method(execution_delete_request, message_types.VoidMessage,
@@ -193,7 +186,7 @@ class WCApi(remote.Service):
 
         return execution_resume_response(
             workflow_step=get_tasks_required(execution),
-            inputs_required=get_inputs_required(execution),
+            inputs_required=json.dumps(get_filtered_schema(execution)),
             execution_id=urlsafe_key
         )
 

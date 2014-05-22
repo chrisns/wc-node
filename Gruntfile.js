@@ -16,6 +16,8 @@ module.exports = function (grunt) {
   require('time-grunt')(grunt);
   grunt.loadNpmTasks('grunt-exec');
   grunt.loadNpmTasks('grunt-jsonlint');
+  grunt.loadNpmTasks('grunt-json-schema');
+
 
   // Define the configuration for all the tasks
   grunt.initConfig({
@@ -67,6 +69,10 @@ module.exports = function (grunt) {
       wf: {
         files: ['workflow.py'],
         tasks: ['exec:regenWorkflow', 'jsonlint:workflow']
+      },
+      schema: {
+        files:['schema.json'],
+        tasks:['jsonlint:schema', 'json_schema', 'exec:pythonTests']
       }
     },
 
@@ -81,6 +87,17 @@ module.exports = function (grunt) {
     jsonlint: {
       workflow: {
         src: [ 'Workflow.json' ]
+      },
+      schema: {
+        src: [ 'schema.json' ]
+      }
+    },
+    json_schema: {
+      test: {
+        options: {},
+        files: {
+          'schema.json': []
+        } 
       }
     },
     // The actual grunt server settings

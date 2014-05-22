@@ -7,3 +7,6 @@
 [submodule "remotes/gvgen"]
 	path = remotes/gvgen
 	url = https://github.com/chrisns/gvgen.git
+[submodule "remotes/jsonschema"]
+	path = remotes/jsonschema
+	url = git@github.com:Julian/jsonschema.git

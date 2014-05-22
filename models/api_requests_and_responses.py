@@ -17,19 +17,6 @@ class execution_list_response(messages.Message):
     executions = messages.MessageField(execution_list_summary_response, 1, repeated=True)
 
 
-class user_input(messages.Message):
-    name = messages.StringField(1, required=True)
-    label = messages.StringField(2)
-    input_type = messages.StringField(3)
-    placeholder = messages.StringField(4)
-    description = messages.StringField(5)
-    options = messages.StringField(6, repeated=True)
-    validator = messages.StringField(7)
-    autocomplete_path = messages.StringField(8)
-    default_value = messages.StringField(9)
-
-
-
 class execution_new_request(messages.Message):
     """ for execution_new() """
     user_id = messages.IntegerField(1, required=True)
@@ -38,7 +25,7 @@ class execution_new_request(messages.Message):
 
 class execution_new_response(messages.Message):
     """ for execution_new() """
-    inputs_required = messages.MessageField(user_input, 1, repeated=True)
+    inputs_required = messages.StringField(2, required=True)
 
 
 
@@ -69,7 +56,7 @@ class execution_resume_response(messages.Message):
     execution_id = messages.StringField(1, required=False)
     workflow_step = messages.StringField(2, repeated=True)
     user_message = messages.StringField(3, repeated=True)
-    inputs_required = messages.MessageField(user_input, 4, repeated=True)
+    inputs_required = messages.StringField(4, required=True)
 
 
 
