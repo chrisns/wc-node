@@ -39,7 +39,9 @@
     "karma-jasmine": "~0.1.5",
     "karma-phantomjs-launcher": "0.1.2",
     "grunt-jsonlint": "~1.0.4",
-    "grunt-json-schema": "~0.4.0"
+    "grunt-json-schema": "~0.4.0",
+    "grunt-nose": "~0.4.0",
+    "grunt-notify": "~0.3.0"
   },
   "engines": {
     "node": ">=0.8.0"

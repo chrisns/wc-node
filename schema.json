@@ -2,6 +2,18 @@
   "title": "Input response",
   "type": "object",
   "properties": {
+    "sid": {
+      "type": "string",
+      "title": "Sid!",
+      "description": "who is sid",
+      "minLength": 4
+    },
+    "mildrid": {
+      "type": "string",
+      "title": "mildrid!",
+      "description": "who is mildrid",
+      "minLength": 4
+    },
     "name": {
       "type": "string",
       "title": "Your full name",

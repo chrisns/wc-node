@@ -2,11 +2,6 @@
 """This is for asserting some principals of how we use workflow so is a good resource to refer to if you're trying to figure why things are broken"""
 
 import sys
-sys.path.append("/Applications/GoogleAppEngineLauncher.app/Contents/Resources/GoogleAppEngine-default.bundle/Contents/Resources/google_appengine")
-sys.path.append("/home/new-user/Downloads/cns/google_appengine")
-sys.path.append("/opt/jenkins/google_appengine")
-import dev_appserver
-dev_appserver.fix_sys_path()
 
 sys.path.append("./remotes/SpiffWorkflow")
 sys.path.append("./remotes/gvgen")
@@ -27,7 +22,7 @@ from TestWorkflowSpec import TestWorkflowSpec
 
 
 class WorkflowFunctionalTests(unittest.TestCase):
-    """do some basic functional tests on the workflow to prove our assumptions on how it works"""
+
     def setUp(self):
         self.spec = TestWorkflowSpec()
         self.workflow = Workflow(self.spec)
@@ -50,7 +45,8 @@ class WorkflowFunctionalTests(unittest.TestCase):
         self.assertIn('face', json_serialized_spec)
         self.assertIn('mildrid', json_serialized_spec)
 
-        json_deserialized_spec = JSONSerializer().deserialize_workflow_spec(json_serialized_spec)
+        json_deserialized_spec = JSONSerializer().deserialize_workflow_spec(
+            json_serialized_spec)
         self.assertTrue(json_deserialized_spec)
 
     def test_valid_json_workflow(self):
@@ -59,24 +55,27 @@ class WorkflowFunctionalTests(unittest.TestCase):
         json_serialized_wf = self.workflow.serialize(JSONSerializer())
         self.assertTrue(json.loads(json_serialized_wf))
 
-
     def test_valid_pickle_workflow(self):
         """test the basics of the pickling serializer/deserializer on the workflow storing to ndb"""
         data = self.workflow.serialize(DictionarySerializer())
         urlsafe_key = Execution(owner=100, data=data).put().urlsafe()
         restored_data = ndb.Key(urlsafe=urlsafe_key).get().data
         self.assertEqual(data, restored_data)
-        restored_execution = DictionarySerializer().deserialize_workflow(restored_data)
-        self.assertEqual(restored_execution.get_tasks(Task.READY)[0].task_spec.name, 'Start')
+        restored_execution = DictionarySerializer(
+        ).deserialize_workflow(restored_data)
+        self.assertEqual(restored_execution.get_tasks(
+            Task.READY)[0].task_spec.name, 'Start')
 
     def test_simple_workflow_flight(self):
         """test a flight through the workflow"""
         # check we have a start
-        self.assertEqual(self.workflow.get_tasks(Task.READY)[0].task_spec.name, 'Start')
+        self.assertEqual(self.workflow.get_tasks(
+            Task.READY)[0].task_spec.name, 'Start')
         # move past the start
         self.workflow.complete_all()
 
-        # check we have our task named correctly and with the inputs we want in the workflow
+        # check we have our task named correctly and with the inputs we want in
+        # the workflow
         my_task = self.workflow._get_waiting_tasks()[0]
         self.assertEqual(my_task.task_spec.name, 'task_a1')
         self.assertIsInstance(my_task.task_spec, UserInput)
@@ -88,14 +87,15 @@ class WorkflowFunctionalTests(unittest.TestCase):
         # check we are still waiting on the input after trying to proceed
         my_task = self.workflow._get_waiting_tasks()[0]
         self.assertEqual(my_task.task_spec.name, 'task_a1')
-        self.assertEqual(my_task.task_spec.args, ['name', 'face', 'nose', 'pets'])
+        self.assertEqual(
+            my_task.task_spec.args, ['name', 'face', 'nose', 'pets'])
         self.assertIsInstance(my_task.task_spec, UserInput)
         self.assertEqual(my_task._state, Task.WAITING)
         # set some data
         dummy_data = {
-          'nose':  3,
-          'face': 'false',
-          'name': 'hello'
+            'nose': 3,
+            'face': 'false',
+            'name': 'hello'
         }
         self.assertIsNone(my_task.set_data(**dummy_data))
         self.assertEqual(my_task.get_data('nose'), 3)
@@ -104,17 +104,19 @@ class WorkflowFunctionalTests(unittest.TestCase):
 
         self.workflow.complete_all()
 
-        # check we are still waiting on the input after trying to proceed with partial info
+        # check we are still waiting on the input after trying to proceed with
+        # partial info
         my_task = self.workflow._get_waiting_tasks()[0]
         self.assertEqual(my_task.task_spec.name, 'task_a1')
         self.assertIsInstance(my_task.task_spec, UserInput)
         self.assertEqual(my_task._state, Task.WAITING)
 
-        self.assertIsNone(my_task.set_data(**{'pets' : 'ha'}))
+        self.assertIsNone(my_task.set_data(**{'pets': 'ha'}))
         self.assertEqual(my_task.get_data('pets'), 'ha')
         self.workflow.complete_all()
 
-        # check that the now waiting task has moved on to the next thing in the workflow
+        # check that the now waiting task has moved on to the next thing in the
+        # workflow
         my_task = self.workflow._get_waiting_tasks()[0]
         self.assertEqual(my_task.task_spec.name, 'task_a2')
         self.assertIsInstance(my_task.task_spec, UserInput)
@@ -126,14 +128,17 @@ class WorkflowFunctionalTests(unittest.TestCase):
         self.assertEqual(my_task.get_data('name'), 'hello')
         self.assertEqual(my_task.get_data('pets'), 'ha')
 
-        # check that an exclusive choice will listen to the data given above it and choose the non-default option
-        self.assertEqual(self.workflow.get_tasks_from_spec_name('task_b1')[0]._state, Task.LIKELY)
-        self.assertEqual(self.workflow.get_tasks_from_spec_name('task_b2')[0]._state, Task.MAYBE)
-        self.assertIsNone(my_task.set_data(**{'sid' : 'ha', "mildrid" : "va"}))
+        # check that an exclusive choice will listen to the data given above it
+        # and choose the non-default option
+        self.assertEqual(
+            self.workflow.get_tasks_from_spec_name('task_b1')[0]._state, Task.LIKELY)
+        self.assertEqual(
+            self.workflow.get_tasks_from_spec_name('task_b2')[0]._state, Task.MAYBE)
+        self.assertIsNone(my_task.set_data(**{'sid': 'ha', "mildrid": "va"}))
         self.workflow.complete_all()
-        self.assertEqual(self.workflow.get_tasks_from_spec_name('task_b2')[0]._state, Task.COMPLETED)
+        self.assertEqual(self.workflow.get_tasks_from_spec_name(
+            'task_b2')[0]._state, Task.COMPLETED)
         self.assertEqual(self.workflow.get_tasks_from_spec_name('task_b1'), [])
-
 
         self.assertTrue(self.workflow.is_completed())
 

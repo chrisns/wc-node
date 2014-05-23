@@ -1,22 +1,17 @@
 #!/usr/bin/env python
 """REST api - this is the only python entry point for the app"""
 import sys
-sys.path.append("/Applications/GoogleAppEngineLauncher.app/Contents/Resources/GoogleAppEngine-default.bundle/Contents/Resources/google_appengine")
-sys.path.append("/Applications/GoogleAppEngineLauncher.app/Contents/Resources/GoogleAppEngine-default.bundle/Contents/Resources/google_appengine/lib/endpoints-1.0")
-sys.path.append("remotes/endpoints-proto-datastore")
 sys.path.append("remotes/SpiffWorkflow")
 sys.path.append("remotes/jsonschema")
-sys.path.append("./remotes/gvgen")
+sys.path.append("remotes/gvgen")
 
 from google.appengine.ext import ndb
 import endpoints
 
-# from endpoints_proto_datastore.ndb import EndpointsModel
 from protorpc import message_types
 from protorpc import remote
 from SpiffWorkflow import *
 # import logging
-# import httplib
 import urllib2
 import json
 from SpiffWorkflow.operators import *
@@ -25,7 +20,8 @@ from SpiffWorkflow.storage import DictionarySerializer
 from SpiffWorkflow.Task import *
 from WorkflowSpecs import *
 from models import *
-import random, string
+import random
+import string
 from jsonschema.validators import Draft4Validator
 from jsonschema.exceptions import best_match
 
@@ -55,8 +51,8 @@ IOS_CLIENT_ID = 'replace this with your iOS client ID'
 #     date = ndb.DateTimeProperty(auto_now_add=True)
 #     owner = ndb.UserProperty()
 #     def to_message(self):
-#     #   # Use datastore ID as ID for the Entry-Message
-#     #   # Convert date to String for JSON output
+# Use datastore ID as ID for the Entry-Message
+# Convert date to String for JSON output
 #       return ExecutionMessage(
 #                    name=self.name,
 #                    date=self.date.strftime("%Y-%m-%dT%H:%M:%S"))
@@ -72,18 +68,19 @@ IOS_CLIENT_ID = 'replace this with your iOS client ID'
 #     items = messages.MessageField(ExecutionMessage, 1, repeated=True)
 
 
-
 def check_authentication(request):
     """ check authentication of incoming request against facebook oauth entry point """
     try:
         if (json.load(urllib2.urlopen('https://graph.facebook.com/me?fields=id&access_token=' + request.token))['id']) != request.user_id:
-            raise endpoints.UnauthorizedException('Invalid user_id or access_token')
+            raise endpoints.UnauthorizedException(
+                'Invalid user_id or access_token')
     except ValueError:
         raise endpoints.UnauthorizedException('Invalid user_id or access_token')
     if hasattr(request, 'execution_id') and request.execution_id is not None:
         if ndb.Key(urlsafe=request.execution_id).get().owner != request.user_id:
             raise endpoints.UnauthorizedException('Incorrect Owner')
-       
+
+
 def get_filtered_schema(execution):
     """ returns required inputs given an execution """
     inputs_required = dict()
@@ -92,13 +89,16 @@ def get_filtered_schema(execution):
         if isinstance(waiting_task.task_spec, UserInput):
             for input_required in waiting_task.task_spec.args:
                 if input_required in inputs_matrix:
-                    inputs_required[input_required] = inputs_matrix[input_required]
+                    inputs_required[
+                        input_required] = inputs_matrix[input_required]
                 else:
-                    raise Exception('Unmapped workflow step', input_required)
+                    raise Exception('Unmapped input', input_required)
     return inputs_required
+
 
 def get_schema():
     return json.loads(open("schema.json", "r").read())
+
 
 def get_tasks_required(execution):
     """ returns required tasks given an execution """
@@ -108,6 +108,7 @@ def get_tasks_required(execution):
             tasks_waiting.append(waiting_task.task_spec.name)
     return tasks_waiting
 
+
 def get_execution_new():
     """ returns a new execution """
     spec_file = get_workflow_spec_file_handler().read()
@@ -116,42 +117,46 @@ def get_execution_new():
     execution.complete_all()
     return execution
 
+
 def get_workflow_spec_file_handler():
     return open("Workflow.json", "r")
 
+
 @endpoints.api(name='wc',
-            version='v1',
-            allowed_client_ids=[WEB_CLIENT_ID, ANDROID_CLIENT_ID, IOS_CLIENT_ID, endpoints.API_EXPLORER_CLIENT_ID],
-            audiences=[WEB_CLIENT_ID, endpoints.API_EXPLORER_CLIENT_ID])
+               version='v1',
+               allowed_client_ids=[
+               WEB_CLIENT_ID, ANDROID_CLIENT_ID, IOS_CLIENT_ID, endpoints.API_EXPLORER_CLIENT_ID],
+               audiences=[WEB_CLIENT_ID, endpoints.API_EXPLORER_CLIENT_ID])
 class WCApi(remote.Service):
+
     """ API definition """
 
     @endpoints.method(execution_list_request, execution_list_response,
-                    name='execution.list', path='execution/list', http_method='POST')
+                      name='execution.list', path='execution/list', http_method='POST')
     def execution_list(self, request):
         """ List workflow executions """
         check_authentication(request)
         query = Execution.query(Execution.owner == 1234)
         response = execution_list_response()
         for key in query.iter(keys_only=True):
-            response.executions.append(execution_list_summary_response(execution_id=key.urlsafe()))
+            response.executions.append(
+                execution_list_summary_response(execution_id=key.urlsafe()))
         return response
 
     @endpoints.method(execution_new_request, execution_new_response,
-                    name='execution.new', path='execution/new', http_method='POST')
+                      name='execution.new', path='execution/new', http_method='POST')
     def execution_new(self, request):
         """ Returns the first inputs required from workflow """
         check_authentication(request)
 
         execution = get_execution_new()
         inputs_required = get_filtered_schema(execution)
-        print inputs_required
         return execution_new_response(
-            inputs_required=json.dumps(inputs_required), 
+            inputs_required=json.dumps(inputs_required),
         )
 
     @endpoints.method(execution_delete_request, message_types.VoidMessage,
-                    name='execution.delete', path='execution/delete', http_method='POST')
+                      name='execution.delete', path='execution/delete', http_method='POST')
     def execution_delete(self, request):
         """ Deletes the given execution """
         check_authentication(request)
@@ -159,7 +164,7 @@ class WCApi(remote.Service):
         return message_types.VoidMessage()
 
     @endpoints.method(execution_resume_request, execution_resume_response,
-                    name='execution.resume', path='execution/resume', http_method='POST')
+                      name='execution.resume', path='execution/resume', http_method='POST')
     def execution_resume(self, request):
         """ Resume a workflow execution """
         check_authentication(request)
@@ -168,7 +173,8 @@ class WCApi(remote.Service):
             execution = get_execution_new()
         else:
             execution_object = ndb.Key(urlsafe=request.execution_id).get()
-            execution = DictionarySerializer().deserialize_workflow(execution_object.data)
+            execution = DictionarySerializer().deserialize_workflow(
+                execution_object.data)
 
         execution.complete_all()
 
@@ -178,7 +184,8 @@ class WCApi(remote.Service):
                     for response_data in request.data:
                         if response_data.key in waiting_task.task_spec.args:
                             for value in response_data.value:
-                                waiting_task.set_data(**{response_data.key : value})
+                                waiting_task.set_data(
+                                    **{response_data.key: value})
             execution.complete_all()
 
         execution_object.data = execution.serialize(DictionarySerializer())
@@ -194,7 +201,7 @@ class WCApi(remote.Service):
     #                 name='execution.submit', path='execution', http_method='POST',)
     # def execution_response(self, request):
     #     """ restore execution if one exists with given uuid else make one """
-    #     # check_authentication(request)
+    # check_authentication(request)
     #     if hasattr(request, 'execution_id'):
     #         restored_data = ndb.Key(urlsafe=request.execution_id).get()
     #         if restored_data in locals():
@@ -213,7 +220,6 @@ class WCApi(remote.Service):
     #         logging.error(waiting_task.task_spec.__class__)
     #     return Response(input_required=input_required)
 
-
     # @endpoints.method(Request, PostMessage,
     #                 name='execution.submit', path='execution', http_method='POST',)
     # def list_posts(self, request):
@@ -223,9 +229,6 @@ class WCApi(remote.Service):
     #                       path='user', name='account.get')
     # def AccountGet(self, query):
     #   return query.filter(Account.owner == endpoints.get_current_user())
-
-
-
     # @endpoints.method(message_types.VoidMessage, Greeting,
     #                   path='hellogreeting/authed', http_method='POST',
     #                   name='greetings.authed')
@@ -233,46 +236,41 @@ class WCApi(remote.Service):
     #     current_user = endpoints.get_current_user()
     #     email = (current_user.email() if current_user is not None
     #              else 'Anonymous')
-    #     # print "hihi"
-    #     # print get_current_user().user_id()
-    #     # print
-    #     # key = ndb.Key("user", email)
-    #     # print UserEntity.query_book(ancestor_key=key).fetch(20)
-    #     # return Greeting(message=UserEntity.query_book(ancestor_key=key).fetch(1))
-    #     # Account(email=endpoints.get_current_user().email(), greeting = STORED_GREETINGS.items[request.id].message).put()
-    #     # print Account(id=).get()
-    #     # print key('Account', endpoints.get_current_user().email()).get()
-    #     # account = Account.get_by_id(id=endpoints.get_current_user().email()).greeting
-    #     # print account.greeting
+    # print "hihi"
+    # print get_current_user().user_id()
+    # print
+    # key = ndb.Key("user", email)
+    # print UserEntity.query_book(ancestor_key=key).fetch(20)
+    # return Greeting(message=UserEntity.query_book(ancestor_key=key).fetch(1))
+    # Account(email=endpoints.get_current_user().email(), greeting = STORED_GREETINGS.items[request.id].message).put()
+    # print Account(id=).get()
+    # print key('Account', endpoints.get_current_user().email()).get()
+    # account = Account.get_by_id(id=endpoints.get_current_user().email()).greeting
+    # print account.greeting
     #     return Greeting(message='hello %s %s' % (email, account,))
-
-
-
     # @endpoints.method(message_types.VoidMessage, ExecutionCollection,
     #                   path='wfList', http_method='GET',
     #                   name='wf.listExecutions')
     # def list_executions(self, unused_request):#
-    #     # Account.get_by_id(id=endpoints.get_current_user().email()).greeting
-    #     # test  = Execution(owner=endpoints.get_current_user(), name='Some Name')
-    #     # test.put()
-    #     # print test
-    #     # print(Execution.query())
-    #     # return ExecutionCollection(Execution.query())
-    #     # query = Execution.query().fetch()
-    #     # print query
-
-    #     # items = [execution for execution in query.fetch()]
-    #     # print items
-    #     # items = Execution.query
-    #     # print Execution.list()
+    # Account.get_by_id(id=endpoints.get_current_user().email()).greeting
+    # test  = Execution(owner=endpoints.get_current_user(), name='Some Name')
+    # test.put()
+    # print test
+    # print(Execution.query())
+    # return ExecutionCollection(Execution.query())
+    # query = Execution.query().fetch()
+    # print query
+    # items = [execution for execution in query.fetch()]
+    # print items
+    # items = Execution.query
+    # print Execution.list()
     #     items = Execution.query_entries()
-
-    #     # items = [entity.to_message() for entity in query.fetch()]
-    #     # items = [ExecutionMessage(name=p.name, date=p.date) for p in Execution.query()]
-    #     return ExecutionCollection(items=items) 
+    # items = [entity.to_message() for entity in query.fetch()]
+    # items = [ExecutionMessage(name=p.name, date=p.date) for p in Execution.query()]
+    #     return ExecutionCollection(items=items)
     #     return STORED_GREETINGS
     @endpoints.method(message_types.VoidMessage, service_status_response,
-                    name='service_status', path='service_status', http_method='GET')
+                      name='service_status', path='service_status', http_method='GET')
     def service_status(self, request):
         """ return service status """
         from collections import namedtuple
@@ -280,25 +278,25 @@ class WCApi(remote.Service):
         try:
             if ndb.Key("execution", string.join(random.sample(string.digits, 8))).get() is None:
                 response.ndb = 1
-        except Exception:
-            pass
+        except Exception:  # pragma: no cover
+            pass  # pragma: no cover
         try:
             dummy_request_structure = namedtuple('MyStruct', 'user_id token')
             dummy_request = dummy_request_structure(user_id=1234, token='lala')
             check_authentication(dummy_request)
         except endpoints.UnauthorizedException:
-            response.fb = 1
+            response.fb = 1  # pragma: no cover
         except TypeError:
-            response.fb = 1            
-        except Exception:
-            pass
+            response.fb = 1
+        except Exception:  # pragma: no cover
+            pass  # pragma: no cover
 
         return response
 
 APPLICATION = endpoints.api_server([WCApi], restricted=False)
 
 
-## API Endpoints
+# API Endpoints
 # wfList(GET)
 # wfStart(POST)
 # wfResume(POST)
@@ -307,7 +305,7 @@ APPLICATION = endpoints.api_server([WCApi], restricted=False)
 # lookup/%type(POST)
 # storage(GET/POST/DELETE)
 
-## WF helpers
+# WF helpers
 # """
 # def messages(type, msg):
 

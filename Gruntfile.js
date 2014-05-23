@@ -17,13 +17,14 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-exec');
   grunt.loadNpmTasks('grunt-jsonlint');
   grunt.loadNpmTasks('grunt-json-schema');
-
+  grunt.loadNpmTasks('grunt-nose');
+  grunt.loadNpmTasks('grunt-notify');
 
   // Define the configuration for all the tasks
   grunt.initConfig({
 
     // Project settings
-    yeoman: {
+    yeoman: { 
       // configurable paths
       app: require('./bower.json').appPath || 'app',
       dist: 'dist'
@@ -64,7 +65,7 @@ module.exports = function (grunt) {
       },
       python: {
         files: ['*.py', 'models/*.py', 'tests/**/*.py'],
-        tasks: ['exec:pythonTests']
+        tasks: ['nose']
       },
       wf: {
         files: ['workflow.py'],
@@ -72,16 +73,34 @@ module.exports = function (grunt) {
       },
       schema: {
         files:['schema.json'],
-        tasks:['jsonlint:schema', 'json_schema', 'exec:pythonTests']
+        tasks:['jsonlint:schema', 'json_schema', 'nose']
       }
     },
-
+    nose: {
+      options: {
+        // Task-specific options go here.
+        with_coverage: true,
+        // cover_xml: true,
+        // cover_inclusive: true,
+        // coverage_html: true,
+        // coverage_html_dir: 'code_coverage',
+        cover_min_percentage: 90,
+        verbose: true,
+        with_gae: true,
+        cover_tests: true,
+        cover_xml_file: '.coverage',
+        // gae_lib_route: ' --gae-lib-route=../google_appengine',
+        without_sandbox: true,
+        // with_doctest: true,
+        with_xunit: true
+      },
+      main: {
+        // Target-specific file lists and/or options go here.
+      },
+    },
     exec: {
       regenWorkflow: {
         cmd: 'python workflow.py'
-      },
-      pythonTests: {
-        cmd: 'python -m unittest discover . \'*_test.py\' -v'
       }
     },
     jsonlint: {
@@ -403,7 +422,7 @@ module.exports = function (grunt) {
     'autoprefixer',
     'connect:test',
     // 'karma',
-    'exec:pythonTests'
+    'nose'
   ]);
 
   grunt.registerTask('build', [

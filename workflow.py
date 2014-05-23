@@ -11,13 +11,15 @@ from SpiffWorkflow.operators import *
 from SpiffWorkflow.storage import dotVisualizer
 from SpiffWorkflow.storage import JSONSerializer
 
+
 class MyWorkflowSpec(WorkflowSpec):
-    """Workflow definition"""
+
     def __init__(self):
         WorkflowSpec.__init__(self)
         # Build one branch.
         # a1 = Simple(self, 'task_a1')
-        input_1 = UserInput(self, 'task_a1', args=["name", "face", "nose", "pets"])
+        input_1 = UserInput(
+            self, 'task_a1', args=["name", "face", "nose", "pets"])
         # a1 = Evaluate(self, 'print', args=["helloworld", ["hi there"]])
         self.start.connect(input_1)
 
@@ -45,7 +47,8 @@ class MyWorkflowSpec(WorkflowSpec):
         excl_choice_1.connect(task_c1)
 
         task_c2 = Simple(self, 'task_c2')
-        cond = Equal(Attrib('test_attributtask_e1'), Attrib('test_attributtask_e2'))
+        cond = Equal(
+            Attrib('test_attributtask_e1'), Attrib('test_attributtask_e2'))
         excl_choice_1.connect_if(cond, task_c2)
 
         task_c3 = Simple(self, 'task_c3')
@@ -64,7 +67,8 @@ class MyWorkflowSpec(WorkflowSpec):
         excl_choice_2.connect_if(cond, task_d2)
 
         task_d3 = Simple(self, 'task_d3')
-        cond = Equal(Attrib('test_attributtask_e1'), Attrib('test_attributtask_e1'))
+        cond = Equal(
+            Attrib('test_attributtask_e1'), Attrib('test_attributtask_e1'))
         excl_choice_2.connect_if(cond, task_d3)
 
         # If-condition that does not match.
@@ -77,11 +81,13 @@ class MyWorkflowSpec(WorkflowSpec):
         multichoice.connect_if(cond, task_e1)
 
         task_e2 = Simple(self, 'task_e2')
-        cond = Equal(Attrib('test_attributtask_e1'), Attrib('test_attributtask_e2'))
+        cond = Equal(
+            Attrib('test_attributtask_e1'), Attrib('test_attributtask_e2'))
         multichoice.connect_if(cond, task_e2)
 
         task_e3 = Simple(self, 'task_e3')
-        cond = Equal(Attrib('test_attributtask_e2'), Attrib('test_attributtask_e2'))
+        cond = Equal(
+            Attrib('test_attributtask_e2'), Attrib('test_attributtask_e2'))
         multichoice.connect_if(cond, task_e3)
 
         # StructuredSynchronizingMerge
@@ -146,4 +152,3 @@ open("Workflow.dot", "w").write(WORKFLOWSPEC.serialize(dotVisualizer()))
 
 print "outputting workflow to Workflow.JSON"
 open("Workflow.json", "w").write(WORKFLOWSPEC.serialize(JSONSerializer()))
-

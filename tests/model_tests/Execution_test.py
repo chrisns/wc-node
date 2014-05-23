@@ -3,9 +3,8 @@
 Probably a good resource for seeing how to access a stored execution"""
 
 import sys
-sys.path.insert(0, "/Applications/GoogleAppEngineLauncher.app/Contents/Resources/GoogleAppEngine-default.bundle/Contents/Resources/google_appengine")
-import dev_appserver
-dev_appserver.fix_sys_path()
+sys.path.append("./remotes/SpiffWorkflow")
+sys.path.append("./remotes/gvgen")
 
 import unittest
 from google.appengine.ext import testbed
@@ -14,8 +13,9 @@ from google.appengine.ext import ndb
 
 from models import Execution
 
+
 class ExecutionTests(unittest.TestCase):
-    """Test we can store stuff in an Execution"""
+
     def setUp(self):
         self.testbed = testbed.Testbed()
         self.testbed.activate()
@@ -38,7 +38,7 @@ class ExecutionTests(unittest.TestCase):
         """ check we generate urlsafe keys from executions """
         urlsafe_key = Execution(owner=100).put().urlsafe()
         self.assertIsInstance(urlsafe_key, str)
-        self.assertEqual(len(urlsafe_key), 42)
+        self.assertEqual(len(urlsafe_key), 34)
 
     def test_execution_can_load(self):
         """ check we can load executions back """
@@ -83,4 +83,3 @@ class ExecutionTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-
