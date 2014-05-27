@@ -28,8 +28,8 @@ INSTALLED_APPS = (
     # 'snippets',
     # djangoappengine should come last, so it can override a few manage.py
     # commands
+    'appengine_toolkit',
     'djangoappengine',
-    # 'appengine_toolkit',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -71,3 +71,13 @@ NOSE_ARGS = [
     '--with-coverage',
     '--cover-package=project,executions',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+        'rest_framework.renderers.JSONPRenderer',
+        'rest_framework.renderers.MultiPartRenderer',
+        'rest_framework.renderers.XMLRenderer',
+    )
+}

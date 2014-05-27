@@ -7,6 +7,5 @@ class ExecutionSerializer(serializers.HyperlinkedModelSerializer):
     # owner = serializers.Field()
 
     class Meta:
-        model = Execution
         fields = ('url', 'owner',
                   'data', )
