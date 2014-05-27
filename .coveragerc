@@ -8,3 +8,5 @@ omit = */google_appengine/*
        */usr/lib/*
        */usr/share/*
        */usr/local/*
+       */Library/Python/*
+       */System/Library/Frameworks/Python.framework/*
