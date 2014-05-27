@@ -75,7 +75,8 @@ def check_authentication(request):
             raise endpoints.UnauthorizedException(
                 'Invalid user_id or access_token')
     except ValueError:
-        raise endpoints.UnauthorizedException('Invalid user_id or access_token')
+        raise endpoints.UnauthorizedException(
+            'Invalid user_id or access_token')
     if hasattr(request, 'execution_id') and request.execution_id is not None:
         if ndb.Key(urlsafe=request.execution_id).get().owner != request.user_id:
             raise endpoints.UnauthorizedException('Incorrect Owner')
@@ -97,6 +98,7 @@ def get_filtered_schema(execution):
 
 
 def get_schema():
+    """ get the json schema """
     return json.loads(open("schema.json", "r").read())
 
 
@@ -119,6 +121,7 @@ def get_execution_new():
 
 
 def get_workflow_spec_file_handler():
+    """ get the workflow spec """
     return open("Workflow.json", "r")
 
 
@@ -278,6 +281,8 @@ class WCApi(remote.Service):
         try:
             if ndb.Key("execution", string.join(random.sample(string.digits, 8))).get() is None:
                 response.ndb = 1
+        except TypeError:  # pragma: no cover
+            pass  # pragma: no cover
         except Exception:  # pragma: no cover
             pass  # pragma: no cover
         try:

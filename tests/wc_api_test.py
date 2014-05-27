@@ -93,8 +93,9 @@ class TestApiTests(unittest.TestCase):
         self.assertNotEqual(len(actual), 0)
 
     def test_execution_delete(self):
+        """ test deleting an execution """
         key = Execution(owner=1234).put().urlsafe()
-        resp = self.api(method='execution_delete',
+        self.api(method='execution_delete',
                         auth_required=True, args={'execution_id': key})
         self.assertIsNone(ndb.Key(urlsafe=key).get())
 
@@ -115,7 +116,7 @@ class TestApiTests(unittest.TestCase):
         }]
         resp = self.api(method='execution_resume',
                         auth_required=True, args={'data': data})
-        # print resp
+        print resp
 
     def test_service_status(self):
         """ check that we can resume an execution"""
