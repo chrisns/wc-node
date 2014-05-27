@@ -9,3 +9,5 @@ app/bower_components
 /coverage.xml
 /nosetests.xml
 /.coverage
+env
+gaenv

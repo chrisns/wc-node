@@ -3,7 +3,8 @@
 branch = True
 
 omit = */google_appengine/*
-       */remotes/*
+       */gaenv/*
+       */env/*
        */usr/lib/*
        */usr/share/*
        */usr/local/*

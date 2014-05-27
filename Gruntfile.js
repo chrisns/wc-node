@@ -64,12 +64,16 @@ module.exports = function (grunt) {
         ]
       },
       python: {
-        files: ['*.py', 'models/*.py', 'tests/**/*.py'],
+        files: ['*.py', 'models/*.py', 'tests/**/*.py', 'executions/**/*.py', 'project/**/*.py'],
         tasks: ['nose']
       },
       wf: {
         files: ['workflow.py'],
         tasks: ['exec:regenWorkflow', 'jsonlint:workflow']
+      },
+      pyrequirements: {
+        files: ['requirements.txt'],
+        tasks: ['exec:pythonDependencies']
       },
       schema: {
         files:['schema.json'],
@@ -99,6 +103,9 @@ module.exports = function (grunt) {
       },
     },
     exec: {
+      pythonDependencies: {
+        cmd: 'bash -c "virtualenv env && source env/bin/activate && pip install -r requirements.txt ; env/bin/linkenv env/lib/python2.7/site-packages gaenv && deactivate"'
+      },
       regenWorkflow: {
         cmd: 'python workflow.py'
       }
