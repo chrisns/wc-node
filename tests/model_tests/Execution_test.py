@@ -38,7 +38,7 @@ class ExecutionTests(unittest.TestCase):
         """ check we generate urlsafe keys from executions """
         urlsafe_key = Execution(owner=100).put().urlsafe()
         self.assertIsInstance(urlsafe_key, str)
-        self.assertEqual(len(urlsafe_key), 34)
+        self.assertEqual(len(urlsafe_key), 39)
 
     def test_execution_can_load(self):
         """ check we can load executions back """

@@ -26,6 +26,4 @@ ingest bpmn modelled workflow
 use json-schema in python with https://github.com/Julian/jsonschema/ in BE
 implement https://github.com/jdorn/json-editor in frontend
 
-python code coverage output from unit tests
-
 move away from rpc

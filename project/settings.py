@@ -24,6 +24,7 @@ INSTALLED_APPS = (
     'djangotoolbox',
     'autoload',
     'dbindexer',
+    'django_nose',
     # 'snippets',
     # djangoappengine should come last, so it can override a few manage.py
     # commands
@@ -61,3 +62,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 APPENGINE_TOOLKIT = {
     'APP_YAML': os.path.join(BASE_DIR, 'app.yaml'),
 }
+
+# Use nose to run all tests
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+
+# Tell nose to measure coverage on the 'foo' and 'bar' apps
+NOSE_ARGS = [
+    '--with-coverage',
+    '--cover-package=project,executions',
+]
