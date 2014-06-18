@@ -73,7 +73,7 @@ module.exports = function (grunt) {
       },
       pyrequirements: {
         files: ['requirements.txt'],
-        tasks: ['exec:pythonDependencies']
+        tasks: ['clean:python', 'exec:pythonDependencies', 'nose']
       },
       schema: {
         files:['schema.json'],
@@ -85,6 +85,7 @@ module.exports = function (grunt) {
         // Task-specific options go here.
         with_coverage: true,
         // cover_xml: true,
+        virtualenv: 'env',
         // cover_inclusive: true,
         // coverage_html: true,
         // coverage_html_dir: 'code_coverage',
@@ -95,7 +96,7 @@ module.exports = function (grunt) {
         cover_xml_file: '.coverage',
         // gae_lib_route: ' --gae-lib-route=../google_appengine',
         without_sandbox: true,
-        // with_doctest: true,
+        with_doctest: true,
         with_xunit: true
       },
       main: {
@@ -104,7 +105,7 @@ module.exports = function (grunt) {
     },
     exec: {
       pythonDependencies: {
-        cmd: 'bash -c "virtualenv env && source env/bin/activate && pip install -r requirements.txt ; env/bin/linkenv env/lib/python2.7/site-packages gaenv && deactivate"'
+        cmd: ' bash -c "virtualenv env && source env/bin/activate && ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future pip install -r requirements.txt && env/bin/linkenv env/lib/python2.7/site-packages gaenv && deactivate"'
       },
       regenWorkflow: {
         cmd: 'python workflow.py'
@@ -180,6 +181,10 @@ module.exports = function (grunt) {
 
     // Empties folders to start fresh
     clean: {
+      python: [
+        'gaenv',
+        'env'
+      ],
       dist: {
         files: [{
           dot: true,
