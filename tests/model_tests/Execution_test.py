@@ -11,7 +11,7 @@ from google.appengine.ext import testbed
 from google.appengine.ext import ndb
 
 
-from models import Execution
+from models.Execution import Execution
 
 
 class ExecutionTests(unittest.TestCase):

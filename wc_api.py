@@ -18,8 +18,9 @@ from SpiffWorkflow.operators import *
 from SpiffWorkflow.storage import JSONSerializer
 from SpiffWorkflow.storage import DictionarySerializer
 from SpiffWorkflow.Task import *
-from WorkflowSpecs import *
-from models import *
+from WorkflowSpecs.UserInput import UserInput
+from models.Execution import Execution
+from models.api_requests_and_responses import *
 import random
 import string
 from jsonschema.validators import Draft4Validator

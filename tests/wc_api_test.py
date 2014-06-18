@@ -5,11 +5,10 @@ import sys
 sys.path.append("./remotes/SpiffWorkflow")
 sys.path.append("./remotes/gvgen")
 
-from models import Execution
+from models.Execution import Execution
 from google.appengine.ext import testbed
 from google.appengine.ext import ndb
 from SpiffWorkflow.specs import *
-from WorkflowSpecs import *
 from SpiffWorkflow.operators import *
 from SpiffWorkflow.storage import JSONSerializer
 from SpiffWorkflow.Task import *

@@ -6,7 +6,7 @@ sys.path.append("remotes/SpiffWorkflow")
 sys.path.append("remotes/gvgen")
 
 from SpiffWorkflow.specs import *
-from WorkflowSpecs import *
+from WorkflowSpecs.UserInput import UserInput
 from SpiffWorkflow.operators import *
 from SpiffWorkflow.storage import dotVisualizer
 from SpiffWorkflow.storage import JSONSerializer

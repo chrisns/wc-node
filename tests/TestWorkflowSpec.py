@@ -1,7 +1,7 @@
 from SpiffWorkflow.specs import *
-from WorkflowSpecs import *
 from SpiffWorkflow.operators import *
 from SpiffWorkflow.Task import *
+from WorkflowSpecs.UserInput import UserInput
 
 
 class TestWorkflowSpec(WorkflowSpec):

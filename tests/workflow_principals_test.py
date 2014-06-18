@@ -5,13 +5,13 @@ import sys
 
 sys.path.append("./remotes/SpiffWorkflow")
 sys.path.append("./remotes/gvgen")
-from models import Execution
+from models.Execution import Execution
 
 from google.appengine.ext import testbed
 from google.appengine.ext import ndb
 from SpiffWorkflow import Workflow
 from SpiffWorkflow.specs import *
-from WorkflowSpecs import *
+from WorkflowSpecs.UserInput import UserInput
 from SpiffWorkflow.operators import *
 from SpiffWorkflow.storage import JSONSerializer
 from SpiffWorkflow.storage import DictionarySerializer
@@ -21,7 +21,7 @@ import json
 from TestWorkflowSpec import TestWorkflowSpec
 
 
-class WorkflowFunctionalTests(unittest.TestCase):
+class TestWorkflowFunctionalTests(unittest.TestCase):
 
     def setUp(self):
         self.spec = TestWorkflowSpec()
