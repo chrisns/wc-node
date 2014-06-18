@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 """REST api - this is the only python entry point for the app"""
-import sys
-sys.path.append("remotes/SpiffWorkflow")
-sys.path.append("remotes/jsonschema")
-sys.path.append("remotes/gvgen")
+
 
 from google.appengine.ext import ndb
 import endpoints

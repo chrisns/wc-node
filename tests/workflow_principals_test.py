@@ -1,10 +1,6 @@
 #!/usr/bin/env python
 """This is for asserting some principals of how we use workflow so is a good resource to refer to if you're trying to figure why things are broken"""
 
-import sys
-
-sys.path.append("./remotes/SpiffWorkflow")
-sys.path.append("./remotes/gvgen")
 from models.Execution import Execution
 
 from google.appengine.ext import testbed
@@ -18,7 +14,7 @@ from SpiffWorkflow.storage import DictionarySerializer
 from SpiffWorkflow.Task import *
 import unittest
 import json
-from TestWorkflowSpec import TestWorkflowSpec
+from tests.TestWorkflowSpec import TestWorkflowSpec
 
 
 class TestWorkflowFunctionalTests(unittest.TestCase):

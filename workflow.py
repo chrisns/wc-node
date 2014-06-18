@@ -1,10 +1,6 @@
 #!/usr/bin/env python
 """Workflow definition, not executed at runtime so needs to be done at build to generate json spec file"""
 
-import sys
-sys.path.append("remotes/SpiffWorkflow")
-sys.path.append("remotes/gvgen")
-
 from SpiffWorkflow.specs import *
 from WorkflowSpecs.UserInput import UserInput
 from SpiffWorkflow.operators import *
@@ -132,7 +128,8 @@ class MyWorkflowSpec(WorkflowSpec):
         multi_instance_1.connect(task_g2)
 
         # StructuredSynchronizingMerge
-        syncmergtask_e2 = Join(self, 'struct_synch_merge_2', 'multi_instance_1')
+        syncmergtask_e2 = Join(
+            self, 'struct_synch_merge_2', 'multi_instance_1')
         task_g1.connect(syncmergtask_e2)
         task_g2.connect(syncmergtask_e2)
 

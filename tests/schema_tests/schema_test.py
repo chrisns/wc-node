@@ -1,5 +1,3 @@
-import sys
-sys.path.append("remotes/jsonschema")
 import jsonschema
 import unittest
 import wc_api

@@ -2,10 +2,6 @@
 """Execution model test
 Probably a good resource for seeing how to access a stored execution"""
 
-import sys
-sys.path.append("./remotes/SpiffWorkflow")
-sys.path.append("./remotes/gvgen")
-
 import unittest
 from google.appengine.ext import testbed
 from google.appengine.ext import ndb

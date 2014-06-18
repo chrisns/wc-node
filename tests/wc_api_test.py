@@ -1,10 +1,6 @@
 #!/usr/bin/env python
 """This is for asserting some principals of how we use workflow so is a good resource to refer to if you're trying to figure why things are broken"""
 
-import sys
-sys.path.append("./remotes/SpiffWorkflow")
-sys.path.append("./remotes/gvgen")
-
 from models.Execution import Execution
 from google.appengine.ext import testbed
 from google.appengine.ext import ndb
@@ -21,9 +17,9 @@ import webtest
 import wc_api
 from mock import patch, Mock
 
-from TestWorkflowSpec import TestWorkflowSpec
+from tests.TestWorkflowSpec import TestWorkflowSpec
 import pprint
-pp = pprint.PrettyPrinter(indent=2)
+pprint.PrettyPrinter(indent=2)
 
 
 class TestApiTests(unittest.TestCase):
