@@ -1,14 +1,7 @@
-git+http://github.com/django-nonrel/djangotoolbox@toolbox-1.4
+-e git+http://github.com/chrisns/SpiffWorkflow#egg=SpiffWorkflow
+-e git+http://github.com/chrisns/gvgen#egg=gvgen
+-e git+http://github.com/ze-phyr-us/linkenv#egg=linkenv
 
-git+http://github.com/django-nonrel/djangoappengine@appengine-1.4
-
-git+http://github.com/django-nonrel/django-dbindexer@dbindexer-1.4
-
-git+http://github.com/django-nonrel/django@nonrel-1.4
-
-hg+http://bitbucket.org/twanschik/django-autoload
-git+http://github.com/chrisns/SpiffWorkflow
-git+http://github.com/chrisns/gvgen
 GoogleAppEngineCloudStorageClient==1.9.0.0
 
 Markdown==2.4.1
@@ -22,11 +15,6 @@ astroid==1.1.1
 beautifulsoup4==4.3.2
 coverage==3.7.1
 defusedxml==0.4.1
-django-appengine-toolkit==0.2.1
-django-filter==0.7
-django-guardian==1.2.0
-djangorestframework==2.3.13
-git+https://github.com/ze-phyr-us/linkenv.git
 logilab-common==0.61.0
 mock==1.0.1
 nose==1.3.3
@@ -35,5 +23,4 @@ six==1.6.1
 waitress==0.8.9
 wsgiref==0.1.2
 jsonschema==2.3.0
-django-picklefield==0.3.1
-django-nose==1.2
+Pillow==2.4.0
