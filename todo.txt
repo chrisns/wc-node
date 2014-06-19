@@ -10,7 +10,7 @@ return current list of required inputs
   list stored executions that belong to user
 
 
--- service status page that queries all gae services we use and facebook to test and show where there may be an issue
+service status page that queries all gae services we use and facebook to test and show where there may be an issue
 
 ga event for each workflow step processed in FE
 
@@ -26,6 +26,8 @@ ingest bpmn modelled workflow
 use json-schema in python with https://github.com/Julian/jsonschema/ in BE
 implement https://github.com/jdorn/json-editor in frontend
 
-python code coverage output from unit tests
-
 move away from rpc
+
+make facebook auth module and depend on it
+
+remove all django and google endpoints code
