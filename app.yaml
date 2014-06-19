@@ -36,6 +36,8 @@ handlers:
 - url: /_ah/spi/.*
   script: wc_api.APPLICATION
 
+- url: /api.*  # This regex directs all routes to main.app
+  script: main.app
 
 
 # Third party libraries that are included in the App Engine SDK must be listed
