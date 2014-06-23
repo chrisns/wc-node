@@ -30,42 +30,6 @@ ANDROID_CLIENT_ID = 'replace this with your Android client ID'
 IOS_CLIENT_ID = 'replace this with your iOS client ID'
 
 
-# class Execution(ndb.Expando):
-#     """Models an individual execution"""
-#     owner = ndb.IntegerProperty(12, required=True)
-
-
-# class Account(EndpointsModel):
-    # _message_fields_schema = ('title', 'forename', 'surname')
-    # owner    = ndb.UserProperty()
-    # title    = ndb.StringProperty()
-    # forename = ndb.StringProperty()
-    # surname  = ndb.StringProperty()
-    # created  = ndb.DateTimeProperty(auto_now_add=True)
-    # updated  = ndb.DateTimeProperty(auto_now=True)
-
-
-# class Execution(ndb.Expando):
-#     date = ndb.DateTimeProperty(auto_now_add=True)
-#     owner = ndb.UserProperty()
-#     def to_message(self):
-# Use datastore ID as ID for the Entry-Message
-# Convert date to String for JSON output
-#       return ExecutionMessage(
-#                    name=self.name,
-#                    date=self.date.strftime("%Y-%m-%dT%H:%M:%S"))
-#     @classmethod
-#     def query_entries(cls):
-#         return cls.query()
-
-# class ExecutionMessage(messages.Message):
-#     name = messages.StringField(1, required=True)
-#     date = messages.DateTimeField(2)
-
-# class ExecutionCollection(messages.Message):
-#     items = messages.MessageField(ExecutionMessage, 1, repeated=True)
-
-
 def check_authentication(request):
     """ check authentication of incoming request against facebook oauth entry point """
     try:
@@ -198,78 +162,6 @@ class WCApi(remote.Service):
             execution_id=urlsafe_key
         )
 
-    # @endpoints.method(message_types.VoidMessage, Response,
-    #                 name='execution.submit', path='execution', http_method='POST',)
-    # def execution_response(self, request):
-    #     """ restore execution if one exists with given uuid else make one """
-    # check_authentication(request)
-    #     if hasattr(request, 'execution_id'):
-    #         restored_data = ndb.Key(urlsafe=request.execution_id).get()
-    #         if restored_data in locals():
-    #             execution = DictionarySerializer().deserialize_workflow(restored_data.data)
-    #     else:
-    #         spec_file = open("Workflow.json", "r").read()
-    #         spec = JSONSerializer().deserialize_workflow_spec(spec_file)
-
-    #         execution = Workflow(spec)
-
-    #     execution.complete_all()
-    #     input_required = []
-    #     for waiting_task in execution._get_waiting_tasks():
-    #         if isinstance(waiting_task.task_spec, UserInput):
-    #             input_required = input_required + waiting_task.task_spec.args
-    #         logging.error(waiting_task.task_spec.__class__)
-    #     return Response(input_required=input_required)
-
-    # @endpoints.method(Request, PostMessage,
-    #                 name='execution.submit', path='execution', http_method='POST',)
-    # def list_posts(self, request):
-    #     check_authentication(request)
-    #     return PostMessage(title=request.userID, body="there")
-    # @Account.query_method(user_required=True,
-    #                       path='user', name='account.get')
-    # def AccountGet(self, query):
-    #   return query.filter(Account.owner == endpoints.get_current_user())
-    # @endpoints.method(message_types.VoidMessage, Greeting,
-    #                   path='hellogreeting/authed', http_method='POST',
-    #                   name='greetings.authed')
-    # def greeting_authed(self, request):
-    #     current_user = endpoints.get_current_user()
-    #     email = (current_user.email() if current_user is not None
-    #              else 'Anonymous')
-    # print "hihi"
-    # print get_current_user().user_id()
-    # print
-    # key = ndb.Key("user", email)
-    # print UserEntity.query_book(ancestor_key=key).fetch(20)
-    # return Greeting(message=UserEntity.query_book(ancestor_key=key).fetch(1))
-    # Account(email=endpoints.get_current_user().email(), greeting = STORED_GREETINGS.items[request.id].message).put()
-    # print Account(id=).get()
-    # print key('Account', endpoints.get_current_user().email()).get()
-    # account = Account.get_by_id(id=endpoints.get_current_user().email()).greeting
-    # print account.greeting
-    #     return Greeting(message='hello %s %s' % (email, account,))
-    # @endpoints.method(message_types.VoidMessage, ExecutionCollection,
-    #                   path='wfList', http_method='GET',
-    #                   name='wf.listExecutions')
-    # def list_executions(self, unused_request):#
-    # Account.get_by_id(id=endpoints.get_current_user().email()).greeting
-    # test  = Execution(owner=endpoints.get_current_user(), name='Some Name')
-    # test.put()
-    # print test
-    # print(Execution.query())
-    # return ExecutionCollection(Execution.query())
-    # query = Execution.query().fetch()
-    # print query
-    # items = [execution for execution in query.fetch()]
-    # print items
-    # items = Execution.query
-    # print Execution.list()
-    #     items = Execution.query_entries()
-    # items = [entity.to_message() for entity in query.fetch()]
-    # items = [ExecutionMessage(name=p.name, date=p.date) for p in Execution.query()]
-    #     return ExecutionCollection(items=items)
-    #     return STORED_GREETINGS
     @endpoints.method(message_types.VoidMessage, service_status_response,
                       name='service_status', path='service_status', http_method='GET')
     def service_status(self, request):

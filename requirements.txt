@@ -2,7 +2,8 @@
 -e git+http://github.com/chrisns/SpiffWorkflow#egg=SpiffWorkflow
 -e git+http://github.com/ze-phyr-us/linkenv#egg=linkenv
 
-flask-restful==0.2.12
+flask-marshmallow==0.2.0
+marshmallow==0.7.0
 jsonschema==2.3.0
 Markdown==2.4.1
 Pillow==2.4.0

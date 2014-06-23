@@ -56,11 +56,13 @@ class TestFacebookAuth(unittest.TestCase):
         self.assertEqual(expected, actual)
 
     def test_get_user_id(self):
+        """ test we can get a user id from a mocked request """
         expected = '739149082'
         actual = get_user_id(self.fake_request)
         self.assertEqual(expected, actual)
 
     def test_SignedRequestError_exception(self):
+        """ test our exception handler """
         expected = {'status_code': 123, 'message':
                     'error message', 'payload': None}
         with self.assertRaises(SignedRequestError) as ex:
@@ -69,16 +71,12 @@ class TestFacebookAuth(unittest.TestCase):
         self.assertEqual(expected, actual)
 
     def test_SignedRequestError_exception_dict(self):
+        """ test our exception handler """
         expected = {'message': 'error message'}
         with self.assertRaises(SignedRequestError) as ex:
             raise SignedRequestError("error message", status_code=123)
         actual = ex.exception.to_dict()
         self.assertEqual(expected, actual)
-
-    @get_user_id(fake_request)
-    def test_decorator(self, user_id):
-        print user_id
-        fail
 
 if __name__ == '__main__':
     unittest.main()  # pragma: no cover

@@ -6,10 +6,10 @@ from flask import Flask
 from flask import jsonify
 from flask import request
 from py_utils.facebook_auth import *
+from flask.ext.marshmallow import Marshmallow
 
 app = Flask(__name__, static_url_path="")
-# Note: We don't need to call run() since our application is embedded within
-# the App Engine WSGI application server.
+ma = Marshmallow(app)
 
 
 @app.route('/api')
@@ -17,11 +17,10 @@ def hello():
     """Return a friendly HTTP greeting."""
     print get_user_id(request)
     return jsonify({'tasks': get_user_id(request)})
-    return 'Hello World!'
 
 
 @app.errorhandler(404)
-def page_not_found(e):
+def page_not_found(event):
     """Return a custom 404 error."""
     return 'Sorry, Nothing at this URL.', 404
 
@@ -52,3 +51,29 @@ def handle_invalid_usage(error):
     response = jsonify(error.to_dict())
     response.status_code = error.status_code
     return response
+
+
+@app.route('/api/executions/')
+def executions():
+    users = User.all()
+    serialized = UserMarshal(users, many=True)
+    return jsonify(serialized.data)
+
+
+@app.route('/api/executions/<id>')
+def execution_detail(id):
+    user = User.get(id)
+    serialized = UserMarshal(user)
+    return jsonify(serialized.data)
+
+
+class ExecutionMarshal(ma.Serializer):
+
+    class Meta:
+        # Fields to expose
+        fields = ('email', 'date_created', '_links')
+    # Smart hyperlinking
+    _links = ma.Hyperlinks({
+        'self': ma.URL('execution_detail', id='<id>'),
+        'collection': ma.URL('executions')
+    })
