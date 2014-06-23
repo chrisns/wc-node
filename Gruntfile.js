@@ -64,7 +64,7 @@ module.exports = function (grunt) {
         ]
       },
       python: {
-        files: ['*.py', 'models/*.py', 'tests/**/*.py', 'WorkflowSpecs/**/*.py'],
+        files: ['*.py', 'models/*.py', 'tests/**/*.py', 'WorkflowSpecs/**/*.py', 'py_utils/**/*.py'],
         tasks: ['nose']
       },
       wf: {
