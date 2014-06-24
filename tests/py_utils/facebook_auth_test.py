@@ -73,14 +73,6 @@ class TestFacebookAuth(unittest.TestCase):
         actual = ex.exception.__dict__
         self.assertEqual(expected, actual)
 
-    def test_signed_request_error_exception_dict(self):
-        """ test our exception handler """
-        expected = {'message': 'error message'}
-        with self.assertRaises(SignedRequestError) as ex:
-            raise SignedRequestError("error message", status_code=123)
-        actual = ex.exception.to_dict()
-        self.assertEqual(expected, actual)
-
 
 if __name__ == '__main__':
     unittest.main()  # pragma: no cover
