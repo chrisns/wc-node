@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 """REST api - this is the only python entry point for the app"""
 
 
@@ -25,7 +26,6 @@ from jsonschema.exceptions import best_match
 
 
 WEB_CLIENT_ID = '84086224013-u450n6r4dkgr51v3pom39cqgsefrnm83.apps.googleusercontent.com'
-WEB_CLIENT_ID = '292824132082.apps.googleusercontent.com'
 ANDROID_CLIENT_ID = 'replace this with your Android client ID'
 IOS_CLIENT_ID = 'replace this with your iOS client ID'
 

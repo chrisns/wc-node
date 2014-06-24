@@ -1,3 +1,4 @@
+# coding=utf-8
 import jsonschema
 import unittest
 import wc_api

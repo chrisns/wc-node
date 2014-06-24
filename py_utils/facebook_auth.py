@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 
 import base64
 import hashlib
@@ -9,8 +10,8 @@ import json
 def get_user_id(request):
     """
     Get the user id based on the request
-    :param request: flask request object
-    :return: integer of user id
+    @param request: flask request object
+    @return: integer of user id
     """
     parsed = parse_signed_request(
         request.cookies.get('fbsr_665447500158300'),
@@ -19,14 +20,14 @@ def get_user_id(request):
     return parsed['user_id']
 
 
-def urlsafe_b64decode(str):
+def urlsafe_b64decode(b64string):
     """Perform Base 64 decoding for strings with missing padding.
-    :param str:
+    @param b64string:
     """
 
-    l = len(str)
+    l = len(b64string)
     pl = l % 4
-    return base64.urlsafe_b64decode(str.ljust(l + pl, "="))
+    return base64.urlsafe_b64decode(b64string.ljust(l + pl, "="))
 
 
 def parse_signed_request(signed_request, secret):
@@ -34,8 +35,8 @@ def parse_signed_request(signed_request, secret):
     Parse signed_request given by Facebook (usually via POST),
     decrypt with app secret.
 
-    :param signed_request: Facebook's signed request given through POST
-    :param secret: Application's app_secret required to decrpyt signed_request
+    @param signed_request: Facebook's signed request given through POST
+    @param secret: Application's app_secret required to decrpyt signed_request
     """
     try:
         esig, payload = signed_request.split(".")

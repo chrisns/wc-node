@@ -49,7 +49,6 @@ handlers:
 # Note that dependencies must be located in your project directory - packages
 # installed in the Python environment are not loaded by the App Engine
 # development server or deployment tools.
-# TODO: List any other App Engine SDK libs you may need here.
 libraries:
 
 # You must include the Endpoints library if you wish to serve an API.

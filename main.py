@@ -1,12 +1,14 @@
 #!flask/bin/python
+# coding=utf-8
 """`main` is the top level module for your Flask application."""
 
-# Import the Flask Framework
 from flask import Flask
 from flask import jsonify
 from flask import request
-from py_utils.facebook_auth import *
 from flask.ext.marshmallow import Marshmallow
+
+from py_utils.facebook_auth import *
+
 
 app = Flask(__name__, static_url_path="")
 ma = Marshmallow(app)
@@ -23,6 +25,7 @@ def hello():
 def page_not_found(event):
     """Return a custom 404 error."""
     return 'Sorry, Nothing at this URL.', 404
+
 
 tasks = [
     {
@@ -60,18 +63,18 @@ def executions():
     return jsonify(serialized.data)
 
 
-@app.route('/api/executions/<id>')
-def execution_detail(id):
-    user = User.get(id)
+@app.route('/api/executions/<gid>')
+def execution_detail(gid):
+    user = User.get(gid)
     serialized = UserMarshal(user)
     return jsonify(serialized.data)
 
 
 class ExecutionMarshal(ma.Serializer):
-
     class Meta:
         # Fields to expose
         fields = ('email', 'date_created', '_links')
+
     # Smart hyperlinking
     _links = ma.Hyperlinks({
         'self': ma.URL('execution_detail', id='<id>'),

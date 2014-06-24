@@ -1,5 +1,7 @@
 #!/usr/bin/env python
-"""This is for asserting some principals of how we use workflow so is a good resource to refer to if you're trying to figure why things are broken"""
+# coding=utf-8
+"""This is for asserting some principals of how we use workflow so is a good resource to refer to if you're trying
+to figure why things are broken"""
 
 from models.Execution import Execution
 
@@ -18,7 +20,6 @@ from tests.TestWorkflowSpec import TestWorkflowSpec
 
 
 class TestWorkflowFunctionalTests(unittest.TestCase):
-
     def setUp(self):
         self.spec = TestWorkflowSpec()
         self.workflow = Workflow(self.spec)
@@ -137,6 +138,7 @@ class TestWorkflowFunctionalTests(unittest.TestCase):
         self.assertEqual(self.workflow.get_tasks_from_spec_name('task_b1'), [])
 
         self.assertTrue(self.workflow.is_completed())
+
 
 if __name__ == '__main__':
     unittest.main()

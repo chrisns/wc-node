@@ -1,3 +1,4 @@
+# coding=utf-8
 from SpiffWorkflow.specs import *
 from SpiffWorkflow.operators import *
 from SpiffWorkflow.Task import *

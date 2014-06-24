@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 """Request and response models for the API"""
 
 from protorpc import messages

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""This is for asserting some principals of how we use workflow so is a good resource to refer to if you're trying to figure why things are broken"""
+# coding=utf-8
 
 from py_utils.facebook_auth import *
 
@@ -61,22 +61,26 @@ class TestFacebookAuth(unittest.TestCase):
         actual = get_user_id(self.fake_request)
         self.assertEqual(expected, actual)
 
-    def test_SignedRequestError_exception(self):
+    def test_signed_request_error_exception(self):
         """ test our exception handler """
-        expected = {'status_code': 123, 'message':
-                    'error message', 'payload': None}
+        expected = {
+            'status_code': 123,
+            'message': 'error message',
+            'payload': None
+        }
         with self.assertRaises(SignedRequestError) as ex:
             raise SignedRequestError("error message", status_code=123)
         actual = ex.exception.__dict__
         self.assertEqual(expected, actual)
 
-    def test_SignedRequestError_exception_dict(self):
+    def test_signed_request_error_exception_dict(self):
         """ test our exception handler """
         expected = {'message': 'error message'}
         with self.assertRaises(SignedRequestError) as ex:
             raise SignedRequestError("error message", status_code=123)
         actual = ex.exception.to_dict()
         self.assertEqual(expected, actual)
+
 
 if __name__ == '__main__':
     unittest.main()  # pragma: no cover

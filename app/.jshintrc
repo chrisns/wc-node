@@ -1,36 +1,26 @@
 {
-  // Details: https://github.com/victorporof/Sublime-JSHint#using-your-own-jshintrc-options
-  // Example: https://github.com/jshint/jshint/blob/master/examples/.jshintrc
-  // Documentation: http://www.jshint.com/docs/
-  "browser": true,
-  "esnext": true,
-  "globals": {},
-  "globalstrict": true,
-  "quotmark": true,
-  "smarttabs": true,
-  "trailing": true,
-  "undef": true,
-  "unused": true,
-  "trailing"      : true,    // true: Prohibit trailing whitespaces
-  "predef"        : [  // Extra globals.
-    "require",
-    "requirejs",
-    "define",
-    "jquery",
-    "notify",
-    "angular",
-    "module",
-    "gapi",
-    "FB"
-    ],
-  "globals": [
-    "exports",
-    "require",
-    "requirejs",
-    "angular",
-    "module",
-    "jquery",
-    "gapi",
-    "FB"
-  ]
+    // Details: https://github.com/victorporof/Sublime-JSHint#using-your-own-jshintrc-options
+    // Example: https://github.com/jshint/jshint/blob/master/examples/.jshintrc
+    // Documentation: http://www.jshint.com/docs/
+    "browser": true,
+    "esnext": true,
+    "globalstrict": true,
+    "quotmark": true,
+    "smarttabs": true,
+    "trailing": true,
+    "undef": true,
+    "unused": true,
+    "trailing": true,    // true: Prohibit trailing whitespaces
+    "globals": [
+        "angular",
+        "define",
+        "exports",
+        "FB",
+        "gapi",
+        "jquery",
+        "module",
+        "notify",
+        "require",
+        "requirejs"
+    ]
 }

@@ -1,5 +1,7 @@
 #!/usr/bin/env python
-"""This is for asserting some principals of how we use workflow so is a good resource to refer to if you're trying to figure why things are broken"""
+# coding=utf-8
+"""This is for asserting some principals of how we use workflow so is a good resource to refer to if you're trying
+to figure why things are broken"""
 
 from models.Execution import Execution
 from google.appengine.ext import testbed
@@ -19,11 +21,11 @@ from mock import patch, Mock
 
 from tests.TestWorkflowSpec import TestWorkflowSpec
 import pprint
+
 pprint.PrettyPrinter(indent=2)
 
 
 class TestApiTests(unittest.TestCase):
-
     def setUp(self):
         self.testbed = testbed.Testbed()
         # needed because endpoints expects a . in this value
@@ -35,7 +37,8 @@ class TestApiTests(unittest.TestCase):
 
     @patch('wc_api.get_workflow_spec_file_handler')
     @patch('urllib2.urlopen')
-    def api(self, mock_urlopen=None, mock_file_open=None, method=None, args=None, status_code=200, content_type='application/json', auth_required=False):
+    def api(self, mock_urlopen=None, mock_file_open=None, method=None, args=None, status_code=200,
+            content_type='application/json', auth_required=False):
         """ helper to make api calls """
         if args is None:
             args = {}
@@ -91,24 +94,26 @@ class TestApiTests(unittest.TestCase):
         """ test deleting an execution """
         key = Execution(owner=1234).put().urlsafe()
         self.api(method='execution_delete',
-                        auth_required=True, args={'execution_id': key})
+                 auth_required=True, args={'execution_id': key})
         self.assertIsNone(ndb.Key(urlsafe=key).get())
 
     def test_execution_resume(self):
         """ check that we can resume an execution"""
-        data = [{
-            'key': 'name',
-            'value': 'hi'
-        }, {
-            'key': 'face',
-            'value': ['hi', 'there']
-        }, {
-            'key': 'nose',
-            'value': ['hi', 'there']
-        }, {
-            'key': 'pets',
-            'value': ['hi', 'there']
-        }]
+        data = [
+            {
+                'key': 'name',
+                'value': 'hi'
+            }, {
+                'key': 'face',
+                'value': ['hi', 'there']
+            }, {
+                'key': 'nose',
+                'value': ['hi', 'there']
+            }, {
+                'key': 'pets',
+                'value': ['hi', 'there']
+            }
+        ]
         resp = self.api(method='execution_resume',
                         auth_required=True, args={'data': data})
         print resp
@@ -118,6 +123,7 @@ class TestApiTests(unittest.TestCase):
         expected = dict(fb='1', ndb='1')
         actual = self.api(method='service_status')
         self.assertEqual(actual, expected)
+
 
 if __name__ == '__main__':
     unittest.main()  # pragma: no cover

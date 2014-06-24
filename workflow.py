@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding=utf-8
 """Workflow definition, not executed at runtime so needs to be done at build to generate json spec file"""
 
 from SpiffWorkflow.specs import *
@@ -145,7 +146,9 @@ class MyWorkflowSpec(WorkflowSpec):
 WORKFLOWSPEC = MyWorkflowSpec()
 
 print "outputting workflow to Workflow.dot"
+# noinspection Restricted_Python_calls
 open("Workflow.dot", "w").write(WORKFLOWSPEC.serialize(dotVisualizer()))
 
 print "outputting workflow to Workflow.JSON"
+# noinspection Restricted_Python_calls
 open("Workflow.json", "w").write(WORKFLOWSPEC.serialize(JSONSerializer()))

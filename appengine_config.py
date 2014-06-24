@@ -1,3 +1,4 @@
+# coding=utf-8
 """ bootstrap appengine """
 import os
 import sys

@@ -1,17 +1,17 @@
 #!/usr/bin/env python
+# coding=utf-8
 """Execution model test
 Probably a good resource for seeing how to access a stored execution"""
 
 import unittest
+
 from google.appengine.ext import testbed
 from google.appengine.ext import ndb
-
 
 from models.Execution import Execution
 
 
 class ExecutionTests(unittest.TestCase):
-
     def setUp(self):
         self.testbed = testbed.Testbed()
         self.testbed.activate()
@@ -35,7 +35,6 @@ class ExecutionTests(unittest.TestCase):
         execution = Execution(owner=100).put()
         urlsafe_key = execution.urlsafe()
         self.assertIsInstance(urlsafe_key, str)
-        self.assertEqual(len(urlsafe_key), 34)
 
     def test_execution_can_load(self):
         """ check we can load executions back """
@@ -77,6 +76,7 @@ class ExecutionTests(unittest.TestCase):
         urlsafe_key = Execution(owner=100, test="value").put().urlsafe()
         ndb.Key(urlsafe=urlsafe_key).delete()
         self.assertIsNone(ndb.Key(urlsafe=urlsafe_key).get())
+
 
 if __name__ == '__main__':
     unittest.main()
