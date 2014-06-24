@@ -32,7 +32,8 @@ class ExecutionTests(unittest.TestCase):
 
     def test_can_have_a_urlsafe_key(self):
         """ check we generate urlsafe keys from executions """
-        urlsafe_key = Execution(owner=100).put().urlsafe()
+        execution = Execution(owner=100).put()
+        urlsafe_key = execution.urlsafe()
         self.assertIsInstance(urlsafe_key, str)
         self.assertEqual(len(urlsafe_key), 34)
 
