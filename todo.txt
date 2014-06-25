@@ -28,6 +28,4 @@ implement https://github.com/jdorn/json-editor in frontend
 
 move away from rpc
 
-make facebook auth module and depend on it
-
-remove all django and google endpoints code
+remove all google endpoints code

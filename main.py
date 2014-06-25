@@ -6,6 +6,8 @@ from flask import Flask
 from flask import jsonify
 from flask import request
 from flask.ext.marshmallow import Marshmallow
+from models.Execution import Execution
+from google.appengine.ext import ndb
 
 from py_utils.facebook_auth import *
 
@@ -58,25 +60,43 @@ def handle_invalid_usage(error):
 
 @app.route('/api/executions/')
 def executions():
-    users = User.all()
-    serialized = UserMarshal(users, many=True)
-    return jsonify(serialized.data)
+    usetestbed()
+    executions_list = []
+    executions = Execution.query(Execution.owner == 1234).fetch(20)
+    for execution in executions:
+        executions_list.append({'execution_id': execution.key.urlsafe(), 'owner': execution.owner})
+    serialized = ExecutionMarshal(executions_list , many=True)
+    return serialized.json
 
 
-@app.route('/api/executions/<gid>')
-def execution_detail(gid):
-    user = User.get(gid)
-    serialized = UserMarshal(user)
-    return jsonify(serialized.data)
+def usetestbed():
+    from google.appengine.ext import testbed
+
+    testbed = testbed.Testbed()
+    testbed.setup_env(current_version_id='testbed.version')
+    testbed.activate()
+    testbed.init_datastore_v3_stub()
+    Execution(owner=1234, data='mee').put()
+    Execution(owner=1234, data='dee').put()
+    Execution(owner=1234, data='bee').put()
+
+
+@app.route('/api/executions/<execution_id>')
+def execution_detail(execution_id):
+    usetestbed()
+    execution = ndb.Key(urlsafe=execution_id).get()
+    serialized = ExecutionMarshal(execution)
+    return serialized.json
+
 
 
 class ExecutionMarshal(ma.Serializer):
     class Meta:
         # Fields to expose
-        fields = ('email', 'date_created', '_links')
+        fields = ('execution_id', 'owner')
 
     # Smart hyperlinking
-    _links = ma.Hyperlinks({
-        'self': ma.URL('execution_detail', id='<id>'),
-        'collection': ma.URL('executions')
-    })
+    # _links = ma.Hyperlinks({
+        # 'self': ma.URL('execution_detail', execution_id='<execution_id>'),
+    #     'collection': ma.URL('executions')
+    # })

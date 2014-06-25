@@ -57,6 +57,12 @@ def parse_signed_request(signed_request, secret):
 
 
 class SignedRequestError(Exception):
+    """
+    Exception handler for invalid signed requests
+    @param message:
+    @param status_code:
+    @param payload:
+    """
     status_code = 400
 
     def __init__(self, message, status_code=None, payload=None):
