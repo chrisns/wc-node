@@ -12,7 +12,7 @@ from google.appengine.ext import ndb
 from py_utils.facebook_auth import *
 
 
-app = ndb.toplevel(Flask(__name__, static_url_path=""))
+app = Flask(__name__, static_url_path="")
 ma = Marshmallow(app)
 
 
