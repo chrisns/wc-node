@@ -5,6 +5,7 @@
 from flask import Flask
 from flask import jsonify
 from flask import request
+from marshmallow import fields
 from flask.ext.marshmallow import Marshmallow
 from models.Execution import Execution
 from google.appengine.ext import ndb
@@ -60,30 +61,13 @@ def handle_invalid_usage(error):
 
 @app.route('/api/executions/')
 def executions():
-    usetestbed()
-    executions_list = []
     executions = Execution.query(Execution.owner == 1234).fetch(20)
-    for execution in executions:
-        executions_list.append({'execution_id': execution.key.urlsafe(), 'owner': execution.owner})
-    serialized = ExecutionMarshal(executions_list , many=True)
+    serialized = ExecutionMarshal(executions , many=True)
     return serialized.json
-
-
-def usetestbed():
-    from google.appengine.ext import testbed
-
-    testbed = testbed.Testbed()
-    testbed.setup_env(current_version_id='testbed.version')
-    testbed.activate()
-    testbed.init_datastore_v3_stub()
-    Execution(owner=1234, data='mee').put()
-    Execution(owner=1234, data='dee').put()
-    Execution(owner=1234, data='bee').put()
 
 
 @app.route('/api/executions/<execution_id>')
 def execution_detail(execution_id):
-    usetestbed()
     execution = ndb.Key(urlsafe=execution_id).get()
     serialized = ExecutionMarshal(execution)
     return serialized.json
@@ -91,12 +75,19 @@ def execution_detail(execution_id):
 
 
 class ExecutionMarshal(ma.Serializer):
+    execution_id = fields.Method('get_url_safe_key')
+
     class Meta:
         # Fields to expose
-        fields = ('execution_id', 'owner')
+        fields = ['execution_id', '_links']
 
+
+
+
+    def get_url_safe_key(self, obj):
+        return obj.key.urlsafe()
     # Smart hyperlinking
-    # _links = ma.Hyperlinks({
-        # 'self': ma.URL('execution_detail', execution_id='<execution_id>'),
-    #     'collection': ma.URL('executions')
-    # })
+    _links = ma.Hyperlinks({
+        'self': ma.URL('execution_detail', execution_id='<execution_id>'),
+        'collection': ma.URL('executions')
+    })
