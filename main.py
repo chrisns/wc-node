@@ -3,6 +3,7 @@
 """`main` is the top level module for your Flask application."""
 
 from flask import Flask
+from flask import url_for
 from flask import jsonify
 from flask import request
 from marshmallow import fields
@@ -11,6 +12,9 @@ from models.Execution import Execution
 from google.appengine.ext import ndb
 
 from py_utils.facebook_auth import *
+import pprint
+
+pprint.PrettyPrinter(indent=2)
 
 
 app = Flask(__name__, static_url_path="")
@@ -62,8 +66,18 @@ def handle_invalid_usage(error):
 @app.route('/api/executions/')
 def executions():
     executions = Execution.query(Execution.owner == 1234).fetch(20)
-    serialized = ExecutionMarshal(executions , many=True)
-    return serialized.json
+    serialized = ExecutionCollectionMarshal(executions, many=True)
+    response = {
+        "collection": {
+            "version" : 1.0,
+            "href": url_for('executions'),
+            "items" : serialized.data,
+            "_links" : {
+                'create' : url_for('execution_new')
+            }
+        }
+    }
+    return jsonify(response)
 
 
 @app.route('/api/executions/<execution_id>')
@@ -72,22 +86,18 @@ def execution_detail(execution_id):
     serialized = ExecutionMarshal(execution)
     return serialized.json
 
+@app.route('/api/executions/create')
+def execution_new(execution_id):
+    #todo
+    return "f"
 
+
+
+class ExecutionCollectionMarshal(ma.Serializer):
+    created = fields.Function(lambda obj: obj.created.isoformat())
+    href = ma.URL('execution_detail', execution_id='<execution_id>')
 
 class ExecutionMarshal(ma.Serializer):
-    execution_id = fields.Method('get_url_safe_key')
-
-    class Meta:
-        # Fields to expose
-        fields = ['execution_id', '_links']
-
-
-
-
-    def get_url_safe_key(self, obj):
-        return obj.key.urlsafe()
-    # Smart hyperlinking
-    _links = ma.Hyperlinks({
-        'self': ma.URL('execution_detail', execution_id='<execution_id>'),
-        'collection': ma.URL('executions')
-    })
+    # todo
+    created = fields.Function(lambda obj: obj.created.isoformat())
+    href = ma.URL('execution_detail', execution_id='<execution_id>')
