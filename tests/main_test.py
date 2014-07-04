@@ -55,7 +55,9 @@ class MainTests(unittest.TestCase):
         # self.assertEqual(response.content_type, content_type)
         # self.assertEqual(response.status_code, status_code)
         if content_type == "application/json":
-            return json.loads(response.data)
+            json_obj = json.loads(response.data)
+            self.assertEquals(json_obj[json_obj.keys()[0]]['version'], 1.0)
+            return json_obj
         else:
             return response.data
 
@@ -66,9 +68,13 @@ class MainTests(unittest.TestCase):
         key_to_check_is_present = Execution(owner=1234).put().urlsafe()
         key_to_check_is_not_present = Execution(owner=300).put().urlsafe()
         resp = self.api(uri='executions/', auth_required=True)
-        print resp
+        self.assertEquals(resp.keys()[0], "collection")
+        self.assertIn("/api/executions/create", resp['collection']['_links']['create']['href'])
+        self.assertEquals(len(resp['collection']['items']), 3)
+
+        # self.assertEquals(resp['collection']['_links'])
+        print resp['collection']['items'][0]
         self.fail()
-        # self.assertEqual(len(resp['executions']), 3)
         # self.assertNotIn(
         #     {'execution_id': key_to_check_is_not_present}, resp['executions'])
         # self.assertIn(

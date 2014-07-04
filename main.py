@@ -18,6 +18,7 @@ pprint.PrettyPrinter(indent=2)
 
 
 app = Flask(__name__, static_url_path="")
+app.config['MARSHMALLOW_DATEFORMAT'] = 'iso'
 ma = Marshmallow(app)
 
 
@@ -73,7 +74,9 @@ def executions():
             "href": url_for('executions'),
             "items" : serialized.data,
             "_links" : {
-                'create' : url_for('execution_new')
+                'create' : {
+                    'href' : url_for('execution_new'),
+                }
             }
         }
     }
@@ -94,8 +97,9 @@ def execution_new(execution_id):
 
 
 class ExecutionCollectionMarshal(ma.Serializer):
-    created = fields.Function(lambda obj: obj.created.isoformat())
     href = ma.URL('execution_detail', execution_id='<execution_id>')
+    class Meta:
+        additional = ['execution_id', 'created']
 
 class ExecutionMarshal(ma.Serializer):
     # todo
