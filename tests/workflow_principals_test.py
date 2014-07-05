@@ -3,19 +3,18 @@
 """This is for asserting some principals of how we use workflow so is a good resource to refer to if you're trying
 to figure why things are broken"""
 
-from models.Execution import Execution
+import unittest
+import json
 
 from google.appengine.ext import testbed
 from google.appengine.ext import ndb
 from SpiffWorkflow import Workflow
-from SpiffWorkflow.specs import *
-from WorkflowSpecs.UserInput import UserInput
-from SpiffWorkflow.operators import *
 from SpiffWorkflow.storage import JSONSerializer
 from SpiffWorkflow.storage import DictionarySerializer
 from SpiffWorkflow.Task import *
-import unittest
-import json
+
+from models.Execution import Execution
+from WorkflowSpecs.UserInput import UserInput
 from tests.TestWorkflowSpec import TestWorkflowSpec
 
 

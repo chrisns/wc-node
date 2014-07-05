@@ -9,7 +9,9 @@ from SpiffWorkflow.storage import dotVisualizer
 from SpiffWorkflow.storage import JSONSerializer
 
 
+# noinspection PyTypeChecker
 class MyWorkflowSpec(WorkflowSpec):
+    """ workflow spec """
 
     def __init__(self):
         WorkflowSpec.__init__(self)
@@ -146,9 +148,9 @@ class MyWorkflowSpec(WorkflowSpec):
 WORKFLOWSPEC = MyWorkflowSpec()
 
 print "outputting workflow to Workflow.dot"
-# noinspection Restricted_Python_calls
+# noinspection Restricted_Python_calls,PyTypeChecker
 open("Workflow.dot", "w").write(WORKFLOWSPEC.serialize(dotVisualizer()))
 
 print "outputting workflow to Workflow.JSON"
-# noinspection Restricted_Python_calls
+# noinspection Restricted_Python_calls,PyTypeChecker
 open("Workflow.json", "w").write(WORKFLOWSPEC.serialize(JSONSerializer()))

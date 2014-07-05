@@ -2,31 +2,31 @@
 # coding=utf-8
 """`main` is the top level module for your Flask application."""
 
+import pprint
+import types
+
 from flask import Flask
 from flask import url_for
 from flask import jsonify
-from flask import request
-from flask import abort
 from flask import redirect
 from marshmallow import fields
 from flask.ext.marshmallow import Marshmallow
 from SpiffWorkflow import *
-from WorkflowSpecs.UserInput import UserInput
-
 from SpiffWorkflow.storage import JSONSerializer
 from SpiffWorkflow.storage import DictionarySerializer
-from models.Execution import Execution
 from google.appengine.ext import ndb
+
+from WorkflowSpecs.UserInput import UserInput
+from models.Execution import Execution
 from py_utils.facebook_auth import *
-import pprint
-import types
+
 
 pprint.PrettyPrinter(indent=2)
-
 
 app = Flask(__name__, static_url_path="")
 app.config['MARSHMALLOW_DATEFORMAT'] = 'iso'
 app.config['JSON_SORT_KEYS'] = False
+# noinspection PyTypeChecker
 ma = Marshmallow(app)
 
 
@@ -36,11 +36,11 @@ def root():
     routes = {
         'collection': {
             'version': 1.0,
-            'items':{
+            'items': {
                 'executions': {
                     'description': 'List of executions',
                     'authentication_required': True,
-                    'href': url_for('executions')
+                    'href': url_for('executions_list')
                 }
             }
         }
@@ -50,9 +50,11 @@ def root():
 
 @app.errorhandler(404)
 def page_not_found(event):
-    """Return a custom 404 error."""
+    """Return a custom 404 error.
+    @param event:
+    """
     response = jsonify({
-        "error" : {
+        "error": {
             "version": 1.0,
             "message": 'Sorry, Nothing at this URL.'
         }
@@ -60,11 +62,15 @@ def page_not_found(event):
     response.status_code = 404
     return response
 
+
+# noinspection PyUnusedLocal
 @app.errorhandler(400)
 def auth_required(event):
-    """Return a custom 404 error."""
+    """Return a custom 404 error.
+    @param event:
+    """
     response = jsonify({
-        "error" : {
+        "error": {
             "version": 1.0,
             "message": 'Authentication required'
         }
@@ -72,10 +78,16 @@ def auth_required(event):
     response.status_code = 400
     return response
 
+
 @app.errorhandler(SignedRequestError)
 def handle_invalid_usage(error):
+    """
+    error handler for signed request errors
+    @type error: py_utils.facebook_auth.SignedRequestError
+    @return:
+    """
     response = jsonify({
-        "error" : {
+        "error": {
             "version": 1.0,
             "message": error.to_dict()
         }
@@ -83,19 +95,25 @@ def handle_invalid_usage(error):
     response.status_code = error.status_code
     return response
 
+
 @app.route('/api/executions')
 @get_user_id
-def executions(user_id):
+def executions_list(user_id):
+    """
+    list of executions
+    @param user_id:
+    @return: response
+    """
     executions = Execution.query(Execution.owner == user_id).fetch(20)
     serialized = ExecutionCollectionMarshal(executions, many=True)
     response = {
         "collection": {
-            "version" : 1.0,
-            "href": url_for('executions'),
-            "items" : serialized.data,
-            "_links" : {
-                'create' : {
-                    'href' : url_for('execution_new'),
+            "version": 1.0,
+            "href": url_for('executions_list'),
+            "items": serialized.data,
+            "_links": {
+                'create': {
+                    'href': url_for('execution_new'),
                 }
             }
         }
@@ -106,6 +124,12 @@ def executions(user_id):
 @app.route('/api/executions/<execution_id>', methods=['GET', 'POST', 'DELETE'])
 @get_user_id
 def execution_detail(user_id, execution_id):
+    """
+    get the execution detail
+    @param user_id:
+    @param execution_id:
+    @return:
+    """
     execution_object = ndb.Key(urlsafe=execution_id).get()
     if user_id != execution_object.owner:
         abort(404)
@@ -114,7 +138,7 @@ def execution_detail(user_id, execution_id):
         ndb.Key(urlsafe=execution_id).delete()
         response = {
             "action": {
-                "version" : 1.0,
+                "version": 1.0,
                 "status": "success",
             }
         }
@@ -145,15 +169,22 @@ def execution_detail(user_id, execution_id):
 
     response = {
         "execution": {
-            "version" : 1.0,
+            "version": 1.0,
             "schema": get_filtered_schema(execution),
         }
     }
     return jsonify(response)
 
+
+# noinspection PyTypeChecker
 @app.route('/api/executions/create')
 @get_user_id
 def execution_new(user_id):
+    """
+    create a new exception and redirect to it
+    @param user_id:
+    @return: flask.redirect
+    """
     execution_object = Execution(owner=user_id)
     spec_file = get_workflow_spec()
     spec = JSONSerializer().deserialize_workflow_spec(spec_file)
@@ -161,8 +192,7 @@ def execution_new(user_id):
     execution.complete_all()
     execution_object.data = execution.serialize(DictionarySerializer())
     execution_id = execution_object.put().urlsafe()
-    return redirect(url_for('execution_detail', execution_id=execution_id), code=302)
-
+    return redirect(url_for('execution_detail', execution_id=execution_id))
 
 
 class ExecutionCollectionMarshal(ma.Serializer):
@@ -172,19 +202,25 @@ class ExecutionCollectionMarshal(ma.Serializer):
     class Meta:
         additional = ['execution_id', 'created', 'type']
 
+
 class ExecutionMarshal(ma.Serializer):
     created = fields.Function(lambda obj: obj.created.isoformat())
     type = fields.Function(lambda obj: obj.__class__.__name__)
     href = ma.URL('execution_detail', execution_id='<execution_id>')
+
     class Meta:
         additional = ['execution_id', 'created', 'type']
 
+
 def get_workflow_spec():
     """ get the workflow spec """
-    return open("Workflow.json", "r").read()
+    return open("Workflow.json").read()
+
 
 def get_filtered_schema(execution):
-    """ returns required inputs given an execution """
+    """ returns required inputs given an execution
+    @param execution:
+    """
     inputs_required = dict()
     inputs_matrix = get_schema()['properties']
     for waiting_task in execution._get_waiting_tasks():
@@ -197,6 +233,7 @@ def get_filtered_schema(execution):
                     raise Exception('Unmapped input', input_required)
     return inputs_required
 
+
 def get_schema():
     """ get the json schema """
-    return json.loads(open("schema.json", "r").read())
+    return json.loads(open("schema.json").read())

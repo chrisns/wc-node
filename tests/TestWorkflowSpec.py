@@ -1,11 +1,13 @@
 # coding=utf-8
 from SpiffWorkflow.specs import *
 from SpiffWorkflow.operators import *
-from SpiffWorkflow.Task import *
+
 from WorkflowSpecs.UserInput import UserInput
 
 
+# noinspection PyTypeChecker
 class TestWorkflowSpec(WorkflowSpec):
+    """ Test workflow spec """
 
     def __init__(self):
         WorkflowSpec.__init__(self)

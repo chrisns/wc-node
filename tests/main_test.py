@@ -2,9 +2,11 @@
 # coding=utf-8
 """This is for asserting some principals of how we use workflow so is a good resource to refer to if you're trying
 to figure why things are broken"""
-from models.Execution import Execution
 from google.appengine.ext import testbed
 from google.appengine.ext import ndb
+
+from models.Execution import Execution
+
 # import py_utils.facebook_auth
 from SpiffWorkflow import *
 
@@ -12,12 +14,10 @@ from SpiffWorkflow.storage import JSONSerializer
 from SpiffWorkflow.storage import DictionarySerializer
 import unittest
 import json
-import webtest
 from tests.TestWorkflowSpec import TestWorkflowSpec
 
 import main
-from mock import patch, Mock, MagicMock
-import sys
+from mock import patch
 # sys.path.append('./py_utils')
 # from facebook_auth import *
 import pprint
@@ -25,6 +25,7 @@ import pprint
 pprint.PrettyPrinter(indent=2)
 
 
+# noinspection PyTypeChecker
 class MainTests(unittest.TestCase):
     def setUp(self):
         self.testbed = testbed.Testbed()
@@ -43,6 +44,7 @@ class MainTests(unittest.TestCase):
     def api(self, mock_get_user_id=None, uri='', method='GET', data=None, status_code=200,
             content_type='application/json', user_id=None):
         """ helper to make api calls """
+        global response
         uri = "/api" + uri
         if data is None:
             data = {}
@@ -69,7 +71,7 @@ class MainTests(unittest.TestCase):
 
     def test_root_route(self):
         """ check that we can get the api router """
-        resp = self.api(uri='')
+        resp = self.api()
         self.assertEquals(resp.keys()[0], "collection")
         self.assertEquals(len(resp['collection']['items']), 1)
         self.assertIn('executions', resp['collection']['items'])
@@ -81,10 +83,8 @@ class MainTests(unittest.TestCase):
 
     def test_list_executions(self):
         """ check that we can list executions belonging to a user and no other"""
-        keys_to_expect = []
-        keys_to_expect.append(Execution(owner=1234).put().urlsafe())
-        keys_to_expect.append(Execution(owner=1234).put().urlsafe())
-        keys_to_expect.append(Execution(owner=1234).put().urlsafe())
+        keys_to_expect = [Execution(owner=1234).put().urlsafe(), Execution(owner=1234).put().urlsafe(),
+                          Execution(owner=1234).put().urlsafe()]
 
         key_not_to_expect = Execution(owner=300).put().urlsafe()
 
@@ -109,7 +109,8 @@ class MainTests(unittest.TestCase):
 
     def test_execution_new(self):
         """ check that we can create a new execution"""
-        resp = self.api(uri='/executions/create', user_id=1234, status_code=302, content_type='text/html; charset=utf-8')
+        resp = self.api(uri='/executions/create', user_id=1234, status_code=302,
+                        content_type='text/html; charset=utf-8')
         self.assertIn('You should be redirected automatically', resp.data)
         self.assertIn('api/executions/', resp.headers['Location'])
 
@@ -118,7 +119,6 @@ class MainTests(unittest.TestCase):
         resp = self.api(uri='/executions/' + execution_id, user_id=4567, status_code=404)
         self.assertNotIn('execution', resp)
         self.assertIn('error', resp)
-
 
     def test_get_execution(self, ):
         """ test getting an execution"""
@@ -145,15 +145,15 @@ class MainTests(unittest.TestCase):
         execution_object.data = execution.serialize(DictionarySerializer())
         execution_id = execution_object.put().urlsafe()
         data = {
-          "name": "John Smith",
-          "face": "Jude Smith",
-          "nose": "mr",
-          "pets": [
-            {
-              "type": "dog",
-              "name": "Walter"
-            }
-          ]
+            "name": "John Smith",
+            "face": "Jude Smith",
+            "nose": "mr",
+            "pets": [
+                {
+                    "type": "dog",
+                    "name": "Walter"
+                }
+            ]
         }
         resp = self.api(uri='/executions/' + execution_id, user_id=1234, method='POST', data=data)
 
@@ -170,7 +170,6 @@ class MainTests(unittest.TestCase):
     def test_execution_resume(self):
         """ check that we can resume an execution"""
         pass
-
 
 
 if __name__ == '__main__':

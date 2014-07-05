@@ -13,8 +13,8 @@ class Execution(ndb.Model):
 
     @property
     def execution_id(self):
+        """
+        get the urlsafe execution id within the model
+        @return:
+        """
         return self._key.urlsafe() if hasattr(self._key, 'urlsafe') else None
-
-    @classmethod
-    def listByOwner(cls, owner_id):
-      return cls.query(owner = owner_id)

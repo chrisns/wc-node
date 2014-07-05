@@ -2,15 +2,12 @@
 from __future__ import division
 
 from SpiffWorkflow.Task import Task
-from SpiffWorkflow.exceptions import WorkflowException
 from SpiffWorkflow.specs.TaskSpec import TaskSpec
 
 
+# noinspection PyUnusedLocal,PyTypeChecker
 class UserInput(TaskSpec):
-
-    """
-
-    """
+    """ User input task spec """
 
     def __init__(self, parent, name, args=None, **kwargs):
         """
@@ -51,13 +48,27 @@ class UserInput(TaskSpec):
             return
         super(UserInput, self)._update_state_hook(my_task)
 
-    def serialize(self, serializer):
+    def serialize(self, serializer, **kwargs):
+        """
+        serializer
+        @type serializer: SpiffWorkflow.storage.DictionarySerializer.DictionarySerializer
+        @param kwargs:
+        @return:
+        """
         s_state = serializer._serialize_task_spec(self)
         s_state['args'] = self.args
         return s_state
 
     @classmethod
     def deserialize(cls, serializer, wf_spec, s_state, **kwargs):
+        """
+        deserializer
+        @param serializer:
+        @param wf_spec:
+        @param s_state:
+        @param kwargs:
+        @return:
+        """
         instance = cls(wf_spec, s_state['name'])
 
         spec = serializer._deserialize_task_spec(wf_spec,

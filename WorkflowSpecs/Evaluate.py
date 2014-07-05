@@ -15,13 +15,12 @@ from __future__ import division
 # You should have received a copy of the GNU Lesser General Public
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA
-import subprocess
 
 from SpiffWorkflow.Task import Task
-from SpiffWorkflow.exceptions import WorkflowException
 from SpiffWorkflow.specs.TaskSpec import TaskSpec
 
 
+# noinspection PyUnusedLocal,PyTypeChecker
 class Evaluate(TaskSpec):
 
     """
@@ -64,13 +63,27 @@ class Evaluate(TaskSpec):
             return
         super(Evaluate, self)._update_state_hook(my_task)
 
-    def serialize(self, serializer):
+    def serialize(self, serializer, **kwargs):
+        """
+        Serializer
+        @param serializer:
+        @param kwargs:
+        @return:
+        """
         s_state = serializer._serialize_task_spec(self)
         s_state['args'] = self.args
         return s_state
 
     @classmethod
     def deserialize(cls, serializer, wf_spec, s_state, **kwargs):
+        """
+        Deserializer
+        @param serializer:
+        @param wf_spec:
+        @param s_state:
+        @param kwargs:
+        @return:
+        """
         instance = cls(wf_spec, s_state['name'])
         spec = serializer._deserialize_task_spec(wf_spec,
                                                  s_state,

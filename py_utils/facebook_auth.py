@@ -11,14 +11,29 @@ from flask import abort
 
 
 def get_user_id(f):
+    """
+    wrap function to pipe the current user id into another function
+    @param f:
+    @return:
+    """
+
     @wraps(f)
     def decorated_function(*args, **kwargs):
+        """
+        decorate function
+        @param args:
+        @param kwargs:
+        @return integer user id:
+        """
         user_id = get_user_id_from_request(request)
         if user_id is None:
             abort(400)
         return f(user_id, *args, **kwargs)
+
     return decorated_function
 
+
+# noinspection PyShadowingNames
 def get_user_id_from_request(request):
     """
     Get the user id based on the request
@@ -85,6 +100,10 @@ class SignedRequestError(Exception):
         self.payload = payload
 
     def to_dict(self):
+        """
+        to_dict handler for rendering the exception
+        @return: dict
+        """
         rv = dict(self.payload or ())
         rv['message'] = self.message
         return rv

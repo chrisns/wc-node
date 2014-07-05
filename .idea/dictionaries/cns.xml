@@ -3,8 +3,10 @@
     <words>
       <w>appengine</w>
       <w>appserver</w>
+      <w>coveragerc</w>
       <w>deserialize</w>
       <w>endif</w>
+      <w>gaenv</w>
       <w>nesbitt</w>
       <w>pylint</w>
       <w>robotstxt</w>
