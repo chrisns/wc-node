@@ -38,10 +38,9 @@ class ExecutionTests(unittest.TestCase):
 
     def test_execution_can_load(self):
         """ check we can load executions back """
-        urlsafe_key = Execution(owner=100, test="value").put().urlsafe()
+        urlsafe_key = Execution(owner=100).put().urlsafe()
         restored_execution = ndb.Key(urlsafe=urlsafe_key).get()
         self.assertEqual(restored_execution.owner, 100)
-        self.assertEqual(restored_execution.test, "value")
 
     def test_storing_structured_set(self):
         """ check we can store and retrive a complex deep structured array """
@@ -73,7 +72,7 @@ class ExecutionTests(unittest.TestCase):
 
     def test_deleting_execution(self):
         """ check that we can make an execution and then destroy it and then no longer retrive """
-        urlsafe_key = Execution(owner=100, test="value").put().urlsafe()
+        urlsafe_key = Execution(owner=100).put().urlsafe()
         ndb.Key(urlsafe=urlsafe_key).delete()
         self.assertIsNone(ndb.Key(urlsafe=urlsafe_key).get())
 

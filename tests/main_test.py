@@ -2,7 +2,6 @@
 # coding=utf-8
 """This is for asserting some principals of how we use workflow so is a good resource to refer to if you're trying
 to figure why things are broken"""
-
 from models.Execution import Execution
 from google.appengine.ext import testbed
 from google.appengine.ext import ndb
@@ -14,6 +13,7 @@ from SpiffWorkflow.storage import DictionarySerializer
 import unittest
 import json
 import webtest
+from tests.TestWorkflowSpec import TestWorkflowSpec
 
 import main
 from mock import patch, Mock, MagicMock
@@ -39,31 +39,28 @@ class MainTests(unittest.TestCase):
     def tearDown(self):
         self.testbed.deactivate()
 
-    @patch('py_utils.facebook_auth.facebook_auth.get_user_id')
-    def api(self, mock_get_user_id=None, uri='', method='get', args=None, status_code=200,
+    @patch('py_utils.facebook_auth.get_user_id_from_request')
+    def api(self, mock_get_user_id=None, uri='', method='GET', data=None, status_code=200,
             content_type='application/json', user_id=None):
         """ helper to make api calls """
         uri = "/api" + uri
-        if args is None:
-            args = {}
+        if data is None:
+            data = {}
 
         mock_get_user_id.return_value = user_id
 
-        if method == 'get':
-            response = self.app_client.get(uri, args)
+        if method == 'GET':
+            response = self.app_client.get(uri)
 
-        elif method == 'post':
-            response = self.app_client.post(uri, args)
+        elif method == 'POST':
+            response = self.app_client.post(uri, data=json.dumps(data), content_type='Content-Type: application/json')
 
-        elif method == 'delete':
-            response = self.app_client.delete(uri, args)
-
-        elif method == 'options':
-            response = self.app_client.options(uri, args)
+        elif method == 'DELETE':
+            response = self.app_client.delete(uri)
 
         self.assertEqual(response.content_type, content_type)
         self.assertEqual(response.status_code, status_code)
-        if response.content_type == "application/json" and status_code is 200:
+        if response.content_type == "application/json":
             json_obj = json.loads(response.data)
             self.assertEquals(json_obj[json_obj.keys()[0]]['version'], 1.0)
             return json_obj
@@ -80,7 +77,7 @@ class MainTests(unittest.TestCase):
     def test_list_executions_requires_auth(self):
         """ check that list executions requires authentication """
         resp = self.api(uri='/executions', status_code=400)
-        self.assertEqual({"message": "User not authenticated"}, json.loads(resp.data))
+        self.assertEqual('Authentication required', resp['error']['message'])
 
     def test_list_executions(self):
         """ check that we can list executions belonging to a user and no other"""
@@ -108,7 +105,7 @@ class MainTests(unittest.TestCase):
 
     def test_page_not_found(self):
         resp = self.api(uri='/notfound', status_code=404)
-        self.assertEqual({"message": "Sorry, Nothing at this URL."}, json.loads(resp.data))
+        self.assertEqual("Sorry, Nothing at this URL.", resp['error']['message'])
 
     def test_execution_new(self):
         """ check that we can create a new execution"""
@@ -116,24 +113,59 @@ class MainTests(unittest.TestCase):
         self.assertIn('You should be redirected automatically', resp.data)
         self.assertIn('api/executions/', resp.headers['Location'])
 
-    def test_get_execution(self):
+    def test_get_execution_authentication_denies(self):
+        execution_id = Execution(owner=1234).put().urlsafe()
+        resp = self.api(uri='/executions/' + execution_id, user_id=4567, status_code=404)
+        self.assertNotIn('execution', resp)
+        self.assertIn('error', resp)
+
+
+    def test_get_execution(self, ):
+        """ test getting an execution"""
+        spec = TestWorkflowSpec()
+        execution = Workflow(spec)
+        execution.complete_all()
         execution_object = Execution(owner=1234)
-        spec_file = main.get_workflow_spec_file_handler().read()
+        execution_object.data = execution.serialize(DictionarySerializer())
+        execution_id = execution_object.put().urlsafe()
+        resp = self.api(uri='/executions/' + execution_id, user_id=1234)
+        self.assertIn('execution', resp)
+        self.assertIn('schema', resp['execution'])
+
+    @patch('main.get_workflow_spec')
+    def test_post_execution(self, mock_spec):
+        """ test getting an execution"""
+        # print TestWorkflowSpec().serialize(JSONSerializer())
+        mock_spec.return_value = TestWorkflowSpec().serialize(JSONSerializer())
+        execution_object = Execution(owner=1234)
+        spec_file = main.get_workflow_spec()
         spec = JSONSerializer().deserialize_workflow_spec(spec_file)
         execution = Workflow(spec)
         execution.complete_all()
         execution_object.data = execution.serialize(DictionarySerializer())
         execution_id = execution_object.put().urlsafe()
-        resp = self.api(uri='/executions/' + execution_id, user_id=1234)
-        print resp
-        self.fail()
-    def test_get_inputs_required(self):
-        """ tests json schema load"""
-        pass
+        data = {
+          "name": "John Smith",
+          "face": "Jude Smith",
+          "nose": "mr",
+          "pets": [
+            {
+              "type": "dog",
+              "name": "Walter"
+            }
+          ]
+        }
+        resp = self.api(uri='/executions/' + execution_id, user_id=1234, method='POST', data=data)
+
+        self.assertIn('execution', resp)
+        self.assertIn('schema', resp['execution'])
+        self.assertIn('mildrid', resp['execution']['schema'])
 
     def test_execution_delete(self):
         """ test deleting an execution """
-        pass
+        execution_id = Execution(owner=1234).put().urlsafe()
+        self.api(uri='/executions/' + execution_id, user_id=1234, method='DELETE')
+        self.assertEqual(None, ndb.Key(urlsafe=execution_id).get())
 
     def test_execution_resume(self):
         """ check that we can resume an execution"""

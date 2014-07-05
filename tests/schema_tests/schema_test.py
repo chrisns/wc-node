@@ -1,7 +1,7 @@
 # coding=utf-8
 import jsonschema
 import unittest
-import wc_api
+import main
 
 
 class SchemaTests(unittest.TestCase):
@@ -10,7 +10,7 @@ class SchemaTests(unittest.TestCase):
 
     def test_schema_load(self):
         """ check that we can resume an execution"""
-        schema = wc_api.get_schema()
+        schema = main.get_schema()
         jsonschema.Draft4Validator.check_schema(schema)
 
     def test_schema_validator_does_fail(self):
