@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+""" User Input workflow step spec"""
 from __future__ import division
 
 from SpiffWorkflow.Task import Task
@@ -55,6 +56,7 @@ class UserInput(TaskSpec):
         @param kwargs:
         @return:
         """
+        # noinspection PyProtectedMember
         s_state = serializer._serialize_task_spec(self)
         s_state['args'] = self.args
         return s_state
@@ -71,6 +73,7 @@ class UserInput(TaskSpec):
         """
         instance = cls(wf_spec, s_state['name'])
 
+        # noinspection PyProtectedMember
         spec = serializer._deserialize_task_spec(wf_spec,
                                                  s_state,
                                                  instance,

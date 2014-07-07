@@ -1,4 +1,5 @@
 # coding=utf-8
+""" test the schema """
 import jsonschema
 import unittest
 import main
@@ -18,6 +19,7 @@ class SchemaTests(unittest.TestCase):
         schema = {
             "type": "objecta",
         }
+        # noinspection PyUnresolvedReferences
         with self.assertRaises(jsonschema.exceptions.SchemaError):
             jsonschema.Draft4Validator.check_schema(schema)
 

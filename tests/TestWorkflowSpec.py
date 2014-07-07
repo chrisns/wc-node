@@ -1,4 +1,5 @@
 # coding=utf-8
+""" test our workflow specs """
 from SpiffWorkflow.specs import *
 from SpiffWorkflow.operators import *
 

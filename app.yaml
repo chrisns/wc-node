@@ -31,12 +31,8 @@ handlers:
   upload: dist/favicon.ico
 
 
-# This handler routes requests to your APIs to your Endpoints code.
-# See https://developers.google.com/appengine/docs/python/endpoints/
-- url: /_ah/spi/.*
-  script: wc_api.APPLICATION
 
-- url: /api.*  # This regex directs all routes to main.app
+- url: /api.*
   script: main.app
 
 
@@ -49,16 +45,12 @@ handlers:
 # Note that dependencies must be located in your project directory - packages
 # installed in the Python environment are not loaded by the App Engine
 # development server or deployment tools.
-libraries:
-
-# You must include the Endpoints library if you wish to serve an API.
-- name: endpoints
-  version: 1.0
+#libraries:
 
 # The pycrypto library is used for OAuth 2, and is also a requirement for
 # APIs that wish to authenticate users.
-- name: pycrypto
-  version: latest
+#- name: pycrypto
+#  version: latest
 
 pagespeed:
   enabled_rewriters:

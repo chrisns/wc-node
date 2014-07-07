@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # coding=utf-8
+""" provides facebook authentication to our api """
 
 import base64
 import hashlib
@@ -28,7 +29,7 @@ def get_user_id(f):
         user_id = get_user_id_from_request(request)
         if user_id is None:
             abort(400)
-        return f(user_id, *args, **kwargs)
+        return f(user_id=user_id, *args, **kwargs)
 
     return decorated_function
 

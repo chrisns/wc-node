@@ -25,7 +25,3 @@ ingest bpmn modelled workflow
 
 use json-schema in python with https://github.com/Julian/jsonschema/ in BE
 implement https://github.com/jdorn/json-editor in frontend
-
-move away from rpc
-
-remove all google endpoints code

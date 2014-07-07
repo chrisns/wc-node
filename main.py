@@ -2,7 +2,6 @@
 # coding=utf-8
 """`main` is the top level module for your Flask application."""
 
-import pprint
 import types
 
 from flask import Flask
@@ -20,8 +19,6 @@ from WorkflowSpecs.UserInput import UserInput
 from models.Execution import Execution
 from py_utils.facebook_auth import *
 
-
-pprint.PrettyPrinter(indent=2)
 
 app = Flask(__name__, static_url_path="")
 app.config['MARSHMALLOW_DATEFORMAT'] = 'iso'
@@ -48,6 +45,7 @@ def root():
     return jsonify(routes)
 
 
+# noinspection PyUnusedLocal
 @app.errorhandler(404)
 def page_not_found(event):
     """Return a custom 404 error.
@@ -121,52 +119,64 @@ def executions_list(user_id):
     return jsonify(response)
 
 
-@app.route('/api/executions/<execution_id>', methods=['GET', 'POST', 'DELETE'])
-@get_user_id
-def execution_detail(user_id, execution_id):
+def get_execution_object(f):
+    """
+    Get the execution object based on the request only if it belongs to the correct user
+    @param f:
+    """
+
+    @get_user_id
+    @wraps(f)
+    def decorated_function(user_id, execution_id, *args, **kwargs):
+        """
+        Decorate function
+        @param user_id:
+        @param execution_id:
+        @param args:
+        @param kwargs:
+        @return object execution object:
+        """
+        execution_object = ndb.Key(urlsafe=execution_id).get()
+
+        if user_id != execution_object.owner:
+            abort(404)
+        return f(execution_object=execution_object, user_id=user_id, *args, **kwargs)
+
+    return decorated_function
+
+
+# noinspection PyUnresolvedReferences,PyUnusedLocal
+@app.route('/api/executions/<execution_id>', methods=['DELETE'])
+@get_execution_object
+def execution_delete(user_id, execution_object):
+    """
+    Delete an execution
+    @param user_id:
+    @param execution_object:
+    @return: json
+    """
+    execution_object.key.delete()
+    response = {
+        "action": {
+            "version": 1.0,
+            "status": "success",
+        }
+    }
+    return jsonify(response)
+
+
+# noinspection PyUnusedLocal,PyUnresolvedReferences
+@app.route('/api/executions/<execution_id>', methods=['GET'])
+@get_execution_object
+def execution_get(user_id, execution_object):
     """
     get the execution detail
     @param user_id:
-    @param execution_id:
-    @return:
+    @param execution_object:
+    @return: json
     """
-    execution_object = ndb.Key(urlsafe=execution_id).get()
-    if user_id != execution_object.owner:
-        abort(404)
-
-    if request.method is 'DELETE':
-        ndb.Key(urlsafe=execution_id).delete()
-        response = {
-            "action": {
-                "version": 1.0,
-                "status": "success",
-            }
-        }
-        return jsonify(response)
-
     execution = DictionarySerializer().deserialize_workflow(execution_object.data)
     execution.complete_all()
-    if request.method is 'POST':
-        data = json.loads(request.data)
-        # todo: validate against schema first
-        for waiting_task in execution._get_waiting_tasks():
-            if isinstance(waiting_task.task_spec, UserInput):
-                # print request.data.keys()
-                for key in data.keys():
-                    if key in waiting_task.task_spec.args:
-                        if isinstance(data[key], types.StringTypes):
-                            waiting_task.set_data(**{key: data[key]})
-                            pass
-                        else:
-                            for value in data[key]:
-                                # todo: handle multiple value responses
-                                waiting_task.set_data(**{key: data[key]})
-
-            execution.complete_all()
-
-        execution_object.data = execution.serialize(DictionarySerializer())
-        execution_object.put()
-
     response = {
         "execution": {
             "version": 1.0,
@@ -174,6 +184,40 @@ def execution_detail(user_id, execution_id):
         }
     }
     return jsonify(response)
+
+
+# noinspection PyUnusedLocal,PyUnresolvedReferences
+@app.route('/api/executions/<execution_id>', methods=['POST'])
+@get_execution_object
+def execution_post(user_id, execution_object):
+    """
+    submit responses to the execution
+    @param user_id:
+    @param execution_object:
+    @return: flask.redirect
+    """
+    execution = DictionarySerializer().deserialize_workflow(execution_object.data)
+    execution.complete_all()
+    data = json.loads(request.data)
+    # todo: validate against schema first
+    # noinspection PyProtectedMember
+    for waiting_task in execution._get_waiting_tasks():
+        if isinstance(waiting_task.task_spec, UserInput):
+            for key in data.keys():
+                if key in waiting_task.task_spec.args:
+                    if isinstance(data[key], types.StringTypes):
+                        waiting_task.set_data(**{key: data[key]})
+                        pass
+                    else:
+                        for value in data[key]:
+                            # todo: handle multiple value responses
+                            waiting_task.set_data(**{key: data[key]})
+
+        execution.complete_all()
+
+    execution_object.data = execution.serialize(DictionarySerializer())
+    execution_object.put()
+    return redirect(url_for('execution_get', execution_id=execution_object.key.urlsafe()))
 
 
 # noinspection PyTypeChecker
@@ -192,23 +236,19 @@ def execution_new(user_id):
     execution.complete_all()
     execution_object.data = execution.serialize(DictionarySerializer())
     execution_id = execution_object.put().urlsafe()
-    return redirect(url_for('execution_detail', execution_id=execution_id))
+    return redirect(url_for('execution_get', execution_id=execution_id))
 
 
 class ExecutionCollectionMarshal(ma.Serializer):
-    href = ma.URL('execution_detail', execution_id='<execution_id>')
+    """
+    Serializer for collections of executions
+    """
+    # noinspection PyUnresolvedReferences
+    href = ma.URL('execution_get', execution_id='<execution_id>')
     type = fields.Function(lambda obj: obj.__class__.__name__)
 
     class Meta:
-        additional = ['execution_id', 'created', 'type']
-
-
-class ExecutionMarshal(ma.Serializer):
-    created = fields.Function(lambda obj: obj.created.isoformat())
-    type = fields.Function(lambda obj: obj.__class__.__name__)
-    href = ma.URL('execution_detail', execution_id='<execution_id>')
-
-    class Meta:
+        """ Meta serializer class """
         additional = ['execution_id', 'created', 'type']
 
 
@@ -223,6 +263,7 @@ def get_filtered_schema(execution):
     """
     inputs_required = dict()
     inputs_matrix = get_schema()['properties']
+    # noinspection PyProtectedMember
     for waiting_task in execution._get_waiting_tasks():
         if isinstance(waiting_task.task_spec, UserInput):
             for input_required in waiting_task.task_spec.args:

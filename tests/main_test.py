@@ -89,7 +89,7 @@ class MainTests(unittest.TestCase):
         key_not_to_expect = Execution(owner=300).put().urlsafe()
 
         resp = self.api(uri='/executions', user_id=1234)
-
+        # self.fail()
         self.assertEquals(resp.keys()[0], "collection")
         self.assertIn("/api/executions/create", resp['collection']['_links']['create']['href'])
         self.assertEquals(len(resp['collection']['items']), 3)
@@ -155,8 +155,16 @@ class MainTests(unittest.TestCase):
                 }
             ]
         }
-        resp = self.api(uri='/executions/' + execution_id, user_id=1234, method='POST', data=data)
+        redirect_resp = self.api(uri='/executions/' + execution_id,
+                                 user_id=1234,
+                                 method='POST',
+                                 data=data,
+                                 status_code=302,
+                                 content_type='text/html; charset=utf-8')
+        self.assertIn('You should be redirected automatically', redirect_resp.data)
+        self.assertIn('api/executions/', redirect_resp.headers['Location'])
 
+        resp = self.api(uri='/executions/' + execution_id, user_id=1234)
         self.assertIn('execution', resp)
         self.assertIn('schema', resp['execution'])
         self.assertIn('mildrid', resp['execution']['schema'])
