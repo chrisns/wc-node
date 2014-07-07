@@ -14,7 +14,7 @@ from SpiffWorkflow import *
 from SpiffWorkflow.storage import JSONSerializer
 from SpiffWorkflow.storage import DictionarySerializer
 from google.appengine.ext import ndb
-
+import jsonschema
 from WorkflowSpecs.UserInput import UserInput
 from models.Execution import Execution
 from py_utils.facebook_auth import *
@@ -199,7 +199,12 @@ def execution_post(user_id, execution_object):
     execution = DictionarySerializer().deserialize_workflow(execution_object.data)
     execution.complete_all()
     data = json.loads(request.data)
-    # todo: validate against schema first
+    schema = get_filtered_schema(execution)
+    try:
+        jsonschema.Draft4Validator(schema).validate(data)
+    except Exception:
+        raise Exception('schema/input mismatch')
+
     # noinspection PyProtectedMember
     for waiting_task in execution._get_waiting_tasks():
         if isinstance(waiting_task.task_spec, UserInput):
@@ -212,8 +217,7 @@ def execution_post(user_id, execution_object):
                         for value in data[key]:
                             # todo: handle multiple value responses
                             waiting_task.set_data(**{key: data[key]})
-
-        execution.complete_all()
+    execution.complete_all()
 
     execution_object.data = execution.serialize(DictionarySerializer())
     execution_object.put()
@@ -272,7 +276,11 @@ def get_filtered_schema(execution):
                         input_required] = inputs_matrix[input_required]
                 else:
                     raise Exception('Unmapped input')
-    return inputs_required
+    return {
+        "$schema": "http://json-schema.org/schema#",
+        "type": "object",
+        "properties": inputs_required,
+    }
 
 
 def get_schema():

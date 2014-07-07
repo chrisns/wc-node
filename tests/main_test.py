@@ -83,10 +83,12 @@ class MainTests(unittest.TestCase):
 
     def test_list_executions(self):
         """ check that we can list executions belonging to a user and no other"""
-        keys_to_expect = [Execution(owner=1234).put().urlsafe(), Execution(owner=1234).put().urlsafe(),
-                          Execution(owner=1234).put().urlsafe()]
-
-        key_not_to_expect = Execution(owner=300).put().urlsafe()
+        keys_to_expect = [
+            self._create_execution_object(),
+            self._create_execution_object(),
+            self._create_execution_object()
+        ]
+        key_not_to_expect = self._create_execution_object(owner=456)
 
         resp = self.api(uri='/executions', user_id=1234)
         # self.fail()
@@ -115,34 +117,21 @@ class MainTests(unittest.TestCase):
         self.assertIn('api/executions/', resp.headers['Location'])
 
     def test_get_execution_authentication_denies(self):
-        execution_id = Execution(owner=1234).put().urlsafe()
+        execution_id = self._create_execution_object()
         resp = self.api(uri='/executions/' + execution_id, user_id=4567, status_code=404)
         self.assertNotIn('execution', resp)
         self.assertIn('error', resp)
 
-    def test_get_execution(self, ):
+    def test_get_execution(self):
         """ test getting an execution"""
-        spec = TestWorkflowSpec()
-        execution = Workflow(spec)
-        execution.complete_all()
-        execution_object = Execution(owner=1234)
-        execution_object.data = execution.serialize(DictionarySerializer())
-        execution_id = execution_object.put().urlsafe()
+        execution_id = self._create_execution_object()
         resp = self.api(uri='/executions/' + execution_id, user_id=1234)
         self.assertIn('execution', resp)
         self.assertIn('schema', resp['execution'])
 
-    @patch('main.get_workflow_spec')
-    def test_post_execution(self, mock_spec):
+    def test_post_execution(self):
         """ test getting an execution"""
-        mock_spec.return_value = TestWorkflowSpec().serialize(JSONSerializer())
-        execution_object = Execution(owner=1234)
-        spec_file = main.get_workflow_spec()
-        spec = JSONSerializer().deserialize_workflow_spec(spec_file)
-        execution = Workflow(spec)
-        execution.complete_all()
-        execution_object.data = execution.serialize(DictionarySerializer())
-        execution_id = execution_object.put().urlsafe()
+        execution_id = self._create_execution_object()
         data = {
             "name": "John Smith",
             "face": "Jude Smith",
@@ -166,7 +155,38 @@ class MainTests(unittest.TestCase):
         resp = self.api(uri='/executions/' + execution_id, user_id=1234)
         self.assertIn('execution', resp)
         self.assertIn('schema', resp['execution'])
-        self.assertIn('mildrid', resp['execution']['schema'])
+        self.assertIn('mildrid', resp['execution']['schema']['properties'])
+
+
+    def test_post_invalid_execution(self):
+        """ test posting an execution with invalid input"""
+        execution_id = self._create_execution_object()
+        data = {
+            "name": "Joh",
+        }
+        with self.assertRaises(Exception) as ex:
+            self.api(uri='/executions/' + execution_id,
+                     user_id=1234,
+                     method='POST',
+                     data=data,
+                     status_code=302,
+                     content_type='text/html; charset=utf-8')
+        self.assertEqual('schema/input mismatch', ex.exception.message)
+
+    @patch('main.get_workflow_spec')
+    def _create_execution_object(self, mock_spec, owner=1234):
+        """
+        Helper to make a valid execution object and return the execution_id
+        """
+        mock_spec.return_value = TestWorkflowSpec().serialize(JSONSerializer())
+        execution_object = Execution(owner=owner)
+        spec_file = main.get_workflow_spec()
+        spec = JSONSerializer().deserialize_workflow_spec(spec_file)
+        execution = Workflow(spec)
+        execution.complete_all()
+        execution_object.data = execution.serialize(DictionarySerializer())
+        execution_id = execution_object.put().urlsafe()
+        return execution_id
 
     def test_execution_delete(self):
         """ test deleting an execution """

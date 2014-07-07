@@ -21,3 +21,6 @@ ingest bpmn modelled workflow
 use json-schema in python with https://github.com/Julian/jsonschema/ in BE
 
 implement https://github.com/jdorn/json-editor in frontend
+
+
+catch exceptions with json output and correct http error codes
