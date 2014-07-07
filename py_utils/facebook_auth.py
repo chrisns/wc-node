@@ -100,7 +100,7 @@ class SignedRequestError(Exception):
             self.status_code = status_code
         self.payload = payload
 
-    def to_dict(self):
+    def to_dict(self):  #pragma: no cover
         """
         to_dict handler for rendering the exception
         @return: dict

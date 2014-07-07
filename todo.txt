@@ -5,11 +5,6 @@ return current list of required inputs
   render inputs in JS
     validate input before sending to BE
 
---store executions in ndb
-  load execution by id
-  list stored executions that belong to user
-
-
 service status page that queries all gae services we use and facebook to test and show where there may be an issue
 
 ga event for each workflow step processed in FE
@@ -20,8 +15,9 @@ properly create models for execution, task specs etc so that they can be stored 
 
 
 include input format in workflow model so it can be versioned accordingly
+
 ingest bpmn modelled workflow
 
-
 use json-schema in python with https://github.com/Julian/jsonschema/ in BE
+
 implement https://github.com/jdorn/json-editor in frontend

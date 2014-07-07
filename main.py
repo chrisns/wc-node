@@ -78,7 +78,7 @@ def auth_required(event):
 
 
 @app.errorhandler(SignedRequestError)
-def handle_invalid_usage(error):
+def handle_invalid_usage(error): #pragma: no cover
     """
     error handler for signed request errors
     @type error: py_utils.facebook_auth.SignedRequestError
@@ -271,7 +271,7 @@ def get_filtered_schema(execution):
                     inputs_required[
                         input_required] = inputs_matrix[input_required]
                 else:
-                    raise Exception('Unmapped input', input_required)
+                    raise Exception('Unmapped input')
     return inputs_required
 
 

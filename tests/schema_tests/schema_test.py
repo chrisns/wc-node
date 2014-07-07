@@ -3,7 +3,9 @@
 import jsonschema
 import unittest
 import main
-
+from mock import patch
+from tests.TestWorkflowSpec import TestWorkflowSpec
+from SpiffWorkflow import *
 
 class SchemaTests(unittest.TestCase):
 
@@ -23,6 +25,14 @@ class SchemaTests(unittest.TestCase):
         with self.assertRaises(jsonschema.exceptions.SchemaError):
             jsonschema.Draft4Validator.check_schema(schema)
 
+    @patch('main.get_schema')
+    def test_post_execution_with_invalid_input(self, mock_get_schema):
+        """ test posting to an execution with invalid input"""
+        execution = Workflow(TestWorkflowSpec())
+        execution.complete_all()
+        with self.assertRaises(Exception) as ex:
+            main.get_filtered_schema(execution)
+        self.assertEqual('Unmapped input', ex.exception.message)
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main()  # pragma: no cover

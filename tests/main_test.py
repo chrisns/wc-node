@@ -135,7 +135,6 @@ class MainTests(unittest.TestCase):
     @patch('main.get_workflow_spec')
     def test_post_execution(self, mock_spec):
         """ test getting an execution"""
-        # print TestWorkflowSpec().serialize(JSONSerializer())
         mock_spec.return_value = TestWorkflowSpec().serialize(JSONSerializer())
         execution_object = Execution(owner=1234)
         spec_file = main.get_workflow_spec()
@@ -174,11 +173,6 @@ class MainTests(unittest.TestCase):
         execution_id = Execution(owner=1234).put().urlsafe()
         self.api(uri='/executions/' + execution_id, user_id=1234, method='DELETE')
         self.assertEqual(None, ndb.Key(urlsafe=execution_id).get())
-
-    def test_execution_resume(self):
-        """ check that we can resume an execution"""
-        pass
-
 
 if __name__ == '__main__':
     unittest.main()  # pragma: no cover
