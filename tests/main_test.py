@@ -154,7 +154,6 @@ class MainTests(unittest.TestCase):
         self.assertIn('schema', resp['execution'])
         self.assertIn('mildrid', resp['execution']['schema']['properties'])
 
-
     def test_post_invalid_execution(self):
         """ test posting an execution with invalid input"""
         execution_id = self._create_execution_object()
@@ -190,6 +189,7 @@ class MainTests(unittest.TestCase):
         execution_id = Execution(owner=1234).put().urlsafe()
         self.api(uri='/executions/' + execution_id, user_id=1234, method='DELETE')
         self.assertEqual(None, ndb.Key(urlsafe=execution_id).get())
+
 
 if __name__ == '__main__':
     unittest.main()  # pragma: no cover

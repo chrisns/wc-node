@@ -5,6 +5,7 @@
 import types
 
 from flask import Flask
+
 from flask import url_for
 from flask import jsonify
 from flask import redirect
@@ -15,6 +16,7 @@ from SpiffWorkflow.storage import JSONSerializer
 from SpiffWorkflow.storage import DictionarySerializer
 from google.appengine.ext import ndb
 import jsonschema
+
 from WorkflowSpecs.UserInput import UserInput
 from models.Execution import Execution
 from py_utils.facebook_auth import *
@@ -78,7 +80,7 @@ def auth_required(event):
 
 
 @app.errorhandler(SignedRequestError)
-def handle_invalid_usage(error): #pragma: no cover
+def handle_invalid_usage(error):  # pragma: no cover
     """
     error handler for signed request errors
     @type error: py_utils.facebook_auth.SignedRequestError

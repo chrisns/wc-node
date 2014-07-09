@@ -7,8 +7,8 @@ from mock import patch
 from tests.TestWorkflowSpec import TestWorkflowSpec
 from SpiffWorkflow import *
 
-class SchemaTests(unittest.TestCase):
 
+class SchemaTests(unittest.TestCase):
     """ test things to do with our input schema """
 
     def test_schema_load(self):
@@ -33,6 +33,7 @@ class SchemaTests(unittest.TestCase):
         with self.assertRaises(Exception) as ex:
             main.get_filtered_schema(execution)
         self.assertEqual('Unmapped input', ex.exception.message)
+
 
 if __name__ == '__main__':
     unittest.main()  # pragma: no cover
