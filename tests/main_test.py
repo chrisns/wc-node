@@ -7,7 +7,6 @@ from google.appengine.ext import ndb
 
 from models.Execution import Execution
 
-# import py_utils.facebook_auth
 from SpiffWorkflow import *
 
 from SpiffWorkflow.storage import JSONSerializer
@@ -18,8 +17,6 @@ from tests.TestWorkflowSpec import TestWorkflowSpec
 
 import main
 from mock import patch
-# sys.path.append('./py_utils')
-# from facebook_auth import *
 import pprint
 
 pprint.PrettyPrinter(indent=2)

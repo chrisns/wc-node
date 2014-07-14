@@ -262,7 +262,8 @@ def get_workflow_spec():
 
 
 def get_filtered_schema(execution):
-    """ returns required inputs given an execution
+    """
+    returns required inputs given an execution
     @param execution:
     """
     inputs_required = dict()

@@ -16,7 +16,7 @@ from SpiffWorkflow.Task import *
 from models.Execution import Execution
 from WorkflowSpecs.UserInput import UserInput
 from tests.TestWorkflowSpec import TestWorkflowSpec
-
+import py_utils.NDBSerializer
 
 class TestWorkflowFunctionalTests(unittest.TestCase):
     def setUp(self):
@@ -57,8 +57,7 @@ class TestWorkflowFunctionalTests(unittest.TestCase):
         urlsafe_key = Execution(owner=100, data=data).put().urlsafe()
         restored_data = ndb.Key(urlsafe=urlsafe_key).get().data
         self.assertEqual(data, restored_data)
-        restored_execution = DictionarySerializer(
-        ).deserialize_workflow(restored_data)
+        restored_execution = DictionarySerializer().deserialize_workflow(restored_data)
         self.assertEqual(restored_execution.get_tasks(
             Task.READY)[0].task_spec.name, 'Start')
 

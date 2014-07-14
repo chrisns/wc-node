@@ -1,7 +1,7 @@
-return current list of required inputs
-  save responses
-  return validation rules for required inputs
-  validate responses in python
+--return current list of required inputs
+--  save responses
+--  return validation rules for required inputs
+--  validate responses in python
   render inputs in JS
     validate input before sending to BE
 
@@ -24,3 +24,10 @@ implement https://github.com/jdorn/json-editor in frontend
 
 
 catch exceptions with json output and correct http error codes
+
+
+hande multiple workflows?
+
+move dot visualiser back into a seperate php file
+
+create a ndb serialiser for workflow execution - maybe use marshmallow?
