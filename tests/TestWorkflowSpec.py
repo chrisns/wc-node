@@ -12,6 +12,8 @@ class TestWorkflowSpec(WorkflowSpec):
 
     def __init__(self):
         WorkflowSpec.__init__(self)
+        self.name = "my workflow"
+        self.description = 'aa'
         task_a1 = UserInput(
             self, 'task_a1', args=["name", "face", "nose", "pets"])
         self.start.connect(task_a1)

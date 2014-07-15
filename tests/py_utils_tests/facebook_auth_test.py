@@ -2,7 +2,7 @@
 # coding=utf-8
 """ facebook authentication tests """
 
-from py_utils.facebook_auth import *
+from py_utils_tests.facebook_auth import *
 
 import unittest
 import base64

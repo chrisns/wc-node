@@ -15,8 +15,8 @@ from SpiffWorkflow.Task import *
 
 from models.Execution import Execution
 from WorkflowSpecs.UserInput import UserInput
+from py_utils.NDBSerializer import NDBSerializer
 from tests.TestWorkflowSpec import TestWorkflowSpec
-import py_utils.NDBSerializer
 
 class TestWorkflowFunctionalTests(unittest.TestCase):
     def setUp(self):
@@ -53,13 +53,14 @@ class TestWorkflowFunctionalTests(unittest.TestCase):
 
     def test_valid_pickle_workflow(self):
         """test the basics of the pickling serializer/deserializer on the workflow storing to ndb"""
-        data = self.workflow.serialize(DictionarySerializer())
+        data = self.workflow.serialize(NDBSerializer())
         urlsafe_key = Execution(owner=100, data=data).put().urlsafe()
         restored_data = ndb.Key(urlsafe=urlsafe_key).get().data
         self.assertEqual(data, restored_data)
-        restored_execution = DictionarySerializer().deserialize_workflow(restored_data)
+        restored_execution = NDBSerializer().deserialize_workflow(restored_data)
         self.assertEqual(restored_execution.get_tasks(
             Task.READY)[0].task_spec.name, 'Start')
+        self.fail()
 
     def test_simple_workflow_flight(self):
         """test a flight through the workflow"""
