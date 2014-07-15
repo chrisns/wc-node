@@ -9,8 +9,8 @@ from models.Execution import Execution
 
 from SpiffWorkflow import *
 
-from SpiffWorkflow.storage import JSONSerializer
-from SpiffWorkflow.storage import DictionarySerializer
+from py_utils.NDBSerializer import NDBSerializer
+
 import unittest
 import json
 from tests.TestWorkflowSpec import TestWorkflowSpec
@@ -37,11 +37,13 @@ class MainTests(unittest.TestCase):
     def tearDown(self):
         self.testbed.deactivate()
 
+    @patch('main.get_workflow_spec')
     @patch('py_utils.facebook_auth.get_user_id_from_request')
-    def api(self, mock_get_user_id=None, uri='', method='GET', data=None, status_code=200,
+    def api(self, mock_get_user_id=None, workflow_mock=None, uri='', method='GET', data=None, status_code=200,
             content_type='application/json', user_id=None):
         """ helper to make api calls """
         global response
+        workflow_mock.return_value = TestWorkflowSpec()
         uri = "/api" + uri
         if data is None:
             data = {}
@@ -169,18 +171,15 @@ class MainTests(unittest.TestCase):
                      content_type='text/html; charset=utf-8')
         self.assertEqual('schema/input mismatch', ex.exception.message)
 
-    @patch('main.get_workflow_spec')
-    def _create_execution_object(self, mock_spec, owner=1234):
+    def _create_execution_object(self, owner=1234):
         """
         Helper to make a valid execution object and return the execution_id
         """
-        mock_spec.return_value = TestWorkflowSpec().serialize(JSONSerializer())
         execution_object = Execution(owner=owner)
-        spec_file = main.get_workflow_spec()
-        spec = JSONSerializer().deserialize_workflow_spec(spec_file)
+        spec = TestWorkflowSpec()
         execution = Workflow(spec)
         execution.complete_all()
-        execution_object.data = execution.serialize(DictionarySerializer())
+        execution_object.data = execution.serialize(NDBSerializer())
         execution_id = execution_object.put().urlsafe()
         return execution_id
 

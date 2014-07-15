@@ -14,6 +14,7 @@ from flask.ext.marshmallow import Marshmallow
 from SpiffWorkflow import *
 from SpiffWorkflow.storage import JSONSerializer
 from SpiffWorkflow.storage import DictionarySerializer
+from py_utils.NDBSerializer import NDBSerializer
 from google.appengine.ext import ndb
 import jsonschema
 
@@ -177,7 +178,8 @@ def execution_get(user_id, execution_object):
     @param execution_object:
     @return: json
     """
-    execution = DictionarySerializer().deserialize_workflow(execution_object.data)
+    spec = get_workflow_spec()
+    execution = NDBSerializer().deserialize_workflow(s_state=execution_object.data, wf_spec=spec)
     execution.complete_all()
     response = {
         "execution": {
@@ -198,7 +200,8 @@ def execution_post(user_id, execution_object):
     @param execution_object:
     @return: flask.redirect
     """
-    execution = DictionarySerializer().deserialize_workflow(execution_object.data)
+    spec = get_workflow_spec()
+    execution = NDBSerializer().deserialize_workflow(s_state=execution_object.data, wf_spec=spec)
     execution.complete_all()
     data = json.loads(request.data)
     schema = get_filtered_schema(execution)
@@ -236,8 +239,7 @@ def execution_new(user_id):
     @return: flask.redirect
     """
     execution_object = Execution(owner=user_id)
-    spec_file = get_workflow_spec()
-    spec = JSONSerializer().deserialize_workflow_spec(spec_file)
+    spec = get_workflow_spec()
     execution = Workflow(spec)
     execution.complete_all()
     execution_object.data = execution.serialize(DictionarySerializer())
@@ -257,10 +259,14 @@ class ExecutionCollectionMarshal(ma.Serializer):
         """ Meta serializer class """
         additional = ['execution_id', 'created', 'type']
 
-
 def get_workflow_spec():
+    spec_file = get_workflow_spec_file()
+    spec = JSONSerializer().deserialize_workflow_spec(spec_file)
+    return spec
+
+def get_workflow_spec_file():
     """ get the workflow spec """
-    return open("Workflow.json").read()
+    # return open("Workflow.json").read()
 
 
 def get_filtered_schema(execution):

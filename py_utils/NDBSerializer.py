@@ -1,19 +1,6 @@
 # -*- coding: utf-8 -*-
-from __future__ import division
-# This library is free software; you can redistribute it and/or
-# modify it under the terms of the GNU Lesser General Public
-# License as published by the Free Software Foundation; either
-# version 2.1 of the License, or (at your option) any later version.
-#
-# This library is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-# Lesser General Public License for more details.
-#
-# You should have received a copy of the GNU Lesser General Public
-# License along with this library; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
-import pickle
+
+import cPickle
 from base64 import b64encode, b64decode
 from SpiffWorkflow import Workflow
 from SpiffWorkflow.util.impl import get_class
@@ -26,19 +13,14 @@ from SpiffWorkflow.storage import DictionarySerializer
 from SpiffWorkflow.storage.exceptions import TaskNotSupportedError
 import warnings
 
-import pprint
+# import pprint
 from tests.TestWorkflowSpec import TestWorkflowSpec
-
-pprint.PrettyPrinter(indent=2)
 
 class NDBSerializer(DictionarySerializer):
     def _serialize_dict(self, thedict):
         return dict(
-            (k, b64encode(pickle.dumps(v, protocol=pickle.HIGHEST_PROTOCOL)))
+            (k, b64encode(cPickle.dumps(v, protocol=cPickle.HIGHEST_PROTOCOL)))
             for k, v in thedict.items())
-
-    def deserialize_workflow_spec(self, s_state, **kwargs):
-        return TestWorkflowSpec()
 
     def serialize_workflow(self, workflow, **kwargs):
         assert isinstance(workflow, Workflow)
@@ -60,22 +42,13 @@ class NDBSerializer(DictionarySerializer):
 
         #task_tree
         s_state['task_tree'] = self._serialize_task(workflow.task_tree)
-        import sys
-        print sys.getsizeof(pickle.dumps(s_state))
-        print sys.getsizeof(str(s_state))
-        pprint.pprint(s_state)
         return s_state
 
-    def deserialize_workflow(self, s_state, **kwargs):
-        wf_spec = self.deserialize_workflow_spec(s_state['wf_spec'], **kwargs)
-        # wf_spec =
+    def deserialize_workflow(self, s_state, wf_spec, **kwargs):
         workflow = Workflow(wf_spec)
 
         # data
         workflow.data = self._deserialize_dict(s_state['data'])
-
-        # outer_workflow
-        # workflow.outer_workflow =  find_workflow_by_id(remap_workflow_id(s_state['outer_workflow']))
 
         # success
         workflow.success = s_state['success']
@@ -131,7 +104,7 @@ class NDBSerializer(DictionarySerializer):
         # data
         s_state['data'] = self._serialize_dict(task.data)
 
-        # internal_data
+        # internal_data - we don't use this currently so leaving it out
         # s_state['internal_data'] = task.internal_data
 
         return s_state

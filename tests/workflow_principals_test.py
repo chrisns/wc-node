@@ -57,10 +57,9 @@ class TestWorkflowFunctionalTests(unittest.TestCase):
         urlsafe_key = Execution(owner=100, data=data).put().urlsafe()
         restored_data = ndb.Key(urlsafe=urlsafe_key).get().data
         self.assertEqual(data, restored_data)
-        restored_execution = NDBSerializer().deserialize_workflow(restored_data)
+        restored_execution = NDBSerializer().deserialize_workflow(s_state = restored_data, wf_spec = TestWorkflowSpec())
         self.assertEqual(restored_execution.get_tasks(
             Task.READY)[0].task_spec.name, 'Start')
-        self.fail()
 
     def test_simple_workflow_flight(self):
         """test a flight through the workflow"""
