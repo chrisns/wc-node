@@ -18,7 +18,7 @@ include input format in workflow model so it can be versioned accordingly
 
 ingest bpmn modelled workflow
 
-use json-schema in python with https://github.com/Julian/jsonschema/ in BE
+-- use json-schema in python with https://github.com/Julian/jsonschema/ in BE
 
 implement https://github.com/jdorn/json-editor in frontend
 
@@ -29,5 +29,3 @@ catch exceptions with json output and correct http error codes
 hande multiple workflows?
 
 move dot visualiser back into a seperate php file
-
-create a ndb serialiser for workflow execution - maybe use marshmallow?

@@ -5,11 +5,16 @@
 from google.appengine.ext import ndb
 
 
+class StoredValues(ndb.Model):
+    k = ndb.StringProperty(indexed = True)
+    v = ndb.PickleProperty(indexed = True)
+
 class Execution(ndb.Model):
     """Models an individual execution"""
-    created = ndb.DateTimeProperty(auto_now_add=True)
-    owner = ndb.IntegerProperty(required=True)
-    data = ndb.PickleProperty()
+    created = ndb.DateTimeProperty(auto_now_add = True)
+    owner = ndb.IntegerProperty(required = True)
+    data = ndb.PickleProperty(compressed = True)
+    values = ndb.StructuredProperty(StoredValues, repeated = True, indexed = True)
 
     @property
     def execution_id(self):
