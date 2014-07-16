@@ -18,9 +18,11 @@ from tests.TestWorkflowSpec import TestWorkflowSpec
 
 class NDBSerializer(DictionarySerializer):
     def _serialize_dict(self, thedict):
-        return dict(
-            (k, b64encode(cPickle.dumps(v, protocol=cPickle.HIGHEST_PROTOCOL)))
-            for k, v in thedict.items())
+        # we don't need to serialize stuff like this since ndb will do it later anyway
+        return thedict
+        # return dict(
+        #     (k, b64encode(cPickle.dumps(v, protocol=cPickle.HIGHEST_PROTOCOL)))
+        #     for k, v in thedict.items())
 
     def serialize_workflow(self, workflow, **kwargs):
         assert isinstance(workflow, Workflow)
