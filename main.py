@@ -13,7 +13,6 @@ from marshmallow import fields
 from flask.ext.marshmallow import Marshmallow
 from SpiffWorkflow import *
 from SpiffWorkflow.storage import JSONSerializer
-from SpiffWorkflow.storage import DictionarySerializer
 from py_utils.NDBSerializer import NDBSerializer
 from google.appengine.ext import ndb
 import jsonschema
@@ -224,7 +223,7 @@ def execution_post(user_id, execution_object):
                             waiting_task.set_data(**{key: data[key]})
     execution.complete_all()
 
-    execution_object.data = execution.serialize(DictionarySerializer())
+    execution_object.data = execution.serialize(NDBSerializer())
     execution_object.put()
     return redirect(url_for('execution_get', execution_id=execution_object.key.urlsafe()))
 
@@ -242,7 +241,7 @@ def execution_new(user_id):
     spec = get_workflow_spec()
     execution = Workflow(spec)
     execution.complete_all()
-    execution_object.data = execution.serialize(DictionarySerializer())
+    execution_object.data = execution.serialize(NDBSerializer())
     execution_id = execution_object.put().urlsafe()
     return redirect(url_for('execution_get', execution_id=execution_id))
 

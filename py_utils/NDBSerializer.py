@@ -13,16 +13,16 @@ from SpiffWorkflow.storage import DictionarySerializer
 from SpiffWorkflow.storage.exceptions import TaskNotSupportedError
 import warnings
 
-# import pprint
+import pprint
 from tests.TestWorkflowSpec import TestWorkflowSpec
 
 class NDBSerializer(DictionarySerializer):
     def _serialize_dict(self, thedict):
         # we don't need to serialize stuff like this since ndb will do it later anyway
-        return thedict
-        # return dict(
-        #     (k, b64encode(cPickle.dumps(v, protocol=cPickle.HIGHEST_PROTOCOL)))
-        #     for k, v in thedict.items())
+        # return thedict
+        return dict(
+            (k, b64encode(cPickle.dumps(v, protocol=cPickle.HIGHEST_PROTOCOL)))
+            for k, v in thedict.items())
 
     def serialize_workflow(self, workflow, **kwargs):
         assert isinstance(workflow, Workflow)
@@ -44,6 +44,7 @@ class NDBSerializer(DictionarySerializer):
 
         #task_tree
         s_state['task_tree'] = self._serialize_task(workflow.task_tree)
+        # pprint.pprint(s_state)
         return s_state
 
     def deserialize_workflow(self, s_state, wf_spec, **kwargs):
