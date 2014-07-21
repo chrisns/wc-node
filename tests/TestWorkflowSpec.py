@@ -8,6 +8,7 @@ from WorkflowSpecs.UserInput import UserInput
 
 # noinspection PyTypeChecker
 class TestWorkflowSpec(WorkflowSpec):
+
     """ Test workflow spec """
 
     def __init__(self):

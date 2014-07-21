@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:camunda="http://activiti.org/bpmn" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:signavio="http://www.signavio.com" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="sid-b4593de1-ae33-4a1b-8510-cea644cb2b88" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="" targetNamespace="http://www.signavio.com/bpmn20">
+  <process id="workflow" name="workflow" isExecutable="false">
+    <startEvent id="StartEvent_1" name="Start">
+      <outgoing>SequenceFlow_1</outgoing>
+    </startEvent>
+    <sequenceFlow id="SequenceFlow_1" name="" sourceRef="StartEvent_1" targetRef="task_a1"/>
+    <userTask id="task_a1" name="task_a1">
+      <extensionElements>
+        <camunda:formData>
+          <camunda:formField id="name" type="name"/>
+          <camunda:formField id="face" type="face"/>
+          <camunda:formField id="nose" type="nose"/>
+          <camunda:formField id="pets" type="pets"/>
+        </camunda:formData>
+      </extensionElements>
+      <incoming>SequenceFlow_1</incoming>
+      <outgoing>SequenceFlow_2</outgoing>
+    </userTask>
+    <userTask id="task_a2" name="task_a2">
+      <extensionElements>
+        <camunda:formData>
+          <camunda:formField id="sid" type="sid"/>
+          <camunda:formField id="mildrid" type="mildrid"/>
+        </camunda:formData>
+      </extensionElements>
+      <incoming>SequenceFlow_2</incoming>
+      <outgoing>SequenceFlow_8</outgoing>
+    </userTask>
+    <sequenceFlow id="SequenceFlow_2" name="" sourceRef="task_a1" targetRef="task_a2"/>
+    <exclusiveGateway id="excl_choice_1" name="excl_choice_1">
+      <incoming>SequenceFlow_8</incoming>
+      <outgoing>SequenceFlow_4</outgoing>
+      <outgoing>SequenceFlow_5</outgoing>
+    </exclusiveGateway>
+    <sequenceFlow id="SequenceFlow_4" name="" sourceRef="excl_choice_1" targetRef="task_b1"/>
+    <sequenceFlow id="SequenceFlow_5" name="mildrid=va" sourceRef="excl_choice_1" targetRef="task_b2">
+      <conditionExpression xsi:type="tFormalExpression">mildrid=va</conditionExpression>
+    </sequenceFlow>
+    <userTask id="task_b2" name="task_b2">
+      <extensionElements>
+        <camunda:formData>
+          <camunda:formField id="task_b2" type="task_b2"/>
+        </camunda:formData>
+      </extensionElements>
+      <incoming>SequenceFlow_5</incoming>
+      <outgoing>SequenceFlow_7</outgoing>
+    </userTask>
+    <endEvent id="EndEvent_1" name="end">
+      <incoming>SequenceFlow_6</incoming>
+    </endEvent>
+    <sequenceFlow id="SequenceFlow_7" name="" sourceRef="task_b2" targetRef="EndEvent_2"/>
+    <userTask id="task_b1" name="task_b1">
+      <extensionElements>
+        <camunda:formData>
+          <camunda:formField id="task_b1" type="task_b1"/>
+        </camunda:formData>
+      </extensionElements>
+      <incoming>SequenceFlow_4</incoming>
+      <outgoing>SequenceFlow_6</outgoing>
+    </userTask>
+    <sequenceFlow id="SequenceFlow_6" name="" sourceRef="task_b1" targetRef="EndEvent_1"/>
+    <endEvent id="EndEvent_2">
+      <incoming>SequenceFlow_7</incoming>
+    </endEvent>
+    <sequenceFlow id="SequenceFlow_8" name="" sourceRef="task_a2" targetRef="excl_choice_1"/>
+  </process>
+  <bpmndi:BPMNDiagram id="_BPMNDiagram_2">
+    <bpmndi:BPMNPlane id="_BPMNPlane_2" bpmnElement="workflow">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <omgdc:Bounds height="36.0" width="36.0" x="1089.0" y="148.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_UserTask_2" bpmnElement="task_a1">
+        <omgdc:Bounds height="80.0" width="100.0" x="900.0" y="312.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1" bpmnElement="SequenceFlow_1" sourceElement="_BPMNShape_StartEvent_2" targetElement="_BPMNShape_UserTask_2">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="1107.0" y="184.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="1107.0" y="230.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="950.0" y="230.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="950.0" y="312.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="6.0" width="6.0" x="1092.0" y="230.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_UserTask_3" bpmnElement="task_a2">
+        <omgdc:Bounds height="80.0" width="100.0" x="900.0" y="456.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_2" bpmnElement="SequenceFlow_2" sourceElement="_BPMNShape_UserTask_2" targetElement="_BPMNShape_UserTask_3">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="950.0" y="392.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="950.0" y="456.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_ExclusiveGateway_2" bpmnElement="excl_choice_1" isMarkerVisible="true">
+        <omgdc:Bounds height="50.0" width="50.0" x="1042.0" y="576.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="17.0" width="72.0" x="1031.0" y="631.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_UserTask_4" bpmnElement="task_b1">
+        <omgdc:Bounds height="80.0" width="100.0" x="909.0" y="684.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_UserTask_4" bpmnElement="task_b2">
+        <omgdc:Bounds height="80.0" width="100.0" x="1188.0" y="744.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_4" bpmnElement="SequenceFlow_4" sourceElement="_BPMNShape_ExclusiveGateway_2" targetElement="_BPMNShape_UserTask_4">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="1042.0" y="601.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="959.0" y="601.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="959.0" y="684.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="6.0" width="6.0" x="956.0" y="642.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_5" bpmnElement="SequenceFlow_5" sourceElement="_BPMNShape_ExclusiveGateway_2" targetElement="_BPMNShape_UserTask_4">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="1067.0" y="626.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="1067.0" y="649.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="1238.0" y="649.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="1238.0" y="744.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="6.0" width="6.0" x="1080.0" y="649.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_EndEvent_2" bpmnElement="EndEvent_1">
+        <omgdc:Bounds height="36.0" width="36.0" x="965.0" y="849.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_6" bpmnElement="SequenceFlow_6" sourceElement="_BPMNShape_UserTask_4" targetElement="_BPMNShape_EndEvent_2">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="959.0" y="764.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="959.0" y="806.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="983.0" y="806.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="983.0" y="849.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="6.0" width="6.0" x="969.0" y="806.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_7" bpmnElement="SequenceFlow_7" sourceElement="_BPMNShape_UserTask_4" targetElement="_BPMNShape_EndEvent_3">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="1238.0" y="824.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="1238.0" y="869.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="1269.0" y="869.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="1269.0" y="915.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="6.0" width="6.0" x="1251.0" y="869.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_EndEvent_3" bpmnElement="EndEvent_2">
+        <omgdc:Bounds height="36.0" width="36.0" x="1251.0" y="915.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_8" bpmnElement="SequenceFlow_8" sourceElement="_BPMNShape_UserTask_3" targetElement="_BPMNShape_ExclusiveGateway_2">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="1000.0" y="496.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="1021.0" y="496.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="1021.0" y="601.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="1042.0" y="601.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
