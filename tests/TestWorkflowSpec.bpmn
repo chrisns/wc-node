@@ -33,14 +33,14 @@
       <outgoing>SequenceFlow_4</outgoing>
       <outgoing>SequenceFlow_5</outgoing>
     </exclusiveGateway>
-    <sequenceFlow id="SequenceFlow_4" name="" sourceRef="excl_choice_1" targetRef="task_b1"/>
+    <sequenceFlow id="SequenceFlow_4" name="feh" sourceRef="excl_choice_1" targetRef="task_b1"/>
     <sequenceFlow id="SequenceFlow_5" name="mildrid=va" sourceRef="excl_choice_1" targetRef="task_b2">
       <conditionExpression xsi:type="tFormalExpression">mildrid=va</conditionExpression>
     </sequenceFlow>
     <userTask id="task_b2" name="task_b2">
       <extensionElements>
         <camunda:formData>
-          <camunda:formField id="task_b2" type="task_b2"/>
+          <camunda:formField id="bah" type="bah"/>
         </camunda:formData>
       </extensionElements>
       <incoming>SequenceFlow_5</incoming>
@@ -53,7 +53,7 @@
     <userTask id="task_b1" name="task_b1">
       <extensionElements>
         <camunda:formData>
-          <camunda:formField id="task_b1" type="task_b1"/>
+          <camunda:formField id="seh" type="seh"/>
         </camunda:formData>
       </extensionElements>
       <incoming>SequenceFlow_4</incoming>
