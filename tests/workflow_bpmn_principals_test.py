@@ -25,7 +25,7 @@ from SpiffWorkflow.bpmn.storage.CompactWorkflowSerializer import CompactWorkflow
 from tests.PackagerForTests import PackagerForTests
 
 
-class TestWorkflowFunctionalTests(unittest.TestCase):
+class TestBPMNWorkflowFunctionalTests(unittest.TestCase):
     def setUp(self):
         self.spec = self.load_workflow_spec('TestWorkflowSpec.bpmn', 'workflow')
         self.workflow = BpmnWorkflow(self.spec)
