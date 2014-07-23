@@ -71,8 +71,8 @@ class TestBPMNWorkflowFunctionalTests(unittest.TestCase):
         # check we are still waiting on the input after trying to proceed
         my_task = self.workflow.get_ready_user_tasks()[0]
         self.assertEqual(my_task.task_spec.name, 'task_a1')
-    #     self.assertEqual(
-    #         my_task.task_spec.args, ['name', 'face', 'nose', 'pets'])
+        self.assertEqual(
+            my_task.task_spec.args, ['name', 'face', 'nose', 'pets'])
         self.assertEqual(type(my_task.task_spec).__name__, 'UserTask')
 
         self.assertEqual(my_task._state, Task.READY)
@@ -128,9 +128,6 @@ class TestBPMNWorkflowFunctionalTests(unittest.TestCase):
 
         self.assertTrue(self.workflow.is_completed())
         self.save_restore()
-        state = NDBBPMNSerializer().serialize_workflow(self.workflow, include_spec=False)
-        # print state
-        # self.fail()
 
 
     def load_workflow_spec(self, filename, process_name):
@@ -139,88 +136,21 @@ class TestBPMNWorkflowFunctionalTests(unittest.TestCase):
         return BpmnSerializer().deserialize_workflow_spec(
             PackagerForTests.package_in_memory(process_name, f))
 
-    def do_next_exclusive_step(self, step_name, with_save_load=False, set_attribs=None, choice=None):
-        if with_save_load:
-            self.save_restore()
-
-        self.workflow.do_engine_steps()
-        tasks = self.workflow.get_tasks(Task.READY)
-        self._do_single_step(step_name, tasks, set_attribs, choice)
-
-    def do_next_named_step(self, step_name, with_save_load=False, set_attribs=None, choice=None, only_one_instance=True):
-        if with_save_load:
-            self.save_restore()
-
-        self.workflow.do_engine_steps()
-        step_name_path = step_name.split("|")
-        def is_match(t):
-            if not (t.task_spec.name == step_name_path[-1] or t.task_spec.description == step_name_path[-1]):
-                return False
-            for parent_name in step_name_path[:-1]:
-                p = t.parent
-                found = False
-                while (p and p != p.parent):
-                    if (p.task_spec.name == parent_name or p.task_spec.description == parent_name):
-                        found = True
-                        break
-                    p = p.parent
-                if not found:
-                    return False
-            return True
-
-        tasks = list([t for t in self.workflow.get_tasks(Task.READY) if is_match(t)])
-
-        self._do_single_step(step_name_path[-1], tasks, set_attribs, choice, only_one_instance=only_one_instance)
-
     def assertTaskNotReady(self, step_name):
         tasks = list([t for t in self.workflow.get_tasks(Task.READY) if t.task_spec.name == step_name or t.task_spec.description == step_name])
         self.assertEquals([], tasks)
 
-    def _do_single_step(self, step_name, tasks, set_attribs=None, choice=None, only_one_instance=True):
-
-        if only_one_instance:
-            self.assertEqual(len(tasks), 1, 'Did not find one task for \'%s\' (got %d)' % (step_name, len(tasks)))
-        else:
-            self.assertNotEqual(len(tasks), 0, 'Did not find any tasks for \'%s\'' % (step_name))
-
-        self.assertTrue(tasks[0].task_spec.name == step_name or tasks[0].task_spec.description == step_name,
-            'Expected step %s, got %s (%s)' % (step_name, tasks[0].task_spec.description, tasks[0].task_spec.name))
-        if not set_attribs:
-            set_attribs = {}
-
-        if choice:
-            set_attribs['choice'] = choice
-
-        if set_attribs:
-            tasks[0].set_data(**set_attribs)
-        tasks[0].complete()
-
     def save_restore(self):
         before_dump = self.workflow.get_dump()
         state = NDBBPMNSerializer().serialize_workflow(self.workflow, include_spec=False)
-
-        after_state = NDBBPMNSerializer().deserialize_workflow(state, wf_spec=self.spec)
-        after_dump = after_state.get_dump()
-        # state = self._get_workflow_state()
-
-        #We should still have the same state:
+        self.restore(state)
+        # We should still have the same state:
         after_dump = self.workflow.get_dump()
-        # after_state = self._get_workflow_state(?)
-
 
         self.assertEquals(after_dump, before_dump)
 
     def restore(self, state):
-        self.workflow = NDBBPMNSerializer().deserialize_workflow(state, workflow_spec=self.spec)
-
-    def get_read_only_workflow(self):
-        state = self._get_workflow_state()
-        return CompactWorkflowSerializer().deserialize_workflow(state, workflow_spec=self.spec, read_only=True)
-
-    def _get_workflow_state(self):
-        self.workflow.do_engine_steps()
-        self.workflow.refresh_waiting_tasks()
-        return NDBBPMNSerializer().serialize_workflow(self.workflow, include_spec=False)
+        self.workflow = NDBBPMNSerializer().deserialize_workflow(state, wf_spec=self.spec)
 
 
 if __name__ == '__main__':

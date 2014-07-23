@@ -5,17 +5,17 @@ from __future__ import division
 from SpiffWorkflow.bpmn.specs.CallActivity import CallActivity
 from SpiffWorkflow.bpmn.specs.EndEvent import EndEvent
 from SpiffWorkflow.bpmn.specs.ExclusiveGateway import ExclusiveGateway
-from SpiffWorkflow.bpmn.specs.UserTask import UserTask
+from SpiffWorkflow.bpmn.specs.UserTask import UserTask as UserTaskOrig
 from SpiffWorkflow.bpmn.parser.BpmnParser import BpmnParser
-from SpiffWorkflow.bpmn.parser.task_parsers import UserTaskParser, EndEventParser, CallActivityParser
-from SpiffWorkflow.bpmn.parser.util import full_tag
+from SpiffWorkflow.bpmn.parser.task_parsers import UserTaskParser as UserTaskParserOrig
+from SpiffWorkflow.bpmn.parser.task_parsers import EndEventParser, CallActivityParser
+from SpiffWorkflow.bpmn.parser.util import full_tag, first
 from SpiffWorkflow.operators import Assign
 
-__author__ = 'matth'
 
-#This provides some extensions to the BPMN parser that make it easier to implement testcases
-
-class TestUserTask(UserTask):
+class UserTask(UserTaskOrig):
+    def __init__(self, parent, name, lane=None, **kwargs):
+        super(UserTaskOrig, self).__init__(parent, name, **kwargs)
 
     def get_user_choices(self):
         if not self.outputs:
@@ -30,6 +30,14 @@ class TestUserTask(UserTask):
         task.set_data(choice=choice)
         task.complete()
 
+class UserTaskParser(UserTaskParserOrig):
+    def parse_node(self):
+        super(UserTaskParser, self).parse_node()
+        documentation_node = self.xpath('.//bpmn:documentation')[0]
+        # print documentation_node
+        return self.task
+
+
 class TestEndEvent(EndEvent):
 
     def _on_complete_hook(self, my_task):
@@ -43,7 +51,7 @@ class TestCallActivity(CallActivity):
 
 class TestBpmnParser(BpmnParser):
     OVERRIDE_PARSER_CLASSES = {
-        # full_tag('userTask')            : (UserTaskParser, TestUserTask),
+        full_tag('userTask')            : (UserTaskParser, UserTask),
         # full_tag('endEvent')            : (EndEventParser, TestEndEvent),
         # full_tag('callActivity')        : (CallActivityParser, TestCallActivity),
         }
