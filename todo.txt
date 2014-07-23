@@ -29,3 +29,5 @@ move dot visualiser back into a seperate php file
 add selected fields to an key/value index
 
 merge execution activity into a single interface rather than serializing and saving to ndb as a seperate activity
+
+override user input so that it blocks and it reads field defs from the bpmn deserializer

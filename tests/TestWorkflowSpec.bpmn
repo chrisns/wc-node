@@ -35,7 +35,7 @@
     </exclusiveGateway>
     <sequenceFlow id="SequenceFlow_4" name="feh" sourceRef="excl_choice_1" targetRef="task_b1"/>
     <sequenceFlow id="SequenceFlow_5" name="mildrid=va" sourceRef="excl_choice_1" targetRef="task_b2">
-      <conditionExpression xsi:type="tFormalExpression">mildrid=va</conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression">mildrid=='va'</conditionExpression>
     </sequenceFlow>
     <userTask id="task_b2" name="task_b2">
       <extensionElements>
