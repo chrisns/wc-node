@@ -43,9 +43,9 @@ class TestCallActivity(CallActivity):
 
 class TestBpmnParser(BpmnParser):
     OVERRIDE_PARSER_CLASSES = {
-        full_tag('userTask')            : (UserTaskParser, TestUserTask),
-        full_tag('endEvent')            : (EndEventParser, TestEndEvent),
-        full_tag('callActivity')        : (CallActivityParser, TestCallActivity),
+        # full_tag('userTask')            : (UserTaskParser, TestUserTask),
+        # full_tag('endEvent')            : (EndEventParser, TestEndEvent),
+        # full_tag('callActivity')        : (CallActivityParser, TestCallActivity),
         }
 
     def parse_condition(self, condition_expression, outgoing_task, outgoing_task_node, sequence_flow_node, condition_expression_node, task_parser):
