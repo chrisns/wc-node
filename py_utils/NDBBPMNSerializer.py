@@ -74,7 +74,7 @@ class NDBBPMNSerializer(DictionarySerializer):
         if isinstance(task.task_spec, SubWorkflow):
             raise TaskNotSupportedError(
                 "Subworkflow tasks cannot be serialized (due to their use of" +
-                " internal_data to store the subworkflow).")
+                " internal_data to store the subworkflow).")  # pragma: no cover
 
         s_state = dict()
 

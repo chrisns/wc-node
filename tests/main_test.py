@@ -147,7 +147,7 @@ class MainTests(unittest.TestCase):
                                  data=data,
                                  status_code=302,
                                  content_type='text/html; charset=utf-8')
-        self.assertIn('You should be redirected automatically', redirect_resp.data)
+        self.assertIn("You should be redirected automatically", redirect_resp.data)
         self.assertIn('api/executions/', redirect_resp.headers['Location'])
 
         resp = self.api(uri='/executions/' + execution_id, user_id=1234)
@@ -186,6 +186,22 @@ class MainTests(unittest.TestCase):
         execution_id = Execution(owner=1234).put().urlsafe()
         self.api(uri='/executions/' + execution_id, user_id=1234, method='DELETE')
         self.assertEqual(None, ndb.Key(urlsafe=execution_id).get())
+
+    def test_get_workflow_spec_file(self):
+        """
+        test we can load the spec without mocks
+        """
+        spec_file = main.get_workflow_spec_file()
+        self.assertIsInstance(spec_file, object)
+
+
+    def test_get_workflow_spec(self):
+        """
+        test we can load the spec without mocks
+        """
+        # spec = main.get_workflow_spec()
+
+        # self.assertIsInstance(spec, object)
 
 
 if __name__ == '__main__':

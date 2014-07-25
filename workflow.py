@@ -37,11 +37,11 @@ class BpmnHelper(object):
 
 
 if __name__ == '__main__':
-    spec = BpmnHelper().load_workflow_spec('WorkflowSpecs/Workflow-0.1.bpmn', 'workflow')
+    spec = BpmnHelper().load_workflow_spec('WorkflowSpecs/Workflow-0.1.bpmn', 'workflow')  # pragma: no cover
     # print "outputting workflow to Workflow.dot"
     # noinspection Restricted_Python_calls,PyTypeChecker
     # open("Workflow.dot", "w").write(spec.serialize(dotVisualizer()))
 
-    print("outputting workflow to Workflow.JSON")
+    print("outputting workflow to Workflow.JSON")  # pragma: no cover
     # noinspection Restricted_Python_calls,PyTypeChecker
-    open("Workflow.json", "w").write(spec.serialize(JSONSerializer()))
+    open("Workflow.json", "w").write(spec.serialize(JSONSerializer()))  # pragma: no cover
