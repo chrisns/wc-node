@@ -15,16 +15,11 @@ include input format in workflow model so it can be versioned accordingly
 
 ingest bpmn modelled workflow
 
--- use json-schema in python with https://github.com/Julian/jsonschema/ in BE
-
 implement https://github.com/jdorn/json-editor in frontend
-
 
 catch exceptions with json output and correct http error codes
 
 hande multiple workflows?
-
-move dot visualiser back into a seperate php file
 
 add selected fields to an key/value index
 
@@ -33,3 +28,5 @@ merge execution activity into a single interface rather than serializing and sav
 override user input so that it blocks and it reads field defs from the bpmn deserializer
 
 custom bpmn serializer/deserializer that keeps data captured
+
+fix dot serializer

@@ -2,22 +2,20 @@
 # coding=utf-8
 """This is for asserting some principals of how we use workflow so is a good resource to refer to if you're trying
 to figure why things are broken"""
-from google.appengine.ext import testbed
-from google.appengine.ext import ndb
-
-from models.Execution import Execution
-
-from SpiffWorkflow import *
-
-from py_utils.NDBSerializer import NDBSerializer
-
 import unittest
 import json
-from tests.TestWorkflowSpec import TestWorkflowSpec
-
-import main
-from mock import patch
 import pprint
+
+from SpiffWorkflow.bpmn.BpmnWorkflow import BpmnWorkflow
+from google.appengine.ext import testbed
+from google.appengine.ext import ndb
+from mock import patch
+
+from models.Execution import Execution
+from py_utils.NDBBPMNSerializer import NDBBPMNSerializer
+import main
+from workflow import BpmnHelper
+
 
 pprint.PrettyPrinter(indent=2)
 
@@ -33,6 +31,7 @@ class MainTests(unittest.TestCase):
         self.app = main.app
         self.app.testing = True
         self.app_client = self.app.test_client()
+        self.spec = BpmnHelper().load_workflow_spec('tests/TestWorkflowSpec.bpmn', 'workflow')
 
     def tearDown(self):
         self.testbed.deactivate()
@@ -43,7 +42,7 @@ class MainTests(unittest.TestCase):
             content_type='application/json', user_id=None):
         """ helper to make api calls """
         global response
-        workflow_mock.return_value = TestWorkflowSpec()
+        workflow_mock.return_value = self.spec
         uri = "/api" + uri
         if data is None:
             data = {}
@@ -176,10 +175,9 @@ class MainTests(unittest.TestCase):
         Helper to make a valid execution object and return the execution_id
         """
         execution_object = Execution(owner=owner)
-        spec = TestWorkflowSpec()
-        execution = Workflow(spec)
+        execution = BpmnWorkflow(self.spec)
         execution.complete_all()
-        execution_object.data = execution.serialize(NDBSerializer())
+        execution_object.data = NDBBPMNSerializer().serialize_workflow(execution, include_spec=False)
         execution_id = execution_object.put().urlsafe()
         return execution_id
 

@@ -1,15 +1,20 @@
 # coding=utf-8
 """ test the schema """
-import jsonschema
 import unittest
-import main
+
+from SpiffWorkflow.bpmn.BpmnWorkflow import BpmnWorkflow
+import jsonschema
 from mock import patch
-from tests.TestWorkflowSpec import TestWorkflowSpec
-from SpiffWorkflow import *
+
+import main
+from workflow import BpmnHelper
 
 
 class SchemaTests(unittest.TestCase):
     """ test things to do with our input schema """
+
+    def setUp(self):
+        self.spec = BpmnHelper().load_workflow_spec('tests/TestWorkflowSpec.bpmn', 'workflow')
 
     def test_schema_load(self):
         """ check that we can resume an execution"""
@@ -28,7 +33,8 @@ class SchemaTests(unittest.TestCase):
     @patch('main.get_schema')
     def test_post_execution_with_invalid_input(self, mock_get_schema):
         """ test posting to an execution with invalid input"""
-        execution = Workflow(TestWorkflowSpec())
+        mock_get_schema.return_value = {'properties': []}
+        execution = BpmnWorkflow(self.spec)
         execution.complete_all()
         with self.assertRaises(Exception) as ex:
             main.get_filtered_schema(execution)

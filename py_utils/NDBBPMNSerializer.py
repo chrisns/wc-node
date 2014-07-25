@@ -1,21 +1,15 @@
 # -*- coding: utf-8 -*-
 
 import cPickle
-from base64 import b64encode, b64decode
+from base64 import b64encode
+
 from SpiffWorkflow import Workflow
 from SpiffWorkflow.bpmn.BpmnWorkflow import BpmnWorkflow
-from SpiffWorkflow.util.impl import get_class
 from SpiffWorkflow.Task import Task
-from SpiffWorkflow.operators import *
-from SpiffWorkflow.specs.TaskSpec import TaskSpec
 from SpiffWorkflow.specs import *
-from SpiffWorkflow.storage.Serializer import Serializer
 from SpiffWorkflow.storage import DictionarySerializer
 from SpiffWorkflow.storage.exceptions import TaskNotSupportedError
-import warnings
 
-import pprint
-from tests.TestWorkflowSpec import TestWorkflowSpec
 
 class NDBBPMNSerializer(DictionarySerializer):
     def _serialize_dict(self, thedict):
@@ -29,9 +23,9 @@ class NDBBPMNSerializer(DictionarySerializer):
         assert isinstance(workflow, Workflow)
         s_state = dict()
         s_state['wf_spec'] = dict(
-            name = workflow.spec.name,
-            description = workflow.spec.description,
-            file = workflow.spec.file
+            name=workflow.spec.name,
+            description=workflow.spec.description,
+            file=workflow.spec.file
             # data
 
         )
@@ -41,7 +35,7 @@ class NDBBPMNSerializer(DictionarySerializer):
         value = workflow.last_task
         s_state['last_task'] = value.id if not value is None else None
 
-        #success
+        # success
         s_state['success'] = workflow.success
 
         #task_tree
@@ -49,6 +43,7 @@ class NDBBPMNSerializer(DictionarySerializer):
         # pprint.pprint(s_state)
         return s_state
 
+    # noinspection PyMethodOverriding
     def deserialize_workflow(self, s_state, wf_spec, **kwargs):
         workflow = BpmnWorkflow(wf_spec)
 

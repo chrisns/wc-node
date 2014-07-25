@@ -105,10 +105,10 @@ module.exports = function (grunt) {
     },
     exec: {
       pythonDependencies: {
-        cmd: ' bash -c "virtualenv env && source env/bin/activate && ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future pip install -r requirements.txt && env/bin/linkenv env/lib/python2.7/site-packages gaenv && deactivate"'
+        cmd: 'bash -c "virtualenv env && source env/bin/activate && ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future pip install -r requirements.txt && env/bin/linkenv env/lib/python2.7/site-packages gaenv && deactivate"'
       },
       regenWorkflow: {
-        cmd: 'python workflow.py'
+        cmd: 'bash -c "source env/bin/activate && python workflow.py"'
       }
     },
     jsonlint: {

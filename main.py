@@ -4,21 +4,20 @@
 
 import types
 
+from SpiffWorkflow.bpmn.BpmnWorkflow import BpmnWorkflow
 from flask import Flask
-
 from flask import url_for
 from flask import jsonify
 from flask import redirect
 from marshmallow import fields
 from flask.ext.marshmallow import Marshmallow
-from SpiffWorkflow import *
 from SpiffWorkflow.storage import JSONSerializer
-from py_utils.NDBSerializer import NDBSerializer
 from google.appengine.ext import ndb
 import jsonschema
 
-from WorkflowSpecs.UserInput import UserInput
+from py_utils.NDBBPMNSerializer import NDBBPMNSerializer
 from models.Execution import Execution
+from py_utils.bpmn_helpers import UserTask
 from py_utils.facebook_auth import *
 
 
@@ -178,7 +177,7 @@ def execution_get(user_id, execution_object):
     @return: json
     """
     spec = get_workflow_spec()
-    execution = NDBSerializer().deserialize_workflow(s_state=execution_object.data, wf_spec=spec)
+    execution = NDBBPMNSerializer().deserialize_workflow(s_state=execution_object.data, wf_spec=spec)
     execution.complete_all()
     response = {
         "execution": {
@@ -200,7 +199,7 @@ def execution_post(user_id, execution_object):
     @return: flask.redirect
     """
     spec = get_workflow_spec()
-    execution = NDBSerializer().deserialize_workflow(s_state=execution_object.data, wf_spec=spec)
+    execution = NDBBPMNSerializer().deserialize_workflow(s_state=execution_object.data, wf_spec=spec)
     execution.complete_all()
     data = json.loads(request.data)
     schema = get_filtered_schema(execution)
@@ -211,7 +210,7 @@ def execution_post(user_id, execution_object):
 
     # noinspection PyProtectedMember
     for waiting_task in execution._get_waiting_tasks():
-        if isinstance(waiting_task.task_spec, UserInput):
+        if isinstance(waiting_task.task_spec, UserTask):
             for key in data.keys():
                 if key in waiting_task.task_spec.args:
                     if isinstance(data[key], types.StringTypes):
@@ -223,7 +222,7 @@ def execution_post(user_id, execution_object):
                             waiting_task.set_data(**{key: data[key]})
     execution.complete_all()
 
-    execution_object.data = execution.serialize(NDBSerializer())
+    execution_object.data = execution.serialize(NDBBPMNSerializer())
     execution_object.put()
     return redirect(url_for('execution_get', execution_id=execution_object.key.urlsafe()))
 
@@ -239,9 +238,9 @@ def execution_new(user_id):
     """
     execution_object = Execution(owner=user_id)
     spec = get_workflow_spec()
-    execution = Workflow(spec)
+    execution = BpmnWorkflow(spec)
     execution.complete_all()
-    execution_object.data = execution.serialize(NDBSerializer())
+    execution_object.data = execution.serialize(NDBBPMNSerializer())
     execution_id = execution_object.put().urlsafe()
     return redirect(url_for('execution_get', execution_id=execution_id))
 
@@ -258,14 +257,20 @@ class ExecutionCollectionMarshal(ma.Serializer):
         """ Meta serializer class """
         additional = ['execution_id', 'created', 'type']
 
+
 def get_workflow_spec():
+    """
+    Get the workflow spec
+    @return: workflow spec
+    """
     spec_file = get_workflow_spec_file()
     spec = JSONSerializer().deserialize_workflow_spec(spec_file)
     return spec
 
+
 def get_workflow_spec_file():
     """ get the workflow spec """
-    # return open("Workflow.json").read()
+    return open("Workflow.json").read()
 
 
 def get_filtered_schema(execution):
@@ -277,7 +282,7 @@ def get_filtered_schema(execution):
     inputs_matrix = get_schema()['properties']
     # noinspection PyProtectedMember
     for waiting_task in execution._get_waiting_tasks():
-        if isinstance(waiting_task.task_spec, UserInput):
+        if isinstance(waiting_task.task_spec, UserTask):
             for input_required in waiting_task.task_spec.args:
                 if input_required in inputs_matrix:
                     inputs_required[
