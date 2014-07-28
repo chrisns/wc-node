@@ -6,7 +6,7 @@ flask-marshmallow==0.2.0
 marshmallow==0.7.0
 jsonschema==2.3.0
 Markdown==2.4.1
-Pillow==2.4.0
+#Pillow==2.4.0
 WebTest==2.0.15
 
 ################    DEV ONLY    ################

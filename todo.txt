@@ -22,3 +22,5 @@ catch exceptions with json output and correct http error codes
 add selected fields to an key/value index
 
 merge execution activity into a single interface rather than serializing and saving to ndb as a seperate activity
+
+make tests not need image test stub, so we can not require Pillow
