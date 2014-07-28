@@ -14,7 +14,7 @@ from mock import patch
 from models.Execution import Execution
 from py_utils.NDBBPMNSerializer import NDBBPMNSerializer
 import main
-from workflow import BpmnHelper
+from WorkflowGenerate import BpmnHelper
 
 
 pprint.PrettyPrinter(indent=2)
@@ -191,8 +191,8 @@ class MainTests(unittest.TestCase):
         """
         test we can load the spec without mocks
         """
-        spec_file = main.get_workflow_spec_file()
-        self.assertIsInstance(spec_file, object)
+        spec_file = main.get_workflow_spec()
+        # self.assertIsInstance(spec_file, object)
 
 
     def test_get_workflow_spec(self):

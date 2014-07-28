@@ -7,7 +7,7 @@ import jsonschema
 from mock import patch
 
 import main
-from workflow import BpmnHelper
+from WorkflowGenerate import BpmnHelper
 
 
 class SchemaTests(unittest.TestCase):

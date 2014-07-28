@@ -1,5 +1,5 @@
 -e git+http://github.com/chrisns/gvgen#egg=gvgen
--e git+http://github.com/knipknap/SpiffWorkflow#egg=SpiffWorkflow
+-e git+http://github.com/chrisns/SpiffWorkflow#egg=SpiffWorkflow
 -e git+http://github.com/ze-phyr-us/linkenv#egg=linkenv
 
 flask-marshmallow==0.2.0

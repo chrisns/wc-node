@@ -10,7 +10,7 @@ from google.appengine.ext import ndb
 from SpiffWorkflow.Task import *
 from SpiffWorkflow.bpmn.BpmnWorkflow import BpmnWorkflow
 
-from workflow import BpmnHelper
+from WorkflowGenerate import BpmnHelper
 from models.Execution import Execution
 from py_utils.NDBBPMNSerializer import NDBBPMNSerializer
 

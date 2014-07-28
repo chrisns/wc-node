@@ -5,8 +5,10 @@ from __future__ import division
 
 import os
 from io import BytesIO
+import fnmatch
 
 from SpiffWorkflow.storage import JSONSerializer
+from SpiffWorkflow.storage import dotVisualizer
 from SpiffWorkflow.bpmn.storage.BpmnSerializer import BpmnSerializer
 from SpiffWorkflow.bpmn.storage.Packager import Packager
 
@@ -37,11 +39,13 @@ class BpmnHelper(object):
 
 
 if __name__ == '__main__':
-    spec = BpmnHelper().load_workflow_spec('WorkflowSpecs/Workflow-0.1.bpmn', 'workflow')  # pragma: no cover
-    # print "outputting workflow to Workflow.dot"
-    # noinspection Restricted_Python_calls,PyTypeChecker
-    # open("Workflow.dot", "w").write(spec.serialize(dotVisualizer()))
 
-    print("outputting workflow to Workflow.JSON")  # pragma: no cover
-    # noinspection Restricted_Python_calls,PyTypeChecker
-    open("Workflow.json", "w").write(spec.serialize(JSONSerializer()))  # pragma: no cover
+    for file in os.listdir('WorkflowSpecs'):  # pragma: no cover
+        if fnmatch.fnmatch(file, '*.bpmn'):  # pragma: no cover
+            spec = BpmnHelper().load_workflow_spec('WorkflowSpecs/' + file, 'workflow')  # pragma: no cover
+            print("outputting workflow to " + file[:-5] + ".JSON")  # pragma: no cover
+            # noinspection Restricted_Python_calls,PyTypeChecker
+            open("WorkflowSpecs/" + file[:-5] + ".json", "w").write(
+                spec.serialize(JSONSerializer()))  # pragma: no cover
+            open("WorkflowSpecs/" + file[:-5] + ".dot", "w").write(
+                spec.serialize(dotVisualizer()))  # pragma: no cover

@@ -263,14 +263,10 @@ def get_workflow_spec():
     Get the workflow spec
     @return: workflow spec
     """
-    spec_file = get_workflow_spec_file()
+    spec_file = open("WorkflowSpecs/Workflow-0.1.json").read()
     spec = JSONSerializer().deserialize_workflow_spec(spec_file)
     return spec
 
-
-def get_workflow_spec_file():
-    """ get the workflow spec """
-    return open("Workflow.json").read()
 
 
 def get_filtered_schema(execution):

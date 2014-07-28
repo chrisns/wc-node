@@ -68,7 +68,7 @@ module.exports = function (grunt) {
         tasks: ['nose']
       },
       wf: {
-        files: ['workflow.py'],
+        files: ['WorkflowSpecs/*.bpmn', 'WorkflowSpecs/*.py'],
         tasks: ['exec:regenWorkflow', 'jsonlint:workflow']
       },
       pyrequirements: {
@@ -108,7 +108,7 @@ module.exports = function (grunt) {
         cmd: 'bash -c "virtualenv env && source env/bin/activate && ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future pip install -r requirements.txt && env/bin/linkenv env/lib/python2.7/site-packages gaenv && deactivate"'
       },
       regenWorkflow: {
-        cmd: 'bash -c "source env/bin/activate && python workflow.py"'
+        cmd: 'bash -c "source env/bin/activate && python WorkflowGenerate.py"'
       }
     },
     jsonlint: {

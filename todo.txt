@@ -22,7 +22,3 @@ catch exceptions with json output and correct http error codes
 add selected fields to an key/value index
 
 merge execution activity into a single interface rather than serializing and saving to ndb as a seperate activity
-
-fix dot serializer
-
-deserializing json workflow spec from bpmn serialized workflow appears to just error
