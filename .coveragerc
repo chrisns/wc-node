@@ -10,3 +10,4 @@ omit = */google_appengine/*
        */usr/local/*
        */Library/Python/*
        */System/Library/Frameworks/Python.framework/*
+       */python2.*/*
