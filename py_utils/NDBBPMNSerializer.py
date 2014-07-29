@@ -1,4 +1,8 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""
+special serializer to make things ready to shoe horn into ndb and trim down the fat of the workflow
+"""
 
 import cPickle
 from base64 import b64encode
@@ -12,6 +16,9 @@ from SpiffWorkflow.storage.exceptions import TaskNotSupportedError
 
 
 class NDBBPMNSerializer(DictionarySerializer):
+    """
+    Serializer to get things ready for NDB
+    """
     def _serialize_dict(self, thedict):
         # we don't need to serialize stuff like this since ndb will do it later anyway
         # return thedict
@@ -20,6 +27,12 @@ class NDBBPMNSerializer(DictionarySerializer):
             for k, v in thedict.items())
 
     def serialize_workflow(self, workflow, **kwargs):
+        """
+        Serialize the workflow (execution)
+        @param workflow:
+        @param kwargs:
+        @return:
+        """
         assert isinstance(workflow, Workflow)
         s_state = dict()
         s_state['wf_spec'] = dict(
@@ -45,6 +58,13 @@ class NDBBPMNSerializer(DictionarySerializer):
 
     # noinspection PyMethodOverriding
     def deserialize_workflow(self, s_state, wf_spec, **kwargs):
+        """
+        Deserialize the workflow (Execution)
+        @param s_state:
+        @param wf_spec:
+        @param kwargs:
+        @return:
+        """
         workflow = BpmnWorkflow(wf_spec)
 
         # data

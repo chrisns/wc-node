@@ -5,7 +5,6 @@ to figure why things are broken"""
 
 import unittest
 
-from google.appengine.ext import testbed
 from google.appengine.ext import ndb
 from SpiffWorkflow.Task import *
 from SpiffWorkflow.bpmn.BpmnWorkflow import BpmnWorkflow
@@ -20,8 +19,7 @@ class TestBPMNWorkflowFunctionalTests(BaseTestClass):
     def setUp(self):
         self.spec = BpmnHelper().load_workflow_spec('tests/TestWorkflowSpec.bpmn', 'workflow')
         self.workflow = BpmnWorkflow(self.spec)
-        self.setupTestbed()
-
+        self.setup_testbed()
 
     def tearDown(self):
         self.spec = None

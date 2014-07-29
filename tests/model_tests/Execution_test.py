@@ -5,7 +5,6 @@ Probably a good resource for seeing how to access a stored execution"""
 
 import unittest
 
-from google.appengine.ext import testbed
 from google.appengine.ext import ndb
 
 from models.Execution import Execution
@@ -14,7 +13,7 @@ from tests.BaseTestClass import BaseTestClass
 
 class ExecutionTests(BaseTestClass):
     def setUp(self):
-        self.setupTestbed()
+        self.setup_testbed()
 
     def tearDown(self):
         self.testbed.deactivate()

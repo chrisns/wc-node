@@ -11,10 +11,6 @@ ga event for each workflow step processed in FE
 
 pretty custom dashboard integrated with ga
 
-include input format in workflow model so it can be versioned accordingly
-
-ingest bpmn modelled workflow
-
 implement https://github.com/jdorn/json-editor in frontend
 
 catch exceptions with json output and correct http error codes
@@ -22,3 +18,4 @@ catch exceptions with json output and correct http error codes
 add selected fields to an key/value index
 
 merge execution activity into a single interface rather than serializing and saving to ndb as a seperate activity
+

@@ -268,7 +268,6 @@ def get_workflow_spec():
     return spec
 
 
-
 def get_filtered_schema(execution):
     """
     returns required inputs given an execution

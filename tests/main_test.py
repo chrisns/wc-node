@@ -23,7 +23,7 @@ pprint.PrettyPrinter(indent=2)
 # noinspection PyTypeChecker
 class MainTests(BaseTestClass):
     def setUp(self):
-        self.setupTestbed()
+        self.setup_testbed()
         self.app = main.app
         self.app.testing = True
         self.app_client = self.app.test_client()
@@ -183,21 +183,12 @@ class MainTests(BaseTestClass):
         self.api(uri='/executions/' + execution_id, user_id=1234, method='DELETE')
         self.assertEqual(None, ndb.Key(urlsafe=execution_id).get())
 
-    def test_get_workflow_spec_file(self):
-        """
-        test we can load the spec without mocks
-        """
-        spec_file = main.get_workflow_spec()
-        # self.assertIsInstance(spec_file, object)
-
-
     def test_get_workflow_spec(self):
         """
         test we can load the spec without mocks
         """
-        # spec = main.get_workflow_spec()
-
-        # self.assertIsInstance(spec, object)
+        spec = main.get_workflow_spec()
+        self.assertIsInstance(spec, object)
 
 
 if __name__ == '__main__':
