@@ -15,7 +15,5 @@ implement https://github.com/jdorn/json-editor in frontend
 
 catch exceptions with json output and correct http error codes
 
-add selected fields to an key/value index
-
 merge execution activity into a single interface rather than serializing and saving to ndb as a seperate activity
 

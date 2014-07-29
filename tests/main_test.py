@@ -10,7 +10,7 @@ from SpiffWorkflow.bpmn.BpmnWorkflow import BpmnWorkflow
 from google.appengine.ext import ndb
 from mock import patch
 
-from models.Execution import Execution
+from models.Execution import Execution, StoredValues
 from py_utils.NDBBPMNSerializer import NDBBPMNSerializer
 import main
 from WorkflowGenerate import BpmnHelper
@@ -22,6 +22,7 @@ pprint.PrettyPrinter(indent=2)
 
 # noinspection PyTypeChecker
 class MainTests(BaseTestClass):
+
     def setUp(self):
         self.setup_testbed()
         self.app = main.app
@@ -31,6 +32,12 @@ class MainTests(BaseTestClass):
 
     def tearDown(self):
         self.testbed.deactivate()
+        try:
+            del self.execution_object
+            del self.execution
+            del self.execution_id
+        except AttributeError:
+            pass
 
     @patch('main.get_workflow_spec')
     @patch('py_utils.facebook_auth.get_user_id_from_request')
@@ -125,7 +132,7 @@ class MainTests(BaseTestClass):
 
     def test_post_execution(self):
         """ test getting an execution"""
-        execution_id = self._create_execution_object()
+        self._create_execution_object()
         data = {
             "name": "John Smith",
             "face": "Jude Smith",
@@ -137,7 +144,7 @@ class MainTests(BaseTestClass):
                 }
             ]
         }
-        redirect_resp = self.api(uri='/executions/' + execution_id,
+        redirect_resp = self.api(uri='/executions/' + self.execution_id,
                                  user_id=1234,
                                  method='POST',
                                  data=data,
@@ -146,19 +153,23 @@ class MainTests(BaseTestClass):
         self.assertIn("You should be redirected automatically", redirect_resp.data)
         self.assertIn('api/executions/', redirect_resp.headers['Location'])
 
-        resp = self.api(uri='/executions/' + execution_id, user_id=1234)
+        resp = self.api(uri='/executions/' + self.execution_id, user_id=1234)
         self.assertIn('execution', resp)
         self.assertIn('schema', resp['execution'])
         self.assertIn('mildrid', resp['execution']['schema']['properties'])
 
+        self.assertIn(StoredValues(k='name',v='John Smith'), self.execution_object.values)
+        self.assertIn(StoredValues(k='pets',v=[{u'type': u'dog', u'name': u'Walter'}]), self.execution_object.values)
+
+
     def test_post_invalid_execution(self):
         """ test posting an execution with invalid input"""
-        execution_id = self._create_execution_object()
+        self._create_execution_object()
         data = {
             "name": "Joh",
         }
         with self.assertRaises(Exception) as ex:
-            self.api(uri='/executions/' + execution_id,
+            self.api(uri='/executions/' + self.execution_id,
                      user_id=1234,
                      method='POST',
                      data=data,
@@ -170,18 +181,18 @@ class MainTests(BaseTestClass):
         """
         Helper to make a valid execution object and return the execution_id
         """
-        execution_object = Execution(owner=owner)
-        execution = BpmnWorkflow(self.spec)
-        execution.complete_all()
-        execution_object.data = NDBBPMNSerializer().serialize_workflow(execution, include_spec=False)
-        execution_id = execution_object.put().urlsafe()
-        return execution_id
+        self.execution_object = Execution(owner=owner)
+        self.execution = BpmnWorkflow(self.spec)
+        self.execution.complete_all()
+        self.execution_object.data = NDBBPMNSerializer().serialize_workflow(self.execution, include_spec=False)
+        self.execution_id = self.execution_object.put().urlsafe()
+        return self.execution_id
 
     def test_execution_delete(self):
         """ test deleting an execution """
-        execution_id = Execution(owner=1234).put().urlsafe()
-        self.api(uri='/executions/' + execution_id, user_id=1234, method='DELETE')
-        self.assertEqual(None, ndb.Key(urlsafe=execution_id).get())
+        self._create_execution_object()
+        self.api(uri='/executions/' + self.execution_id, user_id=1234, method='DELETE')
+        self.assertEqual(None, ndb.Key(urlsafe=self.execution_id).get())
 
     def test_get_workflow_spec(self):
         """

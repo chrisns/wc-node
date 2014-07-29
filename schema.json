@@ -19,7 +19,8 @@
       "title": "Your full name",
       "description": "You need to give us your full name",
       "minLength": 4,
-      "default": "John Smith"
+      "default": "John Smith",
+      "indexed": true
     },
     "face": {
       "type": "string",
@@ -80,6 +81,7 @@
       }
     },
     "pets": {
+      "indexed": true,
       "type": "array",
       "format": "table",
       "title": "Pets",

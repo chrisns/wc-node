@@ -7,7 +7,7 @@ import unittest
 
 from google.appengine.ext import ndb
 
-from models.Execution import Execution
+from models.Execution import Execution, StoredValues
 from tests.BaseTestClass import BaseTestClass
 
 
@@ -73,6 +73,17 @@ class ExecutionTests(BaseTestClass):
         ndb.Key(urlsafe=urlsafe_key).delete()
         self.assertIsNone(ndb.Key(urlsafe=urlsafe_key).get())
 
+    def test_index(self):
+        """ test that we can add things to the index and retrieve them back out """
+        Execution(owner=100).put()
+        Execution(owner=100).put()
+        Execution(owner=100).put()
+        expected_key = Execution(owner=100, values=[StoredValues(k='test', v='value'),
+                                                   StoredValues(k='another', v='testvalue')]).put().urlsafe()
+        count = Execution.query(Execution.values.v == 'value').count()
+        actual_key = Execution.query(Execution.values.v == 'value').get().key.urlsafe()
+        self.assertEqual(expected_key, actual_key)
+        self.assertEqual(1, count)
 
 if __name__ == '__main__':
     unittest.main()  # pragma: no cover

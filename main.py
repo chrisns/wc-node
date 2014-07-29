@@ -9,14 +9,14 @@ from flask import Flask
 from flask import url_for
 from flask import jsonify
 from flask import redirect
-from marshmallow import fields
+from marshmallow import fields, pprint
 from flask.ext.marshmallow import Marshmallow
 from SpiffWorkflow.storage import JSONSerializer
 from google.appengine.ext import ndb
 import jsonschema
 
 from py_utils.NDBBPMNSerializer import NDBBPMNSerializer
-from models.Execution import Execution
+from models.Execution import Execution, StoredValues
 from py_utils.bpmn_helpers import UserTask
 from py_utils.facebook_auth import *
 
@@ -208,23 +208,39 @@ def execution_post(user_id, execution_object):
     except Exception:
         raise Exception('schema/input mismatch')
 
+    parse_data = dict()
     # noinspection PyProtectedMember
     for waiting_task in execution._get_waiting_tasks():
         if isinstance(waiting_task.task_spec, UserTask):
             for key in data.keys():
                 if key in waiting_task.task_spec.args:
                     if isinstance(data[key], types.StringTypes):
+                        parse_data.update(**{key: data[key]})
                         waiting_task.set_data(**{key: data[key]})
                         pass
                     else:
                         for value in data[key]:
                             # todo: handle multiple value responses
                             waiting_task.set_data(**{key: data[key]})
+                            parse_data.update(**{key: data[key]})
     execution.complete_all()
-
+    update_execution_index(schema, execution_object, parse_data)
     execution_object.data = execution.serialize(NDBBPMNSerializer())
-    execution_object.put()
     return redirect(url_for('execution_get', execution_id=execution_object.key.urlsafe()))
+
+
+def update_execution_index(schema, execution_object, parse_data):
+   """
+   Update the execution's key value index that is used for search ability
+   this only works if the item in the execution in the schema is marked as 'indexed': true
+   @param schema: jsonschema
+   @param execution_object:
+   @param parse_data: data that has been validated to be correct
+   @return:
+   """
+   for k,v in parse_data.items():
+       if schema['properties'][k].has_key('indexed'):
+            execution_object.values.append(StoredValues(k=k, v=v))
 
 
 # noinspection PyTypeChecker
