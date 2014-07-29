@@ -13,16 +13,15 @@ from SpiffWorkflow.bpmn.BpmnWorkflow import BpmnWorkflow
 from WorkflowGenerate import BpmnHelper
 from models.Execution import Execution
 from py_utils.NDBBPMNSerializer import NDBBPMNSerializer
+from tests.BaseTestClass import BaseTestClass
 
 
-class TestBPMNWorkflowFunctionalTests(unittest.TestCase):
+class TestBPMNWorkflowFunctionalTests(BaseTestClass):
     def setUp(self):
         self.spec = BpmnHelper().load_workflow_spec('tests/TestWorkflowSpec.bpmn', 'workflow')
         self.workflow = BpmnWorkflow(self.spec)
-        self.testbed = testbed.Testbed()
-        self.testbed.activate()
-        self.testbed.init_datastore_v3_stub()
-        self.testbed.init_memcache_stub()
+        self.setupTestbed()
+
 
     def tearDown(self):
         self.spec = None

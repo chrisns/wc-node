@@ -7,7 +7,6 @@ import json
 import pprint
 
 from SpiffWorkflow.bpmn.BpmnWorkflow import BpmnWorkflow
-from google.appengine.ext import testbed
 from google.appengine.ext import ndb
 from mock import patch
 
@@ -16,18 +15,15 @@ from py_utils.NDBBPMNSerializer import NDBBPMNSerializer
 import main
 from WorkflowGenerate import BpmnHelper
 
+from tests.BaseTestClass import BaseTestClass
 
 pprint.PrettyPrinter(indent=2)
 
 
 # noinspection PyTypeChecker
-class MainTests(unittest.TestCase):
+class MainTests(BaseTestClass):
     def setUp(self):
-        self.testbed = testbed.Testbed()
-        # needed because endpoints expects a . in this value
-        self.testbed.setup_env(current_version_id='testbed.version')
-        self.testbed.activate()
-        self.testbed.init_all_stubs()
+        self.setupTestbed()
         self.app = main.app
         self.app.testing = True
         self.app_client = self.app.test_client()

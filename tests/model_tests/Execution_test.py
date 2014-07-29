@@ -9,14 +9,12 @@ from google.appengine.ext import testbed
 from google.appengine.ext import ndb
 
 from models.Execution import Execution
+from tests.BaseTestClass import BaseTestClass
 
 
-class ExecutionTests(unittest.TestCase):
+class ExecutionTests(BaseTestClass):
     def setUp(self):
-        self.testbed = testbed.Testbed()
-        self.testbed.activate()
-        self.testbed.init_datastore_v3_stub()
-        self.testbed.init_memcache_stub()
+        self.setupTestbed()
 
     def tearDown(self):
         self.testbed.deactivate()
