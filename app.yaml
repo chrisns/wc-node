@@ -81,3 +81,4 @@ skip_files:
   - spec
   - ^env/src
   - ^env/man
+  - ^.*[\(\)].*$
