@@ -39,13 +39,15 @@ class MainTests(BaseTestClass):
         except AttributeError:
             pass
 
+    @patch('main.get_schema')
     @patch('main.get_workflow_spec')
     @patch('py_utils.facebook_auth.get_user_id_from_request')
-    def api(self, mock_get_user_id=None, workflow_mock=None, uri='', method='GET', data=None, status_code=200,
+    def api(self, mock_get_user_id=None, workflow_mock=None, schema_mock=None, uri='', method='GET', data=None, status_code=200,
             content_type='application/json', user_id=None):
         """ helper to make api calls """
         global response
         workflow_mock.return_value = self.spec
+        schema_mock.return_value = json.loads(open("tests/test_schema.json").read())
         uri = "/api" + uri
         if data is None:
             data = {}

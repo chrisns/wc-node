@@ -1,0 +1,118 @@
+{
+  "title": "Input response",
+  "type": "object",
+  "properties": {
+    "sid": {
+      "type": "string",
+      "title": "Sid!",
+      "description": "who is sid",
+      "minLength": 4
+    },
+    "mildrid": {
+      "type": "string",
+      "title": "mildrid!",
+      "description": "who is mildrid",
+      "minLength": 4
+    },
+    "name": {
+      "type": "string",
+      "title": "Your full name",
+      "description": "You need to give us your full name",
+      "minLength": 4,
+      "default": "John Smith",
+      "indexed": true
+    },
+    "face": {
+      "type": "string",
+      "title": "Her Name",
+      "description": "You need to give us your full name",
+      "minLength": 4,
+      "default": "Jude Smith"
+    },
+    "nose": {
+      "type": "string",
+      "title": "Your title",
+      "enum": [
+        "mr",
+        "mrs",
+        "other"
+      ]
+    },
+    "age": {
+      "type": "integer",
+      "default": 24,
+      "minimum": 18,
+      "maximum": 99
+    },
+    "favorite_color": {
+      "type": "string",
+      "format": "color",
+      "title": "favorite color",
+      "default": "#ffa500"
+    },
+    "gender": {
+      "type": "string",
+      "enum": [
+        "male",
+        "female"
+      ]
+    },
+    "location": {
+      "type": "object",
+      "title": "Location",
+      "properties": {
+        "city": {
+          "type": "string",
+          "default": "San Francisco"
+        },
+        "state": {
+          "type": "string",
+          "default": "CA"
+        },
+        "citystate": {
+          "type": "string",
+          "description": "This is generated automatically from the previous two fields",
+          "template": "{{city}}, {{state}}",
+          "watch": {
+            "city": "location.city",
+            "state": "location.state"
+          }
+        }
+      }
+    },
+    "pets": {
+      "indexed": true,
+      "type": "array",
+      "format": "table",
+      "title": "Pets",
+      "uniqueItems": true,  
+      "items": {
+        "type": "object",
+        "title": "Pet",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "geese",
+              "cat",
+              "dog",
+              "bird",
+              "reptile",
+              "other"
+            ],
+            "default": "dog"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "default": [
+        {
+          "type": "dog",
+          "name": "Walter"
+        }
+      ]
+    }
+  }
+}
