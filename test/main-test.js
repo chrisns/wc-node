@@ -25,11 +25,10 @@ requirejs.config({
     'angular-form-builder-components': 'bower_components/angular-form-builder/dist/angular-form-builder-components',
     'angular-validator': 'bower_components/angular-validator/dist/angular-validator',
     'angular-validator-rules': 'bower_components/angular-validator/dist/angular-validator-rules',
-    'app': 'scripts/app',
-    'text!/views/main.html': 'iews/main.html',
-    'config/router': 'scripts/config/router',
-    'controllers/main': 'scripts/controllers/main',
     'facebook': 'bower_components/angular-facebook/lib/angular-facebook',
+    'app': 'scripts/app',
+    'config/router': 'scripts/config/router',
+    'controllers/main': 'scripts/controllers/main'
   },
   shim: {
     'bootstrap' : {
@@ -53,6 +52,7 @@ requirejs.config({
       deps: ['angular'],
       exports: 'fb'
     },
+    'views/main.html': {deps: ['angular']},
     'app' : ['angular', 'angular-resource', 'angular-route', 'bootstrap'],
     'angular-validator-rules' : ['angular'],
     'angular-form-builder-components' : ['angular'],
