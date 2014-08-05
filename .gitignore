@@ -13,3 +13,4 @@ env
 gaenv
 .idea/workspace.xml
 .idea/misc.xml
+/bower_components/

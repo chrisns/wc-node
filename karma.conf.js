@@ -1,46 +1,59 @@
 // Karma configuration
+// http://karma-runner.github.io/0.10/config/configuration-file.html
 
-module.exports = function(config) {
-  config.set({
-    frameworks: ['jasmine', 'requirejs'],
-    basePath: 'app',
-    files: [
-      'bower_components/angular/angular.js',
-      '../test/main-test.js',
-//      {pattern: 'app/lib/**/*.js', included: false},
-      {pattern: '**/*.js', included: false},
-      {pattern: 'views/*.html', included: false},
-//      {pattern: '../test/**/*Spec.js', included: false},
-//      'app/scripts/require-config.js'
-//      'views/*.html'
-    ],
-//    exclude: [
-//        'src/main.js'
-//    ],
-    browsers: ['PhantomJS'],
-    port: 8010,
-    singleRun: true,
-    autoWatch: false,
-    logLevel: config.LOG_DEBUG,
-    preprocessors: {
-      'views/*.html': ['ng-html2js']
-    },
-    ngHtml2JsPreprocessor: {
-      // strip this from the file path
-//      stripPrefix: 'base',
-      enableRequireJs: true,
-      // prepend this to the
-//      prependPrefix: 'base/',
+module.exports = function (config) {
+    config.set({
+        // base path, that will be used to resolve files and exclude
+        basePath: '',
 
-      // or define a custom transform function
-//      cacheIdFromPath: function(filepath) {
-//
-//        return cacheId;
-//      },
+        // testing framework to use (jasmine/mocha/qunit/...)
+        frameworks: ['jasmine', "requirejs"],
 
-      // setting this option will create only a single module that contains templates
-      // from all the files, so you can load them all with module('foo')
-//      moduleName: 'foo'
-    }
-  });
+        // list of files / patterns to load in the browser
+        files: [
+            {pattern: 'bower_components/angular/angular.js', included: false },
+            {pattern: 'bower_components/angular-mocks/angular-mocks.js', included: false },
+            {pattern: 'bower_components/angular-resource/angular-resource.js', included: false },
+            {pattern: 'bower_components/angular-cookies/angular-cookies.js', included: false },
+            {pattern: 'bower_components/angular-sanitize/angular-sanitize.js', included: false },
+            {pattern: 'bower_components/angular-route/angular-route.js', included: false },
+            {pattern: 'app/scripts/*.js', included: false },
+            {pattern: 'app/scripts/**/*.js', included: false },
+            {pattern: 'test/spec/**/*.js', included: false },
+            // http://karma-runner.github.io/0.10/plus/requirejs.html
+            'test/test-main.js'
+        ],
+
+        // list of files / patterns to exclude
+        exclude: [
+            'app/scripts/main.js'
+        ],
+
+        // web server port
+        port: 8081,
+
+        // level of logging
+        // possible values: LOG_DISABLE || LOG_ERROR || LOG_WARN || LOG_INFO || LOG_DEBUG
+        logLevel: config.LOG_INFO,
+
+
+        // enable / disable watching file and executing tests whenever any file changes
+        autoWatch: false,
+
+
+        // Start these browsers, currently available:
+        // - Chrome
+        // - ChromeCanary
+        // - Firefox
+        // - Opera
+        // - Safari (only Mac)
+        // - PhantomJS
+        // - IE (only Windows)
+        browsers: ['PhantomJS'],
+
+
+        // Continuous Integration mode
+        // if true, it capture browsers, run tests and exit
+        singleRun: false
+    });
 };

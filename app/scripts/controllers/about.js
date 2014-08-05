@@ -3,13 +3,13 @@ define(['angular'], function (angular) {
 
   /**
    * @ngdoc function
-   * @name wcApp.controller:MainCtrl
+   * @name wcApp.controller:AboutCtrl
    * @description
-   * # MainCtrl
+   * # AboutCtrl
    * Controller of the wcApp
    */
-  angular.module('wcApp.controllers.MainCtrl', [])
-    .controller('MainCtrl', function ($scope) {
+  angular.module('wcApp.controllers.AboutCtrl', [])
+    .controller('AboutCtrl', function ($scope) {
       $scope.awesomeThings = [
         'HTML5 Boilerplate',
         'AngularJS',

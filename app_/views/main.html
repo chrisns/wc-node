@@ -1,0 +1,27 @@
+<div class="header">
+  <ul class="nav nav-pills pull-right">
+    <li><a data-ng-show="user.id">Welcome back {{user.first_name}}!</a></li>
+    <li><input class="btn btn-small btn-success btn-default" type="submit" ng-click="login()" data-ng-hide="user.id"  value="Login" /></li>
+    <li><input class="btn btn-small btn-success btn-default" type="submit" ng-click="logout()" data-ng-show="user.id" value="Logout" /></li>
+  </ul>
+  <h3 class="text-muted">wc</h3>
+</div>
+
+<!--<div class="jumbotron">
+  <h1 data-ng-show="user.id">Welcome back {{user.name}}</h1>
+<img src="http://graph.facebook.com/{{user.id}}/picture"/>
+</div>
+-->
+<div class="row marketing">
+    <form class="form-horizontal">
+      <div ng-model="input" fb-form="capture" fb-default="captureValue"></div>
+      <div class="form-group">
+        <div class="col-md-8 col-md-offset-4">
+          <input class="btn btn-lg btn-success btn-default" type="submit" ng-click="submit()" ng-disabled="submitInProgress"/>
+        </div>
+      </div>
+    </form>
+    <pre>{{lastServerResponse}}</pre>
+</div>
+<div class="footer">
+</div>
