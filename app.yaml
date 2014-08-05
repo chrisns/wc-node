@@ -30,6 +30,7 @@ handlers:
   static_dir: dist/views
 
 - url: /404.html
+  static_files: dist/404.html
   static_dir: dist/404.html
 
 - url: /robots.txt
