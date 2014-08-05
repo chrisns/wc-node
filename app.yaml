@@ -7,7 +7,7 @@ threadsafe: true
 # Handlers tell App Engine how to route requests to your application.
 handlers:
 - url: /
-  static_files: app/index.html
+  static_files: dist/index.html
   upload: dist/index.html
 
 - url: /robots.txt
@@ -89,6 +89,10 @@ skip_files:
   - ^.*LICENSE.*$
   - node_modules
   - spec
+  - test
+  - app
+  - app_
+  - bower_components
   - ^env/src
   - ^env/man
   - ^.*[\(\)].*$
