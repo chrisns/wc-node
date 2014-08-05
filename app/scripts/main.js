@@ -35,7 +35,8 @@ require.config({
     propertyParser: '../../bower_components/requirejs-plugins/src/propertyParser',
     'Markdown.Converter': '../../bower_components/requirejs-plugins/lib/Markdown.Converter',
     text: '../../bower_components/requirejs-plugins/lib/text',
-    'sass-bootstrap': '../../bower_components/sass-bootstrap/dist/js/bootstrap'
+    'sass-bootstrap': '../../bower_components/sass-bootstrap/dist/js/bootstrap',
+    'facebook': '../../bower_components/angular-facebook/lib/angular-facebook'
   },
   shim: {
     angular: {
@@ -58,6 +59,10 @@ require.config({
         'angular'
       ],
       exports: 'angular.mock'
+    },
+    'facebook': {
+      deps: ['angular'],
+      exports: 'fb'
     }
   },
   priority: [
@@ -77,8 +82,9 @@ require([
   'angular-route',
   'angular-cookies',
   'angular-sanitize',
-  'angular-resource'
-], function(angular, app, ngRoutes, ngCookies, ngSanitize, ngResource) {
+  'angular-resource',
+  'facebook'
+], function(angular, app, ngRoutes, ngCookies, ngSanitize, ngResource, Facebook) {
   'use strict';
   /* jshint ignore:start */
   var $html = angular.element(document.getElementsByTagName('html')[0]);

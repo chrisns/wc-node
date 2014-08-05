@@ -1,5 +1,5 @@
 /*jshint unused: vars */
-define(['angular', 'controllers/main', 'controllers/about']/*deps*/, function (angular, MainCtrl, AboutCtrl)/*invoke*/ {
+define(['angular', 'controllers/main', 'controllers/about', 'controllers/facebook', 'controllers/list_executions', 'services/wcapi']/*deps*/, function (angular, MainCtrl, AboutCtrl, FacebookCtrl, ListExecutionsCtrl, WcapiProvider)/*invoke*/ {
   'use strict';
 
   /**
@@ -13,6 +13,9 @@ define(['angular', 'controllers/main', 'controllers/about']/*deps*/, function (a
   return angular
     .module('wcApp', ['wcApp.controllers.MainCtrl',
 'wcApp.controllers.AboutCtrl',
+'wcApp.controllers.FacebookCtrl',
+'wcApp.controllers.ListExecutionsCtrl',
+'wcApp.services.Wcapi',
 /*angJSDeps*/
     'ngCookies',
     'ngResource',
@@ -28,6 +31,10 @@ define(['angular', 'controllers/main', 'controllers/about']/*deps*/, function (a
         .when('/about', {
           templateUrl: 'views/about.html',
           controller: 'AboutCtrl'
+        })
+        .when('/my-history', {
+          templateUrl: 'views/list_executions.html',
+          controller: 'ListExecutionsCtrl'
         })
         .otherwise({
           redirectTo: '/'
