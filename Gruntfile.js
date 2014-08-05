@@ -397,11 +397,16 @@ module.exports = function (grunt) {
 
     // Run some tasks in parallel to speed up the build process
     concurrent: {
+      options: {logConcurrentOutput: true},
       server: [
         'compass:server'
       ],
       testSetup: [
         'compass'
+      ],
+      test: [
+        'karma',
+        'nose'
       ],
       dist: [
         'compass:dist',
@@ -505,8 +510,7 @@ module.exports = function (grunt) {
     'concurrent:testSetup',
     'autoprefixer',
     'connect:test',
-    'karma',
-    'nose'
+    'concurrent:test'
   ]);
 
   grunt.registerTask('build', [
