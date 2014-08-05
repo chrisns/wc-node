@@ -45,7 +45,8 @@
     "generator-karma-require": "~0.1.6",
     "grunt-cli": "~0.1.13",
     "yo": "~1.1.2",
-    "generator-angular-require": "~0.2.7"
+    "generator-angular-require": "~0.2.7",
+    "grunt-connect-proxy": "~0.1.10"
   },
   "engines": {
     "node": ">=0.8.0"

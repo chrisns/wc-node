@@ -19,6 +19,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-json-schema');
   grunt.loadNpmTasks('grunt-nose');
   grunt.loadNpmTasks('grunt-notify');
+  grunt.loadNpmTasks('grunt-connect-proxy');
   // Configurable paths for the application
   var appConfig = {
     app: require('./bower.json').appPath || 'app',
@@ -129,10 +130,22 @@ module.exports = function (grunt) {
     // The actual grunt server settings
     connect: {
       options: {
-        port: 9010,
+        port: 8080,
         // Change this to '0.0.0.0' to access the server from outside.
         hostname: 'localhost',
-        livereload: 35729
+        livereload: 35729,
+        proxies: [
+          {
+            context: '/api',
+            host: 'wc-app.appspot.com',
+            port: 443,
+            https: true,
+            xforward: false,
+//            headers: {
+//              "x-custom-added-header": value
+//            }
+          }
+        ]
       },
       livereload: {
         options: {
@@ -177,7 +190,7 @@ module.exports = function (grunt) {
     // Make sure code styles are up to par and there are no obvious mistakes
     jshint: {
       options: {
-        jshintrc: '.jshintrc',
+        jshintrc: 'test/.jshintrc',
         reporter: require('jshint-stylish')
       },
       all: {
