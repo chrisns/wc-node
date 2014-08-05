@@ -88,12 +88,11 @@ skip_files:
   - ^.*CHANGES.*$
   - ^.*LICENCE.*$
   - ^.*LICENSE.*$
-  - node_modules
-  - spec
-  - test
-  - app
-  - app_
-  - bower_components
-  - ^env/src
-  - ^env/man
+  - ^node_modules$
+  - ^spec$
+  - ^test$
+  - ^app$
+  - ^app_$
+  - ^bower_components$
+  - ^env$
   - ^.*[\(\)].*$
