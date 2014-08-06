@@ -1,3 +1,4 @@
+/* globals angular */
 define(['angular'], function (angular) {
   'use strict';
 
@@ -23,6 +24,7 @@ define(['angular'], function (angular) {
 
       // Public API for configuration
       this.setSalutation = function (s) {
+        //noinspection ReuseOfLocalVariableJS
         salutation = s;
       };
 

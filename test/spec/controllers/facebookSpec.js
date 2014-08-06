@@ -60,7 +60,7 @@ define(['angular', 'facebook'], function (angular) {
         id: "12354",
         first_name: "John",
         last_name: "Smith",
-        name: "John Smith",
+        name: "John Smith"
       };
       spyOn(mockFb, 'api').andCallFake(function(param, callback) {
         return callback(expectedUser);

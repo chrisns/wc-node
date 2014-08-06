@@ -1,4 +1,5 @@
 /*jshint unused: vars */
+//noinspection OverlyComplexFunctionJS
 define(['angular', 'controllers/main', 'controllers/about', 'controllers/facebook', 'controllers/list_executions', 'services/wcapi']/*deps*/, function (angular, MainCtrl, AboutCtrl, FacebookCtrl, ListExecutionsCtrl, WcapiProvider)/*invoke*/ {
   'use strict';
 

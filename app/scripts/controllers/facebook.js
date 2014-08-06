@@ -24,7 +24,7 @@ define(['angular'], function (angular) {
        * There's also the event that could be used
        */
       $scope.$on('Facebook:authResponseChange', function(event, response) {
-        if (response.status === 'connected') {
+        if ('connected' === response.status) {
           Facebook.api('/me', function (response) {
             $rootScope.user = response;
           });

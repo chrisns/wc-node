@@ -26,6 +26,7 @@ module.exports = function (grunt) {
     dist: 'dist'
   };
   // Define the configuration for all the tasks
+  //noinspection MagicNumberJS
   grunt.initConfig({
 
     // Project settings
@@ -101,7 +102,7 @@ module.exports = function (grunt) {
       },
       main: {
         // Target-specific file lists and/or options go here.
-      },
+      }
     },
     exec: {
       pythonDependencies: {
@@ -145,7 +146,7 @@ module.exports = function (grunt) {
         port: 8080,
         // Change this to '0.0.0.0' to access the server from outside.
         hostname: 'localhost',
-        livereload: 35729,
+        livereload: 35729
 
       },
       livereload: {
@@ -202,7 +203,7 @@ module.exports = function (grunt) {
     // Make sure code styles are up to par and there are no obvious mistakes
     jshint: {
       options: {
-        jshintrc: 'test/.jshintrc',
+        jshintrc: '.jshintrc',
         reporter: require('jshint-stylish')
       },
       all: {
@@ -213,7 +214,7 @@ module.exports = function (grunt) {
       },
       test: {
         options: {
-          jshintrc: 'test/.jshintrc'
+          jshintrc: '.jshintrc'
         },
         src: ['test/spec/{,*/}*.js']
       }
@@ -514,8 +515,9 @@ module.exports = function (grunt) {
     }
   });
 
+  //noinspection FunctionWithInconsistentReturnsJS,FunctionWithMultipleReturnPointsJS
   grunt.registerTask('serve', 'Compile then start a connect web server', function (target) {
-    if (target === 'dist') {
+    if ('dist' === target) {
       return grunt.task.run(['build', 'connect:dist:keepalive']);
     }
 
@@ -555,7 +557,7 @@ module.exports = function (grunt) {
     'filerev',
     'usemin',
     'requirejs:dist',
-    'htmlmin',
+    'htmlmin'
   ]);
 
   grunt.registerTask('default', [
