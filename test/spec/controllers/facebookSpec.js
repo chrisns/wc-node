@@ -19,7 +19,7 @@ define(['angular', 'angular-mocks', 'app', 'facebook'], function(angular, mocks,
     }));
     console.error(Facebook);
     it('should attach a list of awesomeThings to the scope', function () {
-      expect(scope.awesomeThings.length).toBe(4);
+      expect(scope.awesomeThings.length).toBe(3);
     });
   });
 });
