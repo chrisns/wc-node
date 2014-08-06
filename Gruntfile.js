@@ -129,37 +129,49 @@ module.exports = function (grunt) {
     },
     // The actual grunt server settings
     connect: {
+      proxies: [
+        {
+          context: '/api',
+          host: 'wc-app.appspot.com',
+          port: 443,
+          https: true,
+          xforward: true,
+            headers: {
+              Host: 'wc-app.appspot.com'
+            }
+        }
+      ],
       options: {
         port: 8080,
         // Change this to '0.0.0.0' to access the server from outside.
         hostname: 'localhost',
         livereload: 35729,
-        proxies: [
-          {
-            context: '/api',
-            host: 'wc-app.appspot.com',
-            port: 443,
-            https: true,
-            xforward: false,
-//            headers: {
-//              "x-custom-added-header": value
-//            }
-          }
-        ]
+
       },
       livereload: {
         options: {
           open: true,
-          middleware: function (connect) {
-            return [
-              connect.static('.tmp'),
-              connect.static('test'),
-              connect().use(
-                '/bower_components',
-                connect.static('./bower_components')
-              ),
-              connect.static(appConfig.app)
-            ];
+          middleware: function (connect, options) {
+            if (!Array.isArray(options.base)) {
+              options.base = [options.base];
+            }
+
+            // Setup the proxy
+            var middlewares = [require('grunt-connect-proxy/lib/utils').proxyRequest];
+
+            // Serve static files.
+            options.base.forEach(function (base) {
+              middlewares.push(connect.static(base));
+            });
+
+            middlewares.push(connect.static('.tmp'));
+            middlewares.push(connect.static('.test'));
+            middlewares.push(connect().use(
+              '/bower_components',
+              connect.static('./bower_components')
+            ));
+            middlewares.push(connect.static(appConfig.app));
+            return middlewares;
           }
         }
       },
@@ -512,6 +524,7 @@ module.exports = function (grunt) {
       'wiredep',
       'concurrent:server',
       'autoprefixer',
+      'configureProxies:server',
       'connect:livereload',
       'watch'
     ]);
