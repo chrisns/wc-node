@@ -79,11 +79,12 @@ class ExecutionTests(BaseTestClass):
         Execution(owner=100).put()
         Execution(owner=100).put()
         expected_key = Execution(owner=100, values=[StoredValues(k='test', v='value'),
-                                                   StoredValues(k='another', v='testvalue')]).put().urlsafe()
+                                                    StoredValues(k='another', v='testvalue')]).put().urlsafe()
         count = Execution.query(Execution.values.v == 'value').count()
         actual_key = Execution.query(Execution.values.v == 'value').get().key.urlsafe()
         self.assertEqual(expected_key, actual_key)
         self.assertEqual(1, count)
+
 
 if __name__ == '__main__':
     unittest.main()  # pragma: no cover

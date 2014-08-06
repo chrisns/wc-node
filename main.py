@@ -9,7 +9,7 @@ from flask import Flask
 from flask import url_for
 from flask import jsonify
 from flask import redirect
-from marshmallow import fields, pprint
+from marshmallow import fields
 from flask.ext.marshmallow import Marshmallow
 from SpiffWorkflow.storage import JSONSerializer
 from google.appengine.ext import ndb
@@ -230,7 +230,7 @@ def execution_post(user_id, execution_object):
 
 
 def update_execution_index(schema, execution_object, parse_data):
-   """
+    """
    Update the execution's key value index that is used for search ability
    this only works if the item in the execution in the schema is marked as 'indexed': true
    @param schema: jsonschema
@@ -238,8 +238,8 @@ def update_execution_index(schema, execution_object, parse_data):
    @param parse_data: data that has been validated to be correct
    @return:
    """
-   for k,v in parse_data.items():
-       if schema['properties'][k].has_key('indexed'):
+    for k, v in parse_data.items():
+        if schema['properties'][k].has_key('indexed'):
             execution_object.values.append(StoredValues(k=k, v=v))
 
 

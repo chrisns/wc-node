@@ -22,7 +22,6 @@ pprint.PrettyPrinter(indent=2)
 
 # noinspection PyTypeChecker
 class MainTests(BaseTestClass):
-
     def setUp(self):
         self.setup_testbed()
         self.app = main.app
@@ -42,7 +41,8 @@ class MainTests(BaseTestClass):
     @patch('main.get_schema')
     @patch('main.get_workflow_spec')
     @patch('py_utils.facebook_auth.get_user_id_from_request')
-    def api(self, mock_get_user_id=None, workflow_mock=None, schema_mock=None, uri='', method='GET', data=None, status_code=200,
+    def api(self, mock_get_user_id=None, workflow_mock=None, schema_mock=None, uri='', method='GET', data=None,
+            status_code=200,
             content_type='application/json', user_id=None):
         """ helper to make api calls """
         global response
@@ -160,9 +160,8 @@ class MainTests(BaseTestClass):
         self.assertIn('schema', resp['execution'])
         self.assertIn('mildrid', resp['execution']['schema']['properties'])
 
-        self.assertIn(StoredValues(k='name',v='John Smith'), self.execution_object.values)
-        self.assertIn(StoredValues(k='pets',v=[{u'type': u'dog', u'name': u'Walter'}]), self.execution_object.values)
-
+        self.assertIn(StoredValues(k='name', v='John Smith'), self.execution_object.values)
+        self.assertIn(StoredValues(k='pets', v=[{u'type': u'dog', u'name': u'Walter'}]), self.execution_object.values)
 
     def test_post_invalid_execution(self):
         """ test posting an execution with invalid input"""
