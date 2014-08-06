@@ -23,7 +23,7 @@
     <!-- Add your site or application content here -->
     <div class="container">
       <div class="header">
-        <ul ng-controller="FacebookCtrl" class="nav nav-pills pull-right">
+        <ul ng-controller="FacebookCtrl" data-ng-show="facebookReady" class="nav nav-pills pull-right">
           <!--<li class="active"><a ng-href="#">Home</a></li>-->
           <!--<li><a ng-href="#/about">About</a></li>-->
           <li><a ng-href="#/my-history" data-ng-show="user.id">My History</a></li>
