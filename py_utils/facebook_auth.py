@@ -45,7 +45,7 @@ def get_user_id_from_request(request):
         request.cookies.get('fbsr_665447500158300'),
         '0089bed38bc2aced1cd85020ffc4e527'
     )
-    return parsed['user_id']
+    return int(float(parsed['user_id']))
 
 
 def urlsafe_b64decode(b64string):

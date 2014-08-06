@@ -58,7 +58,7 @@ class TestFacebookAuth(unittest.TestCase):
 
     def test_get_user_id(self):
         """ test we can get a user id from a mocked request """
-        expected = '739149082'
+        expected = 739149082
         actual = get_user_id_from_request(self.fake_request)
         self.assertEqual(expected, actual)
 
