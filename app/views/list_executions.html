@@ -1,1 +1,19 @@
 <p>This is the list_executions view.</p>
+<table class="table table-hover table-striped">
+  <thead>
+    <tr>
+      <th>Execution ID</th>
+      <th>Type</th>
+      <th>Created</th>
+      <th>href</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="execution in executions">
+      <td>{{execution.execution_id}}</td>
+      <td>{{execution.type}}</td>
+      <td>{{execution.created | date : 'medium'}}</td>
+      <td>{{execution.href}}</td>
+    </tr>
+  </tbody>
+</table>
