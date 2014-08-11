@@ -5,7 +5,7 @@ require.config({
     'angular-cookies': '../../bower_components/angular-cookies/angular-cookies',
     'angular-mocks': '../../bower_components/angular-mocks/angular-mocks',
     'angular-resource': '../../bower_components/angular-resource/angular-resource',
-    'angular-route': '../../bower_components/angular-route/angular-route',
+    'ui-router': '../../bower_components/angular-ui-router/release/angular-ui-router',
     'angular-sanitize': '../../bower_components/angular-sanitize/angular-sanitize',
     'angular-scenario': '../../bower_components/angular-scenario/angular-scenario',
     affix: '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/affix',
@@ -36,13 +36,14 @@ require.config({
     'Markdown.Converter': '../../bower_components/requirejs-plugins/lib/Markdown.Converter',
     text: '../../bower_components/requirejs-plugins/lib/text',
     'sass-bootstrap': '../../bower_components/sass-bootstrap/dist/js/bootstrap',
-    'facebook': '../../bower_components/angular-facebook/lib/angular-facebook'
+    'facebook': '../../bower_components/angular-facebook/lib/angular-facebook',
+    'jQuery': '../../bower_components/jquery/dist/jquery'
   },
   shim: {
     angular: {
-      exports: 'angular'
+      exports: 'angular',
     },
-    'angular-route': [
+    'ui-router': [
       'angular'
     ],
     'angular-cookies': [
@@ -59,6 +60,14 @@ require.config({
         'angular'
       ],
       exports: 'angular.mock'
+    },
+    'sass-bootstrap': [
+      'jQuery'
+    ],
+    'app': {
+      deps: [
+        'sass-bootstrap'
+      ]
     },
     'facebook': {
       deps: ['angular'],
@@ -80,12 +89,12 @@ window.name = 'NG_DEFER_BOOTSTRAP!';
 require([
   'angular',
   'app',
-  'angular-route',
+  'ui-router',
   'angular-cookies',
   'angular-sanitize',
   'angular-resource',
   'facebook'
-], function(angular, app, ngRoutes, ngCookies, ngSanitize, ngResource, Facebook) {
+], function(angular, app, uiRouter, ngCookies, ngSanitize, ngResource, Facebook) {
   'use strict';
   /* jshint ignore:start */
   var $html = angular.element(document.getElementsByTagName('html')[0]);

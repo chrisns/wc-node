@@ -17,7 +17,7 @@ requirejs.config({
       'angular-cookies': '../../bower_components/angular-cookies/angular-cookies',
       'angular-mocks': '../../bower_components/angular-mocks/angular-mocks',
       'angular-resource': '../../bower_components/angular-resource/angular-resource',
-      'angular-route': '../../bower_components/angular-route/angular-route',
+      'ui-router': '../../bower_components/angular-ui-router/release/angular-ui-router',
       'angular-sanitize': '../../bower_components/angular-sanitize/angular-sanitize',
       'angular-scenario': '../../bower_components/angular-scenario/angular-scenario',
       affix: '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/affix',
@@ -53,7 +53,7 @@ requirejs.config({
 
     shim: {
       'angular': {'exports': 'angular'},
-      'angular-route': ['angular'],
+      'ui-router': ['angular'],
       'angular-cookies': ['angular'],
       'angular-sanitize': ['angular'],
       'angular-resource': ['angular'],

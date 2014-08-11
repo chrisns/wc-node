@@ -16,7 +16,7 @@ module.exports = function (config) {
           {pattern: 'bower_components/angular-resource/angular-resource.js', included: false },
           {pattern: 'bower_components/angular-cookies/angular-cookies.js', included: false },
           {pattern: 'bower_components/angular-sanitize/angular-sanitize.js', included: false },
-          {pattern: 'bower_components/angular-route/angular-route.js', included: false },
+          {pattern: 'bower_components/angular-ui-router/release/angular-ui-router.js', included: false },
           {pattern: 'bower_components/angular-facebook/lib/angular-facebook.js', included: false },
           {pattern: 'app/scripts/**/*.js', included: false },
           {pattern: 'test/spec/**/*.js', included: false },
