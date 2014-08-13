@@ -133,17 +133,17 @@ module.exports = function (grunt) {
       proxies: [
         {
           context: '/api',
-          host: 'wc-app.appspot.com',
-          port: 443,
-          https: true,
+          host: 'localhost',
+          port: 8080,
+//          https: true,
           xforward: true,
-            headers: {
-              Host: 'wc-app.appspot.com'
-            }
+          headers: {
+            Host: 'localhost'
+          }
         }
       ],
       options: {
-        port: 8080,
+        port: 8081,
         // Change this to '0.0.0.0' to access the server from outside.
         hostname: 'localhost',
         livereload: 35729
