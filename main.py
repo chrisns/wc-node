@@ -14,6 +14,7 @@ from flask.ext.marshmallow import Marshmallow
 from SpiffWorkflow.storage import JSONSerializer
 from google.appengine.ext import ndb
 import jsonschema
+from WorkflowGenerate import BpmnHelper
 
 from py_utils.NDBBPMNSerializer import NDBBPMNSerializer
 from models.Execution import Execution, StoredValues
@@ -279,8 +280,9 @@ def get_workflow_spec():
     Get the workflow spec
     @return: workflow spec
     """
-    spec_file = open("WorkflowSpecs/Workflow-0.1.json").read()
-    spec = JSONSerializer().deserialize_workflow_spec(spec_file)
+    # spec_file = open("WorkflowSpecs/Workflow-0.1.json").read()
+    # spec = JSONSerializer().deserialize_workflow_spec(spec_file)
+    spec = BpmnHelper().load_workflow_spec('WorkflowSpecs/Workflow-0.1.bpmn', 'workflow')
     return spec
 
 
