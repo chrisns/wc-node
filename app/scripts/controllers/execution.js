@@ -34,6 +34,7 @@ define(['angular'], function (angular) {
           });
         }
       );
+
 //      var editor = new JSONEditor(document.getElementById('editor_holder'), {
 //        // Enable fetching schemas via ajax
 //        ajax: true,

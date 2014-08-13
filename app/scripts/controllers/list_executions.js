@@ -12,8 +12,11 @@ define(['angular'], function (angular) {
   angular.module('wcApp.controllers.ListExecutionsCtrl', [])
     .controller('ListExecutionsCtrl', function ($scope, $http) {
       $http({method: 'GET', url: '/api/executions'}).
-        success(function(data, status, headers, config) {
+        success(function (data) {
           $scope.executions = data.collection.items;
         });
+      $scope.delete = function(execution) {
+        $http({method: 'delete', url: execution.href});
+      }
     });
 });

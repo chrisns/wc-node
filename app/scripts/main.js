@@ -38,7 +38,10 @@ require.config({
     jQuery: '../../bower_components/jquery/dist/jquery',
     'angular-route': '../../bower_components/angular-route/angular-route',
     'angular-ui-router': '../../bower_components/angular-ui-router/release/angular-ui-router',
-    jquery: '../../bower_components/jquery/dist/jquery'
+    jquery: '../../bower_components/jquery/dist/jquery',
+    'angular-form-builder': '../../bower_components/angular-form-builder/dist/angular-form-builder',
+    'angular-form-builder-components': '../../bower_components/angular-form-builder/dist/angular-form-builder-components',
+    'angular-validator': '../../bower_components/angular-validator/dist/angular-validator'
   },
   shim: {
     angular: {

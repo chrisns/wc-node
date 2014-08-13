@@ -4,12 +4,14 @@
     <tr>
       <th>Execution ID</th>
       <th>Created</th>
+      <th>Actions</th>
     </tr>
   </thead>
   <tbody>
     <tr ng-repeat="execution in executions">
       <td><a ui-sref="executionview({execution_id: execution.execution_id})">{{execution.execution_id}}</a></td>
       <td>{{execution.created | date : 'medium'}}</td>
+      <td><button ng-click='delete(execution)'>Delete</button></td>
     </tr>
   </tbody>
 </table>
