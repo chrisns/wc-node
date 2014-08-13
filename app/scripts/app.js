@@ -5,6 +5,7 @@ define([
   'ui-router',
   'controllers/main',
   'controllers/execution',
+  'controllers/new-execution',
   'controllers/about',
   'controllers/facebook',
   'controllers/list_executions',
@@ -35,6 +36,7 @@ define([
     'wcApp.controllers.ListExecutionsCtrl',
     'wcApp.services.Wcapi',
     'wcApp.controllers.ExecutionCtrl',
+    'wcApp.controllers.NewExecutionCtrl',
 /*angJSDeps*/
     'ngCookies',
     'ngResource',
@@ -52,6 +54,10 @@ define([
       url: '/my-history',
       templateUrl: 'views/list_executions.html',
       controller: 'ListExecutionsCtrl'
+    })
+    .state('execution_new', {
+      url: '/new',
+      controller: 'NewExecutionCtrl'
     })
     .state('executionview', {
       url: "/my-history/:execution_id",

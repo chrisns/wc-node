@@ -32,6 +32,7 @@
           <ul class="nav navbar-nav">
             <li ui-sref-active="active"><a ui-sref="index">Home</a></li>
             <li ui-sref-active="active"><a ui-sref="history" data-ng-show="user.id">My History</a></li>
+            <li ui-sref-active="active"><a ui-sref="execution_new" data-ng-show="user.id">New</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
               <li><a data-ng-hide="user.id" href="#" ng-click="login()">Login</a></li>

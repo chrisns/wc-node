@@ -19,7 +19,6 @@ define(['angular'], function (angular) {
       $scope.$watch(
         'execution_schema',
         function(newval, oldval) {
-          console.log(newval);
           var editor = new JSONEditor(document.getElementById('editor_holder'), {
             theme: 'bootstrap3',
             disable_edit_json: true,
@@ -29,7 +28,6 @@ define(['angular'], function (angular) {
             show_errors: 'alawys',
             iconlib: 'bootstrap3',
             ajax: false,
-
             schema: newval
           });
         }

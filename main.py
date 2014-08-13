@@ -183,6 +183,7 @@ def execution_get(user_id, execution_object):
     response = {
         "execution": {
             "version": 1.0,
+            "execution_id": execution_object.execution_id,
             "schema": get_filtered_schema(execution),
         }
     }
@@ -259,7 +260,7 @@ def execution_new(user_id):
     execution.complete_all()
     execution_object.data = execution.serialize(NDBBPMNSerializer())
     execution_id = execution_object.put().urlsafe()
-    return redirect(url_for('execution_get', execution_id=execution_id))
+    return redirect(url_for('.execution_get', execution_id=execution_id, _external=False))
 
 
 class ExecutionCollectionMarshal(ma.Serializer):
