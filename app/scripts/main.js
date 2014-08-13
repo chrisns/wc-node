@@ -21,9 +21,7 @@ require.config({
     tooltip: '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/tooltip',
     popover: '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/popover',
     'angular-facebook': '../../bower_components/angular-facebook/lib/angular-facebook',
-    'angular-form-builder': '../../bower_components/angular-form-builder/dist/angular-form-builder',
-    'angular-form-builder-components': '../../bower_components/angular-form-builder/dist/angular-form-builder-components',
-    'angular-validator': '../../bower_components/angular-validator/dist/angular-validator',
+    'json-editor': '../../bower_components/json-editor/dist/jsoneditor',
     async: '../../bower_components/requirejs-plugins/src/async',
     depend: '../../bower_components/requirejs-plugins/src/depend',
     font: '../../bower_components/requirejs-plugins/src/font',
@@ -36,12 +34,15 @@ require.config({
     'Markdown.Converter': '../../bower_components/requirejs-plugins/lib/Markdown.Converter',
     text: '../../bower_components/requirejs-plugins/lib/text',
     'sass-bootstrap': '../../bower_components/sass-bootstrap/dist/js/bootstrap',
-    'facebook': '../../bower_components/angular-facebook/lib/angular-facebook',
-    'jQuery': '../../bower_components/jquery/dist/jquery'
+    facebook: '../../bower_components/angular-facebook/lib/angular-facebook',
+    jQuery: '../../bower_components/jquery/dist/jquery',
+    'angular-route': '../../bower_components/angular-route/angular-route',
+    'angular-ui-router': '../../bower_components/angular-ui-router/release/angular-ui-router',
+    jquery: '../../bower_components/jquery/dist/jquery'
   },
   shim: {
     angular: {
-      exports: 'angular',
+      exports: 'angular'
     },
     'ui-router': [
       'angular'
@@ -64,13 +65,15 @@ require.config({
     'sass-bootstrap': [
       'jQuery'
     ],
-    'app': {
+    app: {
       deps: [
         'sass-bootstrap'
       ]
     },
-    'facebook': {
-      deps: ['angular'],
+    facebook: {
+      deps: [
+        'angular'
+      ],
       exports: 'fb'
     }
   },
@@ -93,7 +96,8 @@ require([
   'angular-cookies',
   'angular-sanitize',
   'angular-resource',
-  'facebook'
+  'facebook',
+  'json-editor',
 ], function(angular, app, uiRouter, ngCookies, ngSanitize, ngResource, Facebook) {
   'use strict';
   /* jshint ignore:start */
