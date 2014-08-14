@@ -16,7 +16,8 @@
     "angular-facebook": "~0.2.2",
     "angular-ui-router": "~0.2.10",
     "jquery": "~2.1.1",
-    "json-editor": "~0.7.5"
+    "json-editor": "~0.7.5",
+    "angulartics": "~0.16.1"
   },
   "devDependencies": {
     "angular-mocks": "1.2.16",

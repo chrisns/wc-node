@@ -41,12 +41,21 @@ require.config({
     jquery: '../../bower_components/jquery/dist/jquery',
     'angular-form-builder': '../../bower_components/angular-form-builder/dist/angular-form-builder',
     'angular-form-builder-components': '../../bower_components/angular-form-builder/dist/angular-form-builder-components',
-    'angular-validator': '../../bower_components/angular-validator/dist/angular-validator'
+    'angular-validator': '../../bower_components/angular-validator/dist/angular-validator',
+    'angulartics': '../../bower_components/angulartics/src/angulartics',
+    'angulartics.google.analytics': '../../bower_components/angulartics/src/angulartics-ga',
   },
   shim: {
     angular: {
       exports: 'angular'
     },
+    'angulartics': [
+      'angular'
+    ],
+    'angulartics.google.analytics': [
+      'angulartics',
+      'angular'
+    ],
     'ui-router': [
       'angular'
     ],
@@ -101,6 +110,8 @@ require([
   'angular-resource',
   'facebook',
   'json-editor',
+  'angulartics',
+  'angulartics.google.analytics'
 ], function(angular, app, uiRouter, ngCookies, ngSanitize, ngResource, Facebook) {
   'use strict';
   /* jshint ignore:start */

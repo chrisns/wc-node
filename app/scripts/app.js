@@ -41,7 +41,9 @@ define([
     'ngCookies',
     'ngResource',
     'ngSanitize',
-    'ui.router'
+    'ui.router',
+    'angulartics',
+    'angulartics.google.analytics'
   ])
   .config(function($stateProvider, $urlRouterProvider) {
     $urlRouterProvider.otherwise('/');
@@ -64,5 +66,11 @@ define([
       templateUrl: 'views/execution.html',
       controller: 'ExecutionCtrl'
     });
+  })
+  .config(function ($analyticsProvider) {
+    $analyticsProvider.firstPageview(true);
+    /* Records pages that don't use $state or $route */
+    $analyticsProvider.withAutoBase(true);
+    /* Records full path */
   });
 });
