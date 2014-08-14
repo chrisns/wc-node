@@ -303,7 +303,7 @@ def get_filtered_schema(execution):
                     inputs_required[
                         input_required] = inputs_matrix[input_required]
                 else:
-                    raise Exception('Unmapped input')
+                    raise Exception('Unmapped input ' + input_required)
     return {
         "$schema": "http://json-schema.org/schema#",
         "type": "object",

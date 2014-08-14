@@ -38,7 +38,7 @@ class SchemaTests(unittest.TestCase):
         execution.complete_all()
         with self.assertRaises(Exception) as ex:
             main.get_filtered_schema(execution)
-        self.assertEqual('Unmapped input', ex.exception.message)
+        self.assertEqual('Unmapped input name', ex.exception.message)
 
 
 if __name__ == '__main__':
