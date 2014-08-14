@@ -216,15 +216,16 @@ def execution_post(user_id, execution_object):
         if isinstance(waiting_task.task_spec, UserTask):
             for key in data.keys():
                 if key in waiting_task.task_spec.args:
-                    if isinstance(data[key], types.StringTypes):
-                        parse_data.update(**{key: data[key]})
-                        waiting_task.set_data(**{key: data[key]})
-                        pass
-                    else:
+                    try:
                         for value in data[key]:
                             # todo: handle multiple value responses
                             waiting_task.set_data(**{key: data[key]})
                             parse_data.update(**{key: data[key]})
+                    except TypeError, te:
+                        parse_data.update(**{key: data[key]})
+                        waiting_task.set_data(**{key: data[key]})
+                        pass
+
     execution.complete_all()
     update_execution_index(schema, execution_object, parse_data)
     execution_object.data = execution.serialize(NDBBPMNSerializer())
