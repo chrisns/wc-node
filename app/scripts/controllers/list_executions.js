@@ -18,7 +18,7 @@ define(['angular'], function (angular) {
       $scope.delete = function(execution) {
         $http({method: 'delete', url: execution.href})
           .success(function (data) {
-            $scope.executions.splice($scope.executions.indexOf(execution));
+            $scope.executions.splice($scope.executions.indexOf(execution), 1);
           });
       }
     });
