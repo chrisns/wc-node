@@ -115,7 +115,7 @@ class MainTests(BaseTestClass):
     def test_execution_new(self):
         """ check that we can create a new execution"""
         resp = self.api(uri='/executions/create', user_id=1234, status_code=302,
-                        content_type='text/html; charset=utf-8')
+                        content_type='text/html; charset=utf-8', method='POST')
         self.assertIn('You should be redirected automatically', resp.data)
         self.assertIn('api/executions/', resp.headers['Location'])
 

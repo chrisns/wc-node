@@ -246,7 +246,7 @@ def update_execution_index(schema, execution_object, parse_data):
 
 
 # noinspection PyTypeChecker
-@app.route('/api/executions/create')
+@app.route('/api/executions/create', methods=['POST'])
 @get_user_id
 def execution_new(user_id):
     """
