@@ -13,14 +13,14 @@ define(['angular'], function (angular) {
       $scope.execution_id = $stateParams.execution_id;
       $http({method: 'GET', url: '/api/executions/' + $scope.execution_id }).
         success(function (data, status, headers, config) {
-          $scope.execution_schema= data.execution.schema;
-          $scope.execution_schema.format = 'grid';
+          $scope.execution_schema = data.execution.schema;
         });
       $scope.$watch(
         'execution_schema',
         function(newval, oldval) {
-          var editor = new JSONEditor(document.getElementById('editor_holder'), {
+          $scope.editor = new JSONEditor(document.getElementById('editor_holder'), {
             theme: 'bootstrap3',
+            template: 'handlebars',
             disable_edit_json: true,
             disable_collapse: true,
             disable_properties: true,
@@ -32,6 +32,27 @@ define(['angular'], function (angular) {
           });
         }
       );
+      $scope.formSubmit =  function() {
+//        if ($scope.editor.valdiate().length) {
+//          console.log(errors);
+//          return;
+//        }
+        $scope.editor.disable();
+        $http({
+          method: 'POST',
+          url: '/api/executions/' + $scope.execution_id,
+          data: $scope.editor.getValue()
+        })
+          .success(function(data) {
+            $scope.editor.destroy();
+            $scope.execution_schema = data.execution.schema;
+            $scope.execution_schema.format = 'grid';
+          })
+          .error(function (data, status, headers, config) {
+            $scope.editor.enable();
+            alert("error");
+          });
+      }
 
 //      var editor = new JSONEditor(document.getElementById('editor_holder'), {
 //        // Enable fetching schemas via ajax
