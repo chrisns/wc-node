@@ -228,6 +228,7 @@ def execution_post(user_id, execution_object):
     execution.complete_all()
     update_execution_index(schema, execution_object, parse_data)
     execution_object.data = execution.serialize(NDBBPMNSerializer())
+    execution_object.put()
     return redirect(url_for('execution_get', execution_id=execution_object.key.urlsafe()))
 
 
