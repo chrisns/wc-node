@@ -53,7 +53,22 @@ requirejs.config({
     jquery: '../../bower_components/jquery/dist/jquery',
     'angular-form-builder': '../../bower_components/angular-form-builder/dist/angular-form-builder',
     'angular-form-builder-components': '../../bower_components/angular-form-builder/dist/angular-form-builder-components',
-    'angular-validator': '../../bower_components/angular-validator/dist/angular-validator'
+    'angular-validator': '../../bower_components/angular-validator/dist/angular-validator',
+    angulartics: '../../bower_components/angulartics/src/angulartics',
+    'angulartics.google.analytics': '../../bower_components/angulartics/src/angulartics-ga',
+    'angulartics-adobe': '../../bower_components/angulartics/src/angulartics-adobe',
+    'angulartics-chartbeat': '../../bower_components/angulartics/src/angulartics-chartbeat',
+    'angulartics-flurry': '../../bower_components/angulartics/src/angulartics-flurry',
+    'angulartics-ga-cordova': '../../bower_components/angulartics/src/angulartics-ga-cordova',
+    'angulartics-ga': '../../bower_components/angulartics/src/angulartics-ga',
+    'angulartics-gtm': '../../bower_components/angulartics/src/angulartics-gtm',
+    'angulartics-kissmetrics': '../../bower_components/angulartics/src/angulartics-kissmetrics',
+    'angulartics-mixpanel': '../../bower_components/angulartics/src/angulartics-mixpanel',
+    'angulartics-piwik': '../../bower_components/angulartics/src/angulartics-piwik',
+    'angulartics-scroll': '../../bower_components/angulartics/src/angulartics-scroll',
+    'angulartics-segmentio': '../../bower_components/angulartics/src/angulartics-segmentio',
+    'angulartics-splunk': '../../bower_components/angulartics/src/angulartics-splunk',
+    'angulartics-woopra': '../../bower_components/angulartics/src/angulartics-woopra'
   },
 
     shim: {
