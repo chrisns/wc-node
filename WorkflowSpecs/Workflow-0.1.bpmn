@@ -7,10 +7,7 @@
     <bpmn2:userTask id="task_a1" name="task_a1">
       <bpmn2:extensionElements>
         <camunda:formData>
-          <camunda:formField id="name" type="string"/>
-          <camunda:formField id="face" type="string"/>
-          <camunda:formField id="nose" type="string"/>
-          <camunda:formField id="pets" type="string"/>
+          <camunda:formField id="company" type="string"/>
         </camunda:formData>
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_1</bpmn2:incoming>
@@ -23,6 +20,10 @@
         <camunda:formData>
           <camunda:formField id="sid" type="string"/>
           <camunda:formField id="mildrid" type="mildrid"/>
+          <camunda:formField id="name" type="string"/>
+          <camunda:formField id="face" type="string"/>
+          <camunda:formField id="pets" type="string"/>
+          <camunda:formField id="nose" type="string"/>
         </camunda:formData>
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_2</bpmn2:incoming>
