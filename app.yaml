@@ -67,9 +67,6 @@ handlers:
 
 pagespeed:
   enabled_rewriters:
-  - RemoveComments
-  - ElideAttributes
-  - ImageAddDimensions
   - ProxyJs
   - ProxyCss
   - ProxyImages
