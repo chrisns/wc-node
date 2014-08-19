@@ -94,7 +94,6 @@ class MainTests(BaseTestClass):
         key_not_to_expect = self._create_execution_object(owner=456)
 
         resp = self.api(uri='/executions', user_id=1234)
-        # self.fail()
         self.assertEquals(resp.keys()[0], "collection")
         self.assertIn("/api/executions/create", resp['collection']['_links']['create']['href'])
         self.assertEquals(len(resp['collection']['items']), 3)
@@ -106,7 +105,9 @@ class MainTests(BaseTestClass):
             self.assertIn('href', item.keys())
             self.assertIn('created', item.keys())
             self.assertIn('execution_id', item.keys())
+            self.assertEqual([{'k': 'company', 'v': 'test'}, {'k': 'face', 'v': 'test'}], item['values'])
             self.assertNotEqual(key_not_to_expect, item['execution_id'])
+
 
     def test_page_not_found(self):
         resp = self.api(uri='/notfound', status_code=404)
@@ -186,6 +187,8 @@ class MainTests(BaseTestClass):
         self.execution = BpmnWorkflow(self.spec)
         self.execution.complete_all()
         self.execution_object.data = NDBBPMNSerializer().serialize_workflow(self.execution, include_spec=False)
+        self.execution_object.values.append(StoredValues(k='company', v='test'))
+        self.execution_object.values.append(StoredValues(k='face', v='test'))
         self.execution_id = self.execution_object.put().urlsafe()
         return self.execution_id
 

@@ -272,10 +272,23 @@ class ExecutionCollectionMarshal(ma.Serializer):
     # noinspection PyUnresolvedReferences
     href = ma.URL('execution_get', execution_id='<execution_id>')
     type = fields.Function(lambda obj: obj.__class__.__name__)
+    values = fields.Nested('ValuesCollectionMarshal', many=True)
 
     class Meta:
         """ Meta serializer class """
         additional = ['execution_id', 'created', 'type']
+
+
+class ValuesCollectionMarshal(ma.Serializer):
+    """
+    Serializer for collections of values
+    """
+    # noinspection PyUnresolvedReferences
+
+    class Meta:
+        """ Meta serializer class """
+        t = ['kk']
+        fields = ['k', 'v']
 
 
 def get_workflow_spec():
