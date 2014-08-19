@@ -70,6 +70,9 @@ pagespeed:
   - RemoveComments
   - ElideAttributes
   - ImageAddDimensions
+  - ProxyJs
+  - ProxyCss
+  - ProxyImages
 
 skip_files:
   - ^(.*/)?#.*#$
