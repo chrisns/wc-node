@@ -9,6 +9,7 @@ handlers:
 - url: /
   static_files: dist/index.html
   upload: dist/index.html
+  secure: always
 
 - url: /robots.txt
   static_files: dist/robots.txt
@@ -45,6 +46,7 @@ handlers:
 
 - url: /api.*
   script: main.app
+  secure: always
 
 
 # Third party libraries that are included in the App Engine SDK must be listed
