@@ -9,9 +9,12 @@ define(['angular'], function (angular) {
    * Controller of the wcApp
    */
   angular.module('wcApp.controllers.NewExecutionCtrl', ['ui.router'])
-    .controller('NewExecutionCtrl', function ($scope, $stateParams, $http, $state) {
+    .controller('NewExecutionCtrl', function ($scope, $stateParams, $http, $state, $analytics) {
       $http({method: 'POST', url: '/api/executions/create'}).
         success(function (data, status, headers, config) {
+          $analytics.eventTrack('Created new execution', {
+            category: 'execution', label: 'new'
+          });
           $state.transitionTo('executionview', {execution_id:data.execution.execution_id});
         });
     });
