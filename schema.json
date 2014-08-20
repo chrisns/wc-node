@@ -6,7 +6,8 @@
       "type": "string",
       "title": "Company Name",
       "description": "What company do you have issue with?",
-      "minLength": 1
+      "minLength": 1,
+      "indexed": true
     },
     "sid": {
       "type": "string",
@@ -29,8 +30,7 @@
       "title": "Your full name",
       "description": "You need to give us your full name",
       "minLength": 4,
-      "default": "John Smith",
-      "indexed": true
+      "default": "John Smith"
     },
     "face": {
       "type": "string",

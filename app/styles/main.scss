@@ -8,6 +8,10 @@ $icon-font-path: "/bower_components/bootstrap-sass-official/assets/fonts/bootstr
     color: #000;
     padding: 0.2em 0;
 }
+
+table.executions-list tr {
+  cursor: pointer;
+}
 @media only screen and (max-width: 768px) {
   table.executions-list {
     /* Force table to not be like tables anymore */
@@ -49,7 +53,7 @@ $icon-font-path: "/bower_components/bootstrap-sass-official/assets/fonts/bootstr
     Label the data
     */
     td:nth-of-type(1):before {
-      content: "Execution ID";
+      content: "Company";
     }
     td:nth-of-type(2):before {
       content: "Created";

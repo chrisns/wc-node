@@ -105,7 +105,7 @@ def executions_list(user_id):
     @return: response
     """
     executions = Execution.query(Execution.owner == user_id).fetch(20)
-    serialized = ExecutionCollectionMarshal(executions, many=True)
+    serialized = ExecutionCollectionMarshal(executions)
     response = {
         "collection": {
             "version": 1.0,
@@ -265,30 +265,30 @@ def execution_new(user_id):
     return redirect(url_for('.execution_get', execution_id=execution_id, _external=False))
 
 
-class ExecutionCollectionMarshal(ma.Serializer):
-    """
-    Serializer for collections of executions
-    """
-    # noinspection PyUnresolvedReferences
-    href = ma.URL('execution_get', execution_id='<execution_id>')
-    type = fields.Function(lambda obj: obj.__class__.__name__)
-    values = fields.Nested('ValuesCollectionMarshal', many=True)
+class ExecutionCollectionMarshal:
 
-    class Meta:
-        """ Meta serializer class """
-        additional = ['execution_id', 'created', 'type']
+    def __init__(self, executions):
+        self.data = self.serialize_executions(executions)
 
+    def serialize_executions(self, executions):
+        data = []
+        for execution in executions:
+            data.append(self.serialize_execution(execution))
+        return data
+    def serialize_execution(self, execution):
+        data = dict()
+        data['execution_id'] = execution.key.urlsafe()
+        data['type'] = execution.__class__.__name__
+        data['href'] = url_for('execution_get', execution_id=execution.key.urlsafe())
+        data['created'] = execution.created
+        data['values'] = self.serialize_values(values=execution.values)
+        return data
 
-class ValuesCollectionMarshal(ma.Serializer):
-    """
-    Serializer for collections of values
-    """
-    # noinspection PyUnresolvedReferences
-
-    class Meta:
-        """ Meta serializer class """
-        t = ['kk']
-        fields = ['k', 'v']
+    def serialize_values(self, values):
+        vals = dict()
+        for value in values:
+            vals[value.k] = value.v
+        return vals
 
 
 def get_workflow_spec():

@@ -12,6 +12,9 @@ class StoredValues(ndb.Model):
     k = ndb.StringProperty(indexed=True)
     v = ndb.PickleProperty(indexed=True)
 
+    def to_dict(self):
+        return dict([(p, unicode(getattr(self, p))) for p in self.properties()])
+
 
 class Execution(ndb.Model):
     """Models an individual execution"""

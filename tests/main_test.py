@@ -105,9 +105,8 @@ class MainTests(BaseTestClass):
             self.assertIn('href', item.keys())
             self.assertIn('created', item.keys())
             self.assertIn('execution_id', item.keys())
-            self.assertEqual([{'k': 'company', 'v': 'test'}, {'k': 'face', 'v': 'test'}], item['values'])
+            self.assertEqual({'company': 'test', 'face' : 'test'}, item['values'])
             self.assertNotEqual(key_not_to_expect, item['execution_id'])
-
 
     def test_page_not_found(self):
         resp = self.api(uri='/notfound', status_code=404)
