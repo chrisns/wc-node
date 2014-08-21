@@ -15,7 +15,7 @@ import jsonschema
 from WorkflowGenerate import BpmnHelper
 
 from py_utils.NDBBPMNSerializer import NDBBPMNSerializer
-from models.Execution import Execution, StoredValues
+from models.Execution import Execution
 from py_utils.bpmn_helpers import UserTask
 from py_utils.facebook_auth import *
 
@@ -34,6 +34,10 @@ def root():
         'collection': {
             'version': 1.0,
             'items': {
+                'queries': {
+                    'description': 'List of queries',
+                    'href': url_for('queries_list')
+                },
                 'executions': {
                     'description': 'List of executions',
                     'authentication_required': True,
@@ -114,6 +118,53 @@ def executions_list(user_id):
                     'href': url_for('execution_new'),
                 }
             }
+        }
+    }
+    return jsonify(response)
+
+@app.route('/api/queries')
+def queries_list():
+    """
+    list of available queries and lookups
+    @param user_id:
+    @return: response
+    """
+    response = {
+        "collection": {
+            "version": 1.0,
+            "href": url_for('queries_list'),
+            "items": {
+                'companies' : {
+                    'description': 'Lookup of companies',
+                    'href' : url_for('queries_companies')
+                }
+            },
+        }
+    }
+    return jsonify(response)
+
+@app.route('/api/queries/companies')
+def queries_companies():
+    """
+    list of company stats
+    @param user_id:
+    @return: response
+    """
+    # print StoredValues.query(StoredValues.k == 'company').fetch(20)
+    # executions = Execution.query( projection=[Execution.values.v]).fetch(20)
+    # executions = ndb.gql('SELECT distinct values.v FROM Execution where values.k = \'company\'').fetch(20)
+    # print executions
+    # response = {}
+    response = {
+        "collection": {
+            "version": 1.0,
+            "href": url_for('queries_list'),
+            "items": {
+                'companies' : {
+                    'description': 'Lookup of companies',
+                    'href' : url_for('queries_companies')
+                }
+            },
         }
     }
     return jsonify(response)
@@ -242,7 +293,7 @@ def update_execution_index(schema, execution_object, parse_data):
    """
     for k, v in parse_data.items():
         if schema['properties'][k].has_key('indexed'):
-            execution_object.values.append(StoredValues(k=k, v=v))
+            execution_object.__setattr__(name = k, value=v)
 
 
 # noinspection PyTypeChecker
@@ -279,7 +330,7 @@ class ExecutionCollectionMarshal:
         data['type'] = execution.__class__.__name__
         data['href'] = url_for('execution_get', execution_id=execution.key.urlsafe())
         data['created'] = execution.created
-        data['values'] = self.serialize_values(values=execution.values)
+        # data['values'] = self.serialize_values(values=execution.values)
         return data
 
     def serialize_values(self, values):
