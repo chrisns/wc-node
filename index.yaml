@@ -1,0 +1,7 @@
+indexes:
+
+- kind: Execution
+  properties:
+  - name: owner
+  - name: company
+  - name: created
