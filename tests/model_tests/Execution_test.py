@@ -79,8 +79,8 @@ class ExecutionTests(BaseTestClass):
         Execution(owner=100).put()
         Execution(owner=100).put()
 
-        expected_key = Execution(owner=100, variabletwo = ['ff', 'bb'], variablethree = [{'ff':'aa'}, {'ff':'aa'}],
-                                 variablefour = {'ff':'aa', 'faf':'aa'}).put().urlsafe()
+        expected_key = Execution(owner=100, variabletwo=['ff', 'bb'], variablethree=[{'ff': 'aa'}, {'ff': 'aa'}],
+                                 variablefour={'ff': 'aa', 'faf': 'aa'}).put().urlsafe()
         count = Execution.query(ndb.GenericProperty('variabletwo') == 'ff').count()
         actual_key = Execution.query(ndb.GenericProperty('variabletwo') == 'ff').get().key.urlsafe()
         self.assertEqual(expected_key, actual_key)

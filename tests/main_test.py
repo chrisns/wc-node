@@ -96,8 +96,7 @@ class MainTests(BaseTestClass):
         ]
         key_not_to_expect = self._create_execution_object(owner=456)
 
-
-        resp = self.api(uri='/executions', user_id=1234)
+        self.api(uri='/executions', user_id=1234)
         # also checks that projections work
         resp = self.api(uri='/executions?fields=variableone', user_id=1234)
         self.assertEquals(resp.keys()[0], "collection")
@@ -113,7 +112,6 @@ class MainTests(BaseTestClass):
             self.assertIn('execution_id', item.keys())
             self.assertIn('variableone', item.keys())
             self.assertNotEqual(key_not_to_expect, item['execution_id'])
-
 
     def test_page_not_found(self):
         resp = self.api(uri='/notfound', status_code=404)
@@ -193,10 +191,11 @@ class MainTests(BaseTestClass):
         self.execution = BpmnWorkflow(self.spec)
         self.execution.complete_all()
         self.execution_object.data = NDBBPMNSerializer().serialize_workflow(self.execution, include_spec=False)
-        self.execution_object.variableone = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
+        self.execution_object.variableone = ''.join(
+            random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
         self.execution_object.variabletwo = ['ff', 'bb']
-        self.execution_object.variablethree = [{'ff':'aa'}, {'ff':'aa'}]
-        self.execution_object.variablefour = {'ff':'aa', 'faf':'aa'}
+        self.execution_object.variablethree = [{'ff': 'aa'}, {'ff': 'aa'}]
+        self.execution_object.variablefour = {'ff': 'aa', 'faf': 'aa'}
         self.execution_id = self.execution_object.put().urlsafe()
 
         return self.execution_id
@@ -218,14 +217,12 @@ class MainTests(BaseTestClass):
         self._create_execution_object()
         self._create_execution_object()
 
-        response = self.api(uri='/queries/companies')
-        print response
+        resp = self.api(uri='/queries/companies')
+        print resp
         # for prop in self.execution_object._properties.values():
-        #     if isinstance(prop, ndb.GenericProperty) or isinstance(prop, ndb.StructuredProperty):
-        #         print prop._code_name
+        # if isinstance(prop, ndb.GenericProperty) or isinstance(prop, ndb.StructuredProperty):
+        # print prop._code_name
         # self.fail()
-
-
 
 if __name__ == '__main__':
     unittest.main()  # pragma: no cover

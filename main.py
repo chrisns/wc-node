@@ -2,8 +2,6 @@
 # coding=utf-8
 """`main` is the top level module for your Flask application."""
 
-import types
-
 from SpiffWorkflow.bpmn.BpmnWorkflow import BpmnWorkflow
 from flask import Flask
 from flask import url_for
@@ -129,11 +127,11 @@ def executions_list(user_id):
     }
     return jsonify(response)
 
+
 @app.route('/api/queries')
 def queries_list():
     """
     list of available queries and lookups
-    @param user_id:
     @return: response
     """
     response = {
@@ -141,20 +139,20 @@ def queries_list():
             "version": 1.0,
             "href": url_for('queries_list'),
             "items": {
-                'companies' : {
+                'companies': {
                     'description': 'Lookup of companies',
-                    'href' : url_for('queries_companies')
+                    'href': url_for('queries_companies')
                 }
             },
         }
     }
     return jsonify(response)
 
+
 @app.route('/api/queries/companies')
 def queries_companies():
     """
     list of company stats
-    @param user_id:
     @return: response
     """
     # print StoredValues.query(StoredValues.k == 'company').fetch(20)
@@ -167,9 +165,9 @@ def queries_companies():
             "version": 1.0,
             "href": url_for('queries_list'),
             "items": {
-                'companies' : {
+                'companies': {
                     'description': 'Lookup of companies',
-                    'href' : url_for('queries_companies')
+                    'href': url_for('queries_companies')
                 }
             },
         }
@@ -300,7 +298,7 @@ def update_execution_index(schema, execution_object, parse_data):
    """
     for k, v in parse_data.items():
         if schema['properties'][k].has_key('indexed'):
-            execution_object.__setattr__(name = k, value=v)
+            execution_object.__setattr__(name=k, value=v)
 
 
 # noinspection PyTypeChecker
@@ -322,7 +320,6 @@ def execution_new(user_id):
 
 
 class ExecutionCollectionMarshal:
-
     def __init__(self, executions):
         self.data = self.serialize_executions(executions)
 
@@ -331,7 +328,9 @@ class ExecutionCollectionMarshal:
         for execution in executions:
             data.append(self.serialize_execution(execution))
         return data
-    def serialize_execution(self, execution):
+
+    @staticmethod
+    def serialize_execution(execution):
         data = dict()
         data['execution_id'] = execution.key.urlsafe()
         data['type'] = execution.__class__.__name__
@@ -341,7 +340,8 @@ class ExecutionCollectionMarshal:
             data[projected_field] = execution.to_dict()[projected_field]
         return data
 
-    def serialize_values(self, values):
+    @staticmethod
+    def serialize_values(values):
         vals = dict()
         for value in values:
             vals[value.k] = value.v

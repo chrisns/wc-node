@@ -4,6 +4,7 @@
 
 from google.appengine.ext import ndb
 
+
 class Execution(ndb.Expando):
     """Models an individual execution"""
     created = ndb.DateTimeProperty(auto_now_add=True)
@@ -21,8 +22,8 @@ class Execution(ndb.Expando):
 
     def __setattr__(self, name, value):
         if (name.startswith('_') or
-            isinstance(getattr(self.__class__, name, None), (ndb.Property, property)) or
-            isinstance(value, ndb.Model) or isinstance(value, dict)):
+                isinstance(getattr(self.__class__, name, None), (ndb.Property, property)) or
+                isinstance(value, ndb.Model) or isinstance(value, dict)):
             return super(Execution, self).__setattr__(name, value)
         elif isinstance(value, list) and isinstance(value[0], dict):
             prop = ndb.StructuredProperty(ndb.Expando, name, repeated=True, indexed=self._default_indexed)
