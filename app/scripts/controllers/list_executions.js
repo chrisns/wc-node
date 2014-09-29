@@ -11,7 +11,7 @@ define(['angular'], function (angular) {
    */
   angular.module('wcApp.controllers.ListExecutionsCtrl', [])
     .controller('ListExecutionsCtrl', function ($scope, $http) {
-      $http({method: 'GET', url: '/api/executions'})
+      $http({method: 'GET', url: '/api/executions?fields=company'})
         .success(function (data) {
           $scope.executions = data.collection.items;
         });

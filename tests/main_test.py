@@ -96,7 +96,10 @@ class MainTests(BaseTestClass):
         ]
         key_not_to_expect = self._create_execution_object(owner=456)
 
+
         resp = self.api(uri='/executions', user_id=1234)
+        # also checks that projections work
+        resp = self.api(uri='/executions?fields=variableone', user_id=1234)
         self.assertEquals(resp.keys()[0], "collection")
         self.assertIn("/api/executions/create", resp['collection']['_links']['create']['href'])
         self.assertEquals(len(resp['collection']['items']), 3)
@@ -108,8 +111,9 @@ class MainTests(BaseTestClass):
             self.assertIn('href', item.keys())
             self.assertIn('created', item.keys())
             self.assertIn('execution_id', item.keys())
-            # self.assertEqual({'company': 'test', 'face' : 'test'}, item['values'])
+            self.assertIn('variableone', item.keys())
             self.assertNotEqual(key_not_to_expect, item['execution_id'])
+
 
     def test_page_not_found(self):
         resp = self.api(uri='/notfound', status_code=404)

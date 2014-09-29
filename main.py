@@ -12,6 +12,7 @@ from flask import redirect
 from flask.ext.marshmallow import Marshmallow
 from google.appengine.ext import ndb
 import jsonschema
+from werkzeug.exceptions import BadRequestKeyError
 from WorkflowGenerate import BpmnHelper
 
 from py_utils.NDBBPMNSerializer import NDBBPMNSerializer
@@ -106,7 +107,13 @@ def executions_list(user_id):
     @param user_id:
     @return: response
     """
-    executions = Execution.query(Execution.owner == user_id).fetch(20)
+    try:
+        projection = request.args['fields'].split(',')
+    except BadRequestKeyError:
+        projection = []
+
+    projection.append('created')
+    executions = Execution.query(Execution.owner == user_id, projection=projection).fetch(20)
     serialized = ExecutionCollectionMarshal(executions)
     response = {
         "collection": {
@@ -330,7 +337,8 @@ class ExecutionCollectionMarshal:
         data['type'] = execution.__class__.__name__
         data['href'] = url_for('execution_get', execution_id=execution.key.urlsafe())
         data['created'] = execution.created
-        # data['values'] = self.serialize_values(values=execution.values)
+        for projected_field in execution._projection:
+            data[projected_field] = execution.to_dict()[projected_field]
         return data
 
     def serialize_values(self, values):
