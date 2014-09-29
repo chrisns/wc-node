@@ -110,6 +110,9 @@ module.exports = function (grunt) {
       },
       regenWorkflow: {
         cmd: 'bash -c "source env/bin/activate && python WorkflowGenerate.py"'
+      },
+      appEngineStart: {
+        cmd: '/usr/local/google_appengine/dev_appserver.py . 2>&1 |egrep "^(WARNING|ERROR|CRITICAL)"'
       }
     },
     jsonlint: {
@@ -435,6 +438,10 @@ module.exports = function (grunt) {
       testSetup: [
         'compass'
       ],
+      serveWithAppEngine: [
+        'serve',
+        'exec:appEngineStart'
+      ],
       test: [
         'karma',
         'nose'
@@ -545,7 +552,9 @@ module.exports = function (grunt) {
     'connect:test',
     'concurrent:test'
   ]);
-
+  grunt.registerTask('servewithgae', [
+    'concurrent:serveWithAppEngine'
+  ]),
   grunt.registerTask('build', [
     'clean:dist',
     'wiredep',
