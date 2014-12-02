@@ -4,36 +4,64 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
+var swig  = require('swig');
 var orientdb = require("orientdb");
-
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
-
+var hal = require("express-hal");
+app.use(hal.middleware);
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+//app.set('views', path.join(__dirname, 'views'));
+//app.set('view engine', 'swig');
 
 
 var dbConfig = {
-    user_name: "admin",
-    user_password: "admin"
+    user_name: "root",
+    user_password: "root",
+    database_type: "graph",
+    storage_type: "memory"
 };
 var serverConfig = {
     host: "localhost",
-    port: 2424
+    port: 2424,
+    user_name: "root",
+    user_password: "root"
 };
 
 var server = new orientdb.Server(serverConfig);
-var db = new orientdb.GraphDb("blog", server, dbConfig);
+var db = new orientdb.GraphDb("test", server, dbConfig);
 
-db.open(function(err) {
-    if (err) {
-        throw err;
-    }
-    console.log("Successfully connected to OrientDB");
+//var db = new Db('test', server, dbConfig);
+
+
+server.connect(function(err, sessionId) {
+
+    if (err) { console.log(err); return; }
+
+    console.log("Connected on session: " + sessionId);
+
+    db.create(function(err) {
+
+        if (err) { console.log(err); return; }
+
+        console.log("Created database: " + db.databaseName);
+
+        db.drop(function(err) {
+
+            if (err) { console.log(err); return; }
+
+            console.log("Deleted database");
+
+            db.close(function(err) {
+
+                if (err) { console.log(err); return; }
+
+                console.log("Closed connection");
+            });
+        });
+    });
 });
 
 // uncomment after placing your favicon in /public
@@ -54,11 +82,7 @@ app.use(function(req, res, next) {
     err.status = 404;
     next(err);
 });
-routes.init(db, function(err) {
-    if (err) {
-        throw err;
-    }
-});
+
 // error handlers
 
 // development error handler
