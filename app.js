@@ -5,6 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var orientdb = require("orientdb");
+var Q = require("Q");
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
@@ -34,34 +35,59 @@ var db = new orientdb.GraphDb("test", server, dbConfig);
 
 //var db = new Db('test', server, dbConfig);
 
+//var rename = Rx.Observable.fromCallback(server.connect);
+//var server = server.connect();
+//var db = db.create();
+//console.log(db);
 
-server.connect(function(err, sessionId) {
-
-    if (err) { console.log(err); return; }
-
-    console.log("Connected on session: " + sessionId);
-
-    db.create(function(err) {
-
-        if (err) { console.log(err); return; }
-
-        console.log("Created database: " + db.databaseName);
-
-        db.drop(function(err) {
-
-            if (err) { console.log(err); return; }
-
-            console.log("Deleted database");
-
-            db.close(function(err) {
-
-                if (err) { console.log(err); return; }
-
-                console.log("Closed connection");
-            });
-        });
-    });
-});
+//function conn
+//console.log(db.drop());
+Q.ninvoke(server, 'connect')
+    .then(function (sessionId) {
+        console.log("Connected on session: " + sessionId);
+    })
+    .then(function () {
+        return Q.ninvoke(db, 'drop');
+    })
+    .then(function () {
+        return Q.ninvoke(db, 'create');
+    })
+    .done();
+//Q.fcall(server.connect)
+//.then(function(server) {
+//    console.log(":a");
+//}).catch(function(err) {
+//        console.log(err);
+//    })
+//    .done();
+//server.connect(function(err, sessionId) {
+//
+//    if (err) { console.log(err); }
+//
+//
+//
+//    db.create(function(err) {
+//
+//        //if (err) { console.log(err); return; }
+//
+//        console.log("Created database: " + db.databaseName);
+//        console.log("gg");
+//
+//        db.drop(function(err) {
+//            console.log("gg");
+//            if (err) { console.log(err); return; }
+//
+//            console.log("Deleted database");
+//
+//            db.close(function(err) {
+//
+//                if (err) { console.log(err); return; }
+//
+//                console.log("Closed connection");
+//            });
+//        });
+//    });
+//});
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
