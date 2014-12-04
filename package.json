@@ -17,7 +17,8 @@
     "stylus": "0.42.3",
     "express-hal": "0.0.1",
     "oriento": "~0.6.0",
-    "winston": "~0.8.3"
+    "winston": "~0.8.3",
+    "bluebird": "^2.3.11"
   },
   "devDependencies": {
     "flake-idgen": "~0.1.4",

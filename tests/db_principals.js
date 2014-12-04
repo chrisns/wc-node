@@ -1,7 +1,8 @@
-/*global describe, beforeEach, afterEach, it */
+/* global describe, beforeEach, afterEach, it, xit */
 var chai = require("chai");
 var chaiAsPromised = require("chai-as-promised");
 var expect = chai.expect;
+var Promise = require("bluebird");
 var Oriento = require("oriento");
 var winston = require('winston');
 var randomId = require('../lib/randomid');
@@ -59,5 +60,32 @@ describe('Database usage principals', function () {
             .create({'@class': 'V', name: 'wat?'})
             .commit();
         return expect(transaction).eventually.to.have.deep.property('created').length(2);
-    })
+    });
+
+    it('Should be able to create a class with properties', function() {
+        var myClassDefinition = {
+            name: 'MyNewClass',
+            superClass: 'V',
+            properties: [
+                {
+                    name: 'AStringProperty',
+                    type: 'String'
+                },
+                {
+                    name: 'AnotherStringProperty',
+                    type: 'String'
+                }
+            ]
+        }
+        var createClassFromDefinition = function(classDefinition) {
+            return db.class.create(classDefinition.name, 'V')
+                .tap(function(dbClass){
+                    var propertyCreationPromises = classDefinition.properties.map(dbClass.property.create);
+                    return Promise.settle(propertyCreationPromises);
+                });
+        };
+        var newClass = createClassFromDefinition(myClassDefinition);
+        return expect(newClass).eventually.to.have.deep.property('properties').length(2);
+    });
+
 });
