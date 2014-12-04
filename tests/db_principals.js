@@ -2,7 +2,6 @@
 //var should = require('should');
 var chai = require("chai");
 var chaiAsPromised = require("chai-as-promised");
-var assert = chai.assert;
 var expect = chai.expect;
 var Oriento = require("oriento");
 var winston = require('winston');
@@ -45,7 +44,7 @@ describe('Database usage principals', function () {
 
     it('Database should exist', function () {
         var exists = server.exists(db_name);
-        return assert.eventually.isTrue(exists);
+        return expect(exists).eventually.to.be.true;
     });
 
     it('Should be able to add a vertex', function () {
@@ -54,6 +53,14 @@ describe('Database usage principals', function () {
             key: 'value',
             foo: 'bar'
         });
-        return assert.eventually.property(vertex, "@rid");
+        return expect(vertex).eventually.to.have.deep.property('@rid');
     });
+
+    it('Should be able to run a create transaction', function() {
+        var transaction = db.begin()
+            .create({'@class': 'V', name: 'me'})
+            .create({'@class': 'V', name: 'wat?'})
+            .commit();
+        return expect(transaction).eventually.to.have.deep.property('created').length(2);
+    })
 });
