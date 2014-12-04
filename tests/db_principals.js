@@ -1,13 +1,10 @@
 /*global describe, beforeEach, afterEach, it */
-//var should = require('should');
 var chai = require("chai");
 var chaiAsPromised = require("chai-as-promised");
 var expect = chai.expect;
 var Oriento = require("oriento");
 var winston = require('winston');
-var FlakeIdGen = require('flake-idgen');
-var intformat = require('biguint-format');
-var generator = new FlakeIdGen;
+var randomId = require('../lib/randomid');
 var server = Oriento();
 var config = require('../config');
 chai.use(chaiAsPromised);
@@ -21,7 +18,7 @@ describe('Database usage principals', function () {
 
     // create database
     beforeEach(function () {
-        db_name = "test_" + intformat(generator.next(), 'dec');
+        db_name = "test_" + randomId();
         return server.create({
             name: db_name,
             type: 'graph',
