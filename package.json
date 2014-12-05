@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "test": "./node_modules/.bin/istanbul test ./node_modules/.bin/_mocha --  --recursive --ui bdd tests/*.js",
+    "test": "./node_modules/.bin/istanbul test ./node_modules/.bin/_mocha",
     "citest": "JUNIT_REPORT_PATH=xunit.xml JUNIT_REPORT_STACK=1 ./node_modules/.bin/ibrik cover ./node_modules/.bin/_mocha -- --reporter mocha-jenkins-reporter && ./node_modules/.bin/istanbul report cobertura"
   },
   "dependencies": {
