@@ -10,6 +10,7 @@ var dev = {
 };
 
 switch(process.env.NODE_ENV){
+    /* istanbul ignore next */
     case 'production':
         module.exports = prod;
 
