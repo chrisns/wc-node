@@ -15,37 +15,35 @@ describe 'Database usage principals', ->
     server = Oriento(server_config)
 
     beforeEach ->
-        this.db_name = "test_" + randomId()
+        @db_name = "test_" + randomId()
         return server.create({
-            name: this.db_name,
+            name: @db_name,
             type: 'graph',
             storage: 'memory'})
-        .bind(this)
-        .then (database) ->
-            this.db = database
+        .then (database) =>
+            @db = database
 
     afterEach ->
         server.drop({
-            name: this.db_name
+            name: @db_name
         })
-        .bind(this)
-        .then ->
-            this.db = {}
+        .then =>
+            @db = {}
 
     it 'Database should exist', ->
-        exists = server.exists(this.db_name)
+        exists = server.exists(@db_name)
         return expect(exists).eventually.to.be.true
 
     it 'Should be able to add a vertex', ->
-        vertex = this.db.vertex.create({
-            '@class': 'V',
-            key: 'value',
+        vertex = @db.vertex.create({
+            '@class': 'V'
+            key: 'value'
             foo: 'bar'
         })
         return expect(vertex).eventually.to.have.deep.property('@rid')
 
     it 'Should be able to run a create transaction', ->
-        transaction = this.db.begin()
+        transaction = @db.begin()
         .create({'@class': 'V', name: 'me'})
         .create({'@class': 'V', name: 'wat?'})
         .commit()
@@ -66,9 +64,8 @@ describe 'Database usage principals', ->
                 }
             ]
         }
-        db = this.db
-        createClassFromDefinition = (classDefinition) ->
-            return db.class.create(classDefinition.name, 'V')
+        createClassFromDefinition = (classDefinition) =>
+            return @db.class.create(classDefinition.name, 'V')
             .tap (dbClass) ->
                 propertyCreationPromises = classDefinition.properties.map(dbClass.property.create)
                 return Promise.settle(propertyCreationPromises)
