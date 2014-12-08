@@ -6,32 +6,34 @@ class GraphEntity
         throw Error 'Not implemented yet'
 
     format_string: (value) ->
-        if typeof value isnt 'string'
+        if value.constructor isnt String
             throw Error 'Wrong type'
         return value
 
     format_boolean: (value) ->
-        if typeof value isnt 'boolean'
+        if value.constructor isnt Boolean
             throw Error 'Wrong type'
         return value
 
     format_integer: (value) ->
-        if typeof value isnt 'number'
+        if value.constructor isnt Number
             throw Error 'Wrong type'
         return value
 
     format_short: (value) ->
-        if typeof value isnt 'number' or value >= 32768 or value <= -32768
+        if value.constructor isnt Number or value >= 32768 or value <= -32768
             throw Error 'Wrong type'
         return value
 
     format_long: (value) ->
-        if typeof value isnt 'number'
+        if value.constructor isnt Number
             throw Error 'Wrong type'
         return value
 
     format_date: (value) ->
-        throw Error 'Not implemented yet'
+        if value.constructor isnt Date
+            throw Error 'Wrong type'
+        return value
 
     format_double: (value) ->
         throw Error 'Not implemented yet'
@@ -85,29 +87,6 @@ class GraphEntity
         for key in Object.keys(@defined_properties)
             if this[key] is undefined
                 throw Error 'Missing input'
-#        throw Error 'Not implemented yet'
-#    constructor: ->
-#        defined_properties = @defined_properties
-#        Object.keys(defined_properties).forEach (key) ->
-#            console.log(defined_properties[key])
-#            Object.defineProperties @prototype,
-#                [key]:
-#                    set: (name) -> [@firstName, @lastName] = name.split ' '
 
-
-#    Object.defineProperties @prototype,
-#        fullName:
-##            get: -> "#{@firstName} #{@lastName}"
-#            set: (name) -> [@firstName, @lastName] = name.split ' '
-
-###
-      if k not in self.defined_properties and k not in self.allowed:
-            raise Exception("%s not an allowed property" % k)
-        if k in self.defined_properties:
-            formatter = "self.format_" + self.defined_properties[k]
-            v = eval(formatter)(v)
-        super(GraphObject, self).__setattr__(k, v)
-
-###
 
 module.exports = GraphEntity
