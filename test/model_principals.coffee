@@ -6,13 +6,13 @@ config = require('../config');
 chai.use(chaiAsPromised);
 chai.should();
 
-class entity
+class GraphEntity
     builtin: true
     getDefinition: ->
         return @name
 
 
-class Vertex extends entity
+class Vertex extends GraphEntity
     name: 'V'
     builtin: true
 
