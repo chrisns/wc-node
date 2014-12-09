@@ -1,8 +1,8 @@
 Edge = require('../Edge')
 
 # Relationship between form fields and the answers
-class HasPrefinedAnswerOf extends Edge
-    Name: 'HasPrefinedAnswerOf'
+class HasPredefinedAnswerOf extends Edge
+    Name: 'HasPredefinedAnswerOf'
     SuperClass: 'E'
     builtin: false
     defined_properties: {
