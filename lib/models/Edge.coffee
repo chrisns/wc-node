@@ -4,6 +4,8 @@ class Edge extends GraphEntity
     Name: 'E'
     builtin: true
 
+
+
 module.exports = Edge
 ###
 

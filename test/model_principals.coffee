@@ -1,16 +1,16 @@
-chai = require("chai");
-chaiAsPromised = require("chai-as-promised");
-expect = chai.expect;
-winston = require('winston');
-config = require('../config');
-chai.use(chaiAsPromised);
-chai.should();
-randomId = require('../lib/randomid');
-Oriento = require("oriento");
-randomId = require('../lib/randomid');
-server = Oriento();
+chai = require('chai')
+chaiAsPromised = require('chai-as-promised')
+expect = chai.expect
+winston = require('winston')
+config = require('../config')
+chai.use(chaiAsPromised)
+chai.should()
+randomId = require('../lib/randomid')
+Oriento = require('oriento')
+randomId = require('../lib/randomid')
+server = Oriento()
 GraphEntity = require('../lib/models/GraphEntity')
-config = require('../config');
+config = require('../config')
 
 class TestGraphObject extends GraphEntity
     name: 'Workflow'
@@ -25,12 +25,13 @@ class TestGraphObject extends GraphEntity
     }
 
 
+
 describe 'Model usage principals', ->
     server_config = config.orient_db_config
     server = Oriento(server_config)
 
     before ->
-        @db_name = "test_" + randomId()
+        @db_name = 'test_' + randomId()
         return server.create({
             name: @db_name,
             type: 'graph',
@@ -56,9 +57,9 @@ describe 'Model usage principals', ->
         @graphObject.set('id', 'bar')
         @graphObject.strictMode = false
         expect(@graphObject.getDefinition()).to.eql({
-            "@class": "Workflow"
-            "id": "bar"
-            "name": "foo"
+            '@class': 'Workflow'
+            'id': 'bar'
+            'name': 'foo'
         })
 
     it 'Should throw error on unexpected input against schema', ->
@@ -105,7 +106,7 @@ describe 'Model usage principals', ->
 
     it 'Should throw an error on bad integer', ->
         expect =>
-            @graphObject.format_integer("1235")
+            @graphObject.format_integer('1235')
         .to.throw(Error)
 
     it 'should format a short integer correctly', ->
@@ -125,7 +126,7 @@ describe 'Model usage principals', ->
 
     it 'should throw an error on a bad long integer', ->
         expect =>
-            @graphObject.format_long("1235")
+            @graphObject.format_long('1235')
         .to.throw(Error)
 
     it 'should format a date correctly', ->
@@ -141,7 +142,7 @@ describe 'Model usage principals', ->
 
     it 'should format a string correctly', ->
         expect =>
-            @graphObject.format_string("good string")
+            @graphObject.format_string('good string')
         .to.not.throw(Error)
 
     it 'should throw error on bad string', ->

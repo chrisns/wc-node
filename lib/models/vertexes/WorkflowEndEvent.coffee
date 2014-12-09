@@ -7,4 +7,6 @@ class WorkflowEndEvent extends Vertex
     SuperClass: 'V'
     builtin: false
 
+
+
 module.exports = WorkflowEndEvent

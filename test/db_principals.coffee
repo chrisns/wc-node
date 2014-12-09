@@ -1,20 +1,20 @@
-chai = require("chai");
-chaiAsPromised = require("chai-as-promised");
-expect = chai.expect;
-Promise = require("bluebird");
-Oriento = require("oriento");
-winston = require('winston');
-randomId = require('../lib/randomid');
-config = require('../config');
-chai.use(chaiAsPromised);
-chai.should();
+chai = require('chai')
+chaiAsPromised = require('chai-as-promised')
+expect = chai.expect
+Promise = require('bluebird')
+Oriento = require('oriento')
+winston = require('winston')
+randomId = require('../lib/randomid')
+config = require('../config')
+chai.use(chaiAsPromised)
+chai.should()
 
 describe 'Database usage principals', ->
     server_config = config.orient_db_config
     server = Oriento(server_config)
 
     beforeEach ->
-        @db_name = "test_" + randomId()
+        @db_name = 'test_' + randomId()
         return server.create({
             name: @db_name,
             type: 'graph',

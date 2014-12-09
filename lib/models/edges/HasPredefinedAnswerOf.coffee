@@ -9,4 +9,5 @@ class HasPredefinedAnswerOf extends Edge
     }
 
 
+
 module.exports = HasPrefinedAnswerOf

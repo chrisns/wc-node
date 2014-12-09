@@ -12,4 +12,5 @@ class UserTask extends Vertex
     }
 
 
+
 module.exports = UserTask

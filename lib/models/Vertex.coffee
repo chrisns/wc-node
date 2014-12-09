@@ -1,8 +1,9 @@
 GraphEntity = GraphEntity('GraphEntity')
 
 class Vertex extends GraphEntity
-  Name: 'V'
-  builtin: true
+    Name: 'V'
+    builtin: true
+
 
 
 module.exports = Vertex

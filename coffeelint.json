@@ -1,6 +1,6 @@
 {
     "arrow_spacing": {
-        "level": "ignore"
+        "level": "error"
     },
     "camel_case_classes": {
         "level": "error"
@@ -17,7 +17,7 @@
     },
     "cyclomatic_complexity": {
         "value": 10,
-        "level": "ignore"
+        "level": "warn"
     },
     "duplicate_key": {
         "level": "error"
@@ -43,7 +43,7 @@
     },
     "newlines_after_classes": {
         "value": 3,
-        "level": "ignore"
+        "level": "error"
     },
     "no_backticks": {
         "level": "error"
@@ -52,10 +52,10 @@
         "level": "warn"
     },
     "no_empty_functions": {
-        "level": "ignore"
+        "level": "warn"
     },
     "no_empty_param_list": {
-        "level": "ignore"
+        "level": "warn"
     },
     "no_implicit_braces": {
         "level": "ignore",
@@ -69,10 +69,10 @@
         "level": "ignore"
     },
     "no_plusplus": {
-        "level": "ignore"
+        "level": "error"
     },
     "no_stand_alone_at": {
-        "level": "ignore"
+        "level": "warn"
     },
     "no_tabs": {
         "level": "error"
@@ -89,19 +89,19 @@
         "allowed_in_empty_lines": true
     },
     "no_unnecessary_double_quotes": {
-        "level": "ignore"
+        "level": "warn"
     },
     "no_unnecessary_fat_arrows": {
         "level": "warn"
     },
     "non_empty_constructor_needs_parens": {
-        "level": "ignore"
+        "level": "warn"
     },
     "prefer_english_operator": {
-        "level": "ignore",
-        "doubleNotLevel": "ignore"
+        "level": "warn",
+        "doubleNotLevel": "warn"
     },
     "space_operators": {
-        "level": "ignore"
+        "level": "warn"
     }
 }

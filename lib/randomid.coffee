@@ -4,6 +4,6 @@ generator = new FlakeIdGen
 
 
 generate_id = ->
-    return intformat(generator.next(), 'dec');
+    return intformat(generator.next(), 'dec')
 
-module.exports = generate_id;
+module.exports = generate_id

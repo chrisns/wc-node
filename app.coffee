@@ -7,7 +7,7 @@ bodyParser = require('body-parser')
 routes = require('./routes/index')
 users = require('./routes/users')
 app = express()
-hal = require("express-hal")
+hal = require('express-hal')
 winston = require('winston')
 
 
@@ -36,7 +36,7 @@ app.use (req, res, next) ->
 #// will print stacktrace
 if app.get('env') is 'development'
     app.use (err, req, res, next) ->
-        res.status(err.status || 500)
+        res.status(err.status or 500)
         res.render('error', {
             message: err.message,
             error: err
@@ -45,7 +45,7 @@ if app.get('env') is 'development'
 #// production error handler
 #// no stacktraces leaked to user
 app.use (err, req, res, next) ->
-    res.status(err.status || 500)
+    res.status(err.status or 500)
     res.render('error', {
         message: err.message,
         error: {}

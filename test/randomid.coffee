@@ -1,6 +1,6 @@
-randomId = require('../lib/randomid');
-chai = require("chai");
-expect = chai.expect;
+randomId = require('../lib/randomid')
+chai = require('chai')
+expect = chai.expect
 
 
 describe 'Random ID Generator', ->

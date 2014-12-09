@@ -1,5 +1,5 @@
 _ = require('lodash')
-Promise = require("bluebird");
+Promise = require('bluebird')
 
 class GraphEntity
     strictMode: true
@@ -22,14 +22,14 @@ class GraphEntity
 
     set: (key, value) ->
         if not @defined_properties[key]? and @schema is true
-            throw new Error 'Not allowed'
+            throw new Error('Not allowed')
         if @defined_properties[key]?
             formatter = 'format_' + @defined_properties[key]
             @properties[key] = this[formatter](value)
         else
             @properties[key] = value
 
-    validate: () ->
+    validate: ->
         if @strictMode is not true
             return true
         for key in Object.keys(@defined_properties)
