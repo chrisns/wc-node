@@ -5,11 +5,16 @@ winston = require('winston');
 config = require('../config');
 chai.use(chaiAsPromised);
 chai.should();
-
+randomId = require('../lib/randomid');
+Oriento = require("oriento");
+randomId = require('../lib/randomid');
+server = Oriento();
 GraphEntity = require('../lib/models/GraphEntity')
+config = require('../config');
 
 class TestGraphObject extends GraphEntity
     name: 'Workflow'
+    superClass: 'V'
     builtin: false
     schema: true
     strictMode: true
@@ -20,11 +25,41 @@ class TestGraphObject extends GraphEntity
     }
 
 
-
 describe 'Model usage principals', ->
+    server_config = config.orient_db_config
+    server = Oriento(server_config)
+
+    before ->
+        @db_name = "test_" + randomId()
+        return server.create({
+            name: @db_name,
+            type: 'graph',
+            storage: 'memory'})
+        .then (database) =>
+            @db = database
+
+    after ->
+        server.drop({
+            name: @db_name
+        })
+
     beforeEach ->
-        @boooo = "fooooo"
         @graphObject = new TestGraphObject
+
+    it 'should be able to create itself', ->
+        expect =>
+            @graphObject.updateSchema(@db)
+        .to.not.throw(Error)
+
+    it 'should provide a valid definition', ->
+        @graphObject.set('name', 'foo')
+        @graphObject.set('id', 'bar')
+        @graphObject.strictMode = false
+        expect(@graphObject.getDefinition()).to.eql({
+            "@class": "Workflow"
+            "id": "bar"
+            "name": "foo"
+        })
 
     it 'Should throw error on unexpected input against schema', ->
         expect =>
@@ -55,7 +90,7 @@ describe 'Model usage principals', ->
 
     it 'Should throw error on trying to pass a string as boolean', ->
         expect =>
-            @graphObject.format_boolean('failme')
+            @graphObject.format_boolean('fail me')
         .to.throw(Error)
 
     it 'Should throw error on trying to pass an integer as boolean', ->
@@ -106,7 +141,7 @@ describe 'Model usage principals', ->
 
     it 'should format a string correctly', ->
         expect =>
-            @graphObject.format_string("abcdefg")
+            @graphObject.format_string("good string")
         .to.not.throw(Error)
 
     it 'should throw error on bad string', ->

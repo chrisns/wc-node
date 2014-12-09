@@ -5,7 +5,6 @@ Promise = require("bluebird");
 Oriento = require("oriento");
 winston = require('winston');
 randomId = require('../lib/randomid');
-server = Oriento();
 config = require('../config');
 chai.use(chaiAsPromised);
 chai.should();
