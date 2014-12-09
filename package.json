@@ -7,7 +7,7 @@
     "test": "./node_modules/.bin/istanbul test ./node_modules/.bin/_mocha",
     "citest": "JUNIT_REPORT_PATH=xunit.xml JUNIT_REPORT_STACK=1 ./node_modules/.bin/ibrik cover ./node_modules/.bin/_mocha -- --reporter mocha-jenkins-reporter && ./node_modules/.bin/istanbul report cobertura",
     "lint": "./node_modules/.bin/coffeelint *.coffee lib test routes; true",
-    "cilint": "./node_modules/.bin/coffeelint --checkstyle *.coffee lib test routes > ./coverage/checkstyle.xml; true"
+    "cilint": "./node_modules/.bin/coffeelint --reporter checkstyle *.coffee lib test routes > ./coverage/checkstyle.xml; true"
   },
   "dependencies": {
     "express": "~4.9.0",
