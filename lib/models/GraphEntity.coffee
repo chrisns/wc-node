@@ -7,6 +7,7 @@ class GraphEntity
     properties: {}
 
     updateSchema: (db) ->
+        console.log(@name)
         return db.class.create(@name, @superClass)
         .catch =>
             return db.class.get(@name)

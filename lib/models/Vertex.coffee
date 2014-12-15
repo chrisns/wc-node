@@ -1,9 +1,14 @@
-GraphEntity = GraphEntity('GraphEntity')
+GraphEntity = require('./GraphEntity')
+_ = require 'lodash'
 
 class Vertex extends GraphEntity
     Name: 'V'
     builtin: true
 
+    create: (db) ->
+        @inbuilt_properties =
+            '@class': @Name
+        return db.vertex.create(_.extend(@inbuilt_properties, @defined_properties ))
 
 
 module.exports = Vertex

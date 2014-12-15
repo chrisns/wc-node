@@ -23,7 +23,8 @@
     "flake-idgen": "~0.1.4",
     "biguint-format": "~0.2.2",
     "coffee-script": "^1.8.0",
-    "lodash": "^2.4.1"
+    "lodash": "^2.4.1",
+    "libxmljs": "~0.12.0"
   },
   "devDependencies": {
     "chai": "~1.10.0",
