@@ -7,10 +7,9 @@ class GraphEntity
     properties: {}
 
     updateSchema: (db) ->
-        console.log(@name)
-        return db.class.create(@name, @superClass)
+        return db.class.create(@Name, @SuperClass)
         .catch =>
-            return db.class.get(@name)
+            return db.class.get(@Name)
         .then (dbClass) =>
             propertyCreationPromises = _.map(@defined_properties, dbClass.property.create)
             return Promise.settle(propertyCreationPromises)
@@ -18,7 +17,7 @@ class GraphEntity
     getDefinition: ->
         @validate()
         inbuilt_properties =
-            '@class': @name
+            '@class': @Name
         return _.extend(inbuilt_properties, @properties)
 
     set: (key, value) ->

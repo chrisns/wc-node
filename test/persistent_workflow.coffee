@@ -118,7 +118,7 @@ describe 'Persistent Workflow usage principals', ->
                 return xmldoc.attr('id').value()
         expect(xml).eventually.to.eql('workflow')
 
-    xit 'should be able to be able to build a workflow diagram', ->
+    it 'should be able to be able to build a workflow diagram', ->
 #        @timeout(10000)
         @xmlfile
             .then filterXmlToJustProcess

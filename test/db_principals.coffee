@@ -51,7 +51,7 @@ describe 'Database usage principals', ->
     it 'Should be able to create a class with properties', ->
         myClassDefinition = {
             name: 'MyNewClass',
-            superClass: 'V',
+            SuperClass: 'V',
             properties: [
                 {
                     name: 'AStringProperty',

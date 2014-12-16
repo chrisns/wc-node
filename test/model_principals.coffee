@@ -9,12 +9,12 @@ randomId = require('../lib/randomid')
 Oriento = require('oriento')
 randomId = require('../lib/randomid')
 server = Oriento()
-GraphEntity = require('../lib/models/GraphEntity')
+Vertex = require('../lib/models/Vertex')
 config = require('../config')
 
-class TestGraphObject extends GraphEntity
-    name: 'Workflow'
-    superClass: 'V'
+class TestGraphObject extends Vertex
+    Name: 'Workflow'
+    SuperClass: 'V'
     builtin: false
     schema: true
     strictMode: true
