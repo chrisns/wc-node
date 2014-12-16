@@ -39,6 +39,8 @@ class TestGraphObject extends GraphEntity
         fa: 'link'
     }
 
+
+
 readXmlFromFile = (filepath) ->
     return new Promise (resolve, reject) ->
         filedata = fs.readFileSync(filepath, 'ascii')
