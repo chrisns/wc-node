@@ -5,21 +5,18 @@ winston = require('winston')
 config = require('../config')
 chai.use(chaiAsPromised)
 chai.should()
-randomId = require('../lib/randomid')
-Oriento = require('oriento')
-randomId = require('../lib/randomid')
+Oriento = require 'oriento'
+randomId = require '../lib/randomid'
 server = Oriento()
-GraphEntity = require('../lib/models/GraphEntity')
-config = require('../config')
+GraphEntity = require '../lib/models/GraphEntity'
+config = require '../config'
 fs = require 'fs'
-#xml2js = require('xml2js').Parser()
-Promise = require('bluebird')
-libxmljs = require('libxmljs')
-#xpath = require('xpath')
-#DOMParser = require('xmldom').DOMParser
-_ = require('lodash')
+Promise = require 'bluebird'
+libxmljs = require 'libxmljs'
+_ = require 'lodash'
 
 UserTask = require '../lib/models/vertexes/UserTask'
+ScriptTask = require '../lib/models/vertexes/ScriptTask'
 
 testXmlFilePath = __dirname + '/TestWorkflowSpec.bpmn'
 
@@ -49,9 +46,6 @@ readXmlFromFile = (filepath) ->
 
 filterXmlToJustProcess = (xmldoc) ->
     return new Promise (resolve, reject) ->
-        # common practice appears to have the process first then the diagram, if we
-        # found a time where this didn't happen we'd need to filter more inteligently
-        # here, but for the sake of speed we make this assumption
         resolve xmldoc.get('//bpmn2:process', namespace_prefixes)
 
 
@@ -60,28 +54,25 @@ class WorflowDefinitionBuilder
         @db = database
         @xml = xml
 
-#        @process_vertexes()
-#        console.log(xml)
-#        add_to_graph(name="StartEvent_1", obj=Workflow())
-#        add_to_graph(name="EndEvent_1", obj=WorkflowEndEvent())
-
     create_user_task: (xml_node) =>
         usertask = new UserTask
         usertask.set('name', xml_node.attr('name').value())
         usertask.set('id', xml_node.attr('id').value())
-        console.log(usertask.create(@db))
         return usertask.create(@db)
 
+    create_script_task: (xml_node) =>
+        scripttask = new ScriptTask
+        scripttask.set('name', xml_node.attr('name').value())
+        scripttask.set('id', xml_node.attr('id').value())
+        return scripttask.create(@db)
 
     process_vertexes: ->
-#        new Promise (resolve, reject) =>
-#            console.log(@xml)
-#            console.log(@db)
-#            user_tasks = _.map(@xml.find('//bpmn2:userTask', namespace_prefixes), @create_user_task)
+        vertexes = []
+
         user_tasks = @xml.find('//bpmn2:userTask', namespace_prefixes).map(@create_user_task)
-#            console.log(user_tasks)
-        return Promise.settle(user_tasks)
-#            resolve()
+        script_tasks = @xml.find('//bpmn2:scriptTask', namespace_prefixes).map(@create_script_task)
+        vertexes = vertexes.concat(user_tasks, )
+        return Promise.settle(vertexes)
 
 
 
@@ -102,7 +93,9 @@ describe 'Persistent Workflow usage principals', ->
         .then =>
             usertask = new UserTask
             return usertask.updateSchema(@db)
-
+        .then =>
+            scripttask = new ScriptTask
+            return scripttask.updateSchema(@db)
     after ->
         server.drop({
             name: @db_name
@@ -119,17 +112,9 @@ describe 'Persistent Workflow usage principals', ->
         expect(xml).eventually.to.eql('workflow')
 
     it 'should be able to be able to build a workflow diagram', ->
-#        @timeout(10000)
         @xmlfile
             .then filterXmlToJustProcess
             .then (xml) =>
                 return new WorflowDefinitionBuilder(@db, xml)
             .tap (builder) ->
                 builder.process_vertexes()
-#    it 'should provide a valid definition', ->
-#        readXmlFromFile(__dirname + '/TestWorkflowSpec.bpmn')
-#            .then filterXmlToJustProcess
-#            .then make
-#            .then (response) ->
-#                console.dir(response)
-#                console.dir result
