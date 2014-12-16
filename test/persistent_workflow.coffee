@@ -30,11 +30,10 @@ class TestGraphObject extends GraphEntity
     builtin: false
     schema: true
     strictMode: true
-    defined_properties: {
+    defined_properties:
         name: 'string'
         id: 'string'
         fa: 'link'
-    }
 
 
 
@@ -63,7 +62,7 @@ class WorflowDefinitionBuilder
     create_script_task: (xml_node) =>
         scripttask = new ScriptTask
         scripttask.set('name', xml_node.attr('name').value())
-        scripttask.set('id', xml_node.attr('id').value())
+        scripttask.set('script', xml_node.get('bpmn2:script', namespace_prefixes).text())
         return scripttask.create(@db)
 
     process_vertexes: ->
