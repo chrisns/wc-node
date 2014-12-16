@@ -13,8 +13,8 @@ GraphEntity = require('../lib/models/GraphEntity')
 config = require('../config')
 fs = require 'fs'
 #xml2js = require('xml2js').Parser()
-Promise = require("bluebird")
-libxmljs = require("libxmljs")
+Promise = require('bluebird')
+libxmljs = require('libxmljs')
 #xpath = require('xpath')
 #DOMParser = require('xmldom').DOMParser
 _ = require('lodash')
@@ -42,7 +42,7 @@ class TestGraphObject extends GraphEntity
 readXmlFromFile = (filepath) ->
     return new Promise (resolve, reject) ->
         filedata = fs.readFileSync(filepath, 'ascii')
-        xmldoc = libxmljs.parseXmlString(filedata);
+        xmldoc = libxmljs.parseXmlString(filedata)
         resolve(xmldoc)
 
 filterXmlToJustProcess = (xmldoc) ->
@@ -80,6 +80,8 @@ class WorflowDefinitionBuilder
 #            console.log(user_tasks)
         return Promise.settle(user_tasks)
 #            resolve()
+
+
 
 describe 'Persistent Workflow usage principals', ->
     server_config = config.orient_db_config
