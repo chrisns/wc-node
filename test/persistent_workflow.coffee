@@ -17,6 +17,8 @@ _ = require 'lodash'
 
 UserTask = require '../lib/models/vertexes/UserTask'
 ScriptTask = require '../lib/models/vertexes/ScriptTask'
+FormField = require '../lib/models/vertexes/FormField'
+FormFieldValue = require '../lib/models/vertexes/FormFieldValue'
 
 testXmlFilePath = __dirname + '/TestWorkflowSpec.bpmn'
 
@@ -53,11 +55,30 @@ class WorflowDefinitionBuilder
         @db = database
         @xml = xml
 
+    create_form_field: (xml_node) =>
+        formfield = new FormField
+        formfield.set('id', xml_node.attr('id').value())
+        formfield.set('label', xml_node.attr('label').value())
+        formfield.set('type', xml_node.attr('type').value())
+        formfield.set('weight', xml_node.get('//camunda:property[@id="weight"]', namespace_prefixes).attr('value').value())
+#        TODO: handle default value
+        return formfield.create(@db)
+            .tap (formfield) =>
+                xml_node.find('//camunda:value', namespace_prefixes).map(@create_form_field_value)
+
+    create_form_field_value: (xml_node) =>
+        formfieldvalue = new FormFieldValue
+        formfieldvalue.set('name', xml_node.attr('name').value())
+        formfieldvalue.set('id', xml_node.attr('id').value())
+        return formfieldvalue.create(@db)
+
     create_user_task: (xml_node) =>
         usertask = new UserTask
         usertask.set('name', xml_node.attr('name').value())
         usertask.set('id', xml_node.attr('id').value())
         return usertask.create(@db)
+            .tap (usertask) =>
+                xml_node.find('//camunda:formField', namespace_prefixes).map(@create_form_field)
 
     create_script_task: (xml_node) =>
         scripttask = new ScriptTask
@@ -67,7 +88,6 @@ class WorflowDefinitionBuilder
 
     process_vertexes: ->
         vertexes = []
-
         user_tasks = @xml.find('//bpmn2:userTask', namespace_prefixes).map(@create_user_task)
         script_tasks = @xml.find('//bpmn2:scriptTask', namespace_prefixes).map(@create_script_task)
         vertexes = vertexes.concat(user_tasks, )
@@ -87,18 +107,19 @@ describe 'Persistent Workflow usage principals', ->
             name: @db_name,
             type: 'graph',
             storage: 'memory'})
-        .then (database) =>
+        .tap (database) =>
             @db = database
-        .then =>
-            usertask = new UserTask
-            return usertask.updateSchema(@db)
-        .then =>
-            scripttask = new ScriptTask
-            return scripttask.updateSchema(@db)
+        .tap =>
+            new UserTask().updateSchema(@db)
+        .tap =>
+            new ScriptTask().updateSchema(@db)
+        .tap =>
+            new FormField().updateSchema(@db)
+        .tap =>
+            new FormFieldValue().updateSchema(@db)
+
     after ->
-        server.drop({
-            name: @db_name
-        })
+        server.drop({name: @db_name })
 
     it 'should be able to get parse bpmn xml file with zero errors', ->
         expect(@xmlfile).eventually.to.have.deep.property('errors').length(0)
