@@ -63,12 +63,12 @@ class WorflowDefinitionBuilder
         formfield = new FormField
         formfield.set('id', xml_node.attr('id').value())
         formfield.set('label', xml_node.attr('label').value())
-        formfield.set('type', xml_node.attr('type').value())
-        formfield.set('weight', xml_node.get('//camunda:property[@id="weight"]', namespace_prefixes).attr('value').value())
+        formfield.set('type', xml_node.attr('type')?.value())
+#        formfield.set('weight', xml_node.get('//camunda:property[@id="weight"]', namespace_prefixes).attr('value').value())
 #        TODO: handle default value
         return formfield.create(@db)
             .tap (formfield) =>
-                xml_node.find('//camunda:value', namespace_prefixes).map(@create_form_field_value)
+                Promise.settle xml_node.find('//camunda:value', namespace_prefixes).map(@create_form_field_value)
 
     create_form_field_value: (xml_node) =>
         formfieldvalue = new FormFieldValue
@@ -82,7 +82,7 @@ class WorflowDefinitionBuilder
         usertask.set('id', xml_node.attr('id').value())
         return usertask.create(@db)
             .tap (usertask) =>
-                xml_node.find('//camunda:formField', namespace_prefixes).map(@create_form_field)
+                Promise.settle xml_node.find('//camunda:formField', namespace_prefixes).map(@create_form_field)
 
     create_script_task: (xml_node) =>
         scripttask = new ScriptTask
@@ -109,12 +109,18 @@ class WorflowDefinitionBuilder
         return workflowend.create(@db)
 
     process_vertexes: ->
-        workflows = @xml.find('//bpmn2:startEvent', namespace_prefixes).map(@create_workflow)
-        workflowend = @xml.find('//bpmn2:endEvent', namespace_prefixes).map(@create_workflowend)
-        user_tasks = @xml.find('//bpmn2:userTask', namespace_prefixes).map(@create_user_task)
-        script_tasks = @xml.find('//bpmn2:scriptTask', namespace_prefixes).map(@create_script_task)
-        exclusive_gateways = @xml.find('//bpmn2:exclusiveGateway', namespace_prefixes).map(@create_exclusive_gateway)
-        return Promise.settle(user_tasks, script_tasks, exclusive_gateways)
+#        workflows = @xml.find('//bpmn2:startEvent', namespace_prefixes).map(@create_workflow)
+#        workflowend = @xml.find('//bpmn2:endEvent', namespace_prefixes).map(@create_workflowend)
+#        user_tasks = @xml.find('//bpmn2:userTask', namespace_prefixes).map(@create_user_task)
+#        script_tasks = @xml.find('//bpmn2:scriptTask', namespace_prefixes).map(@create_script_task)
+#        exclusive_gateways = @xml.find('//bpmn2:exclusiveGateway', namespace_prefixes).map(@create_exclusive_gateway)
+        return Promise.settle [
+            @xml.find('//bpmn2:startEvent', namespace_prefixes).map(@create_workflow)
+            @xml.find('//bpmn2:endEvent', namespace_prefixes).map(@create_workflowend)
+            @xml.find('//bpmn2:userTask', namespace_prefixes).map(@create_user_task)
+            @xml.find('//bpmn2:scriptTask', namespace_prefixes).map(@create_script_task)
+            @xml.find('//bpmn2:exclusiveGateway', namespace_prefixes).map(@create_exclusive_gateway)
+        ]
 
     create_sequence_flow: (xml_node) =>
         from_id = xml_node.attr('sourceRef').value()
@@ -137,9 +143,9 @@ class WorflowDefinitionBuilder
             return nextstep.create(@db)
 
     process_edges: ->
-        sequence_flows = @xml.find('//bpmn2:sequenceFlow', namespace_prefixes).map(@create_sequence_flow)
-        return Promise.settle(sequence_flows)
-
+        return Promise.settle [
+            @xml.find('//bpmn2:sequenceFlow', namespace_prefixes).map(@create_sequence_flow)
+        ]
 
 
 createSchema = (db) ->
@@ -156,7 +162,7 @@ createSchema = (db) ->
     classCreationPromises = []
     for graph_class in graph_classes by 1
         classCreationPromises.push(new graph_class().updateSchema(db))
-    return Promise.settle(classCreationPromises)
+    return Promise.settle classCreationPromises
 
 describe 'Persistent Workflow usage principals', ->
     server_config = config.orient_db_config
@@ -171,7 +177,7 @@ describe 'Persistent Workflow usage principals', ->
             type: 'graph'
             storage: 'memory'
         .tap (database) =>
-            server.logger.debug = console.log.bind(console, '[orientdb]')
+#            server.logger.debug = console.log.bind(console, '[orientdb]')
             @db = database
         .tap createSchema
 
