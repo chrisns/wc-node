@@ -43,7 +43,7 @@
       <bpmn2:outgoing>SequenceFlow_5</bpmn2:outgoing>
     </bpmn2:exclusiveGateway>
     <bpmn2:sequenceFlow id="SequenceFlow_4" name="" sourceRef="excl_choice_1" targetRef="task_b1"/>
-    <bpmn2:userTask id="task_b1" name="task_b1&#x9;">
+    <bpmn2:userTask id="task_b1" name="task_b1">
       <bpmn2:extensionElements>
         <camunda:formData>
           <camunda:formField id="seh" type="string"/>
