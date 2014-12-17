@@ -20,6 +20,8 @@ ScriptTask = require '../lib/models/vertexes/ScriptTask'
 FormField = require '../lib/models/vertexes/FormField'
 FormFieldValue = require '../lib/models/vertexes/FormFieldValue'
 ExclusiveGateway = require '../lib/models/vertexes/ExclusiveGateway'
+Workflow = require '../lib/models/vertexes/Workflow'
+WorkflowEndEvent = require '../lib/models/vertexes/WorkflowEndEvent'
 NextStep = require '../lib/models/edges/NextStep'
 
 testXmlFilePath = __dirname + '/TestWorkflowSpec.bpmn'
@@ -85,7 +87,8 @@ class WorflowDefinitionBuilder
     create_script_task: (xml_node) =>
         scripttask = new ScriptTask
         scripttask.set('name', xml_node.attr('name').value())
-        scripttask.set('script', xml_node.get('bpmn2:script', namespace_prefixes).text())
+        scripttask.set('id', xml_node.attr('id').value())
+        scripttask.set('script', xml_node.get('bpmn2:script', namespace_prefixes)?.text())
         return scripttask.create(@db)
 
     create_exclusive_gateway: (xml_node) =>
@@ -95,7 +98,19 @@ class WorflowDefinitionBuilder
         #TODO: handle default flow
         return exclusivegateway.create(@db)
 
+    create_workflow: (xml_node) =>
+        workflow = new Workflow
+        workflow.set('id', xml_node.attr('id').value())
+        return workflow.create(@db)
+
+    create_workflowend: (xml_node) =>
+        workflowend = new WorkflowEndEvent
+        workflowend.set('id', xml_node.attr('id').value())
+        return workflowend.create(@db)
+
     process_vertexes: ->
+        workflows = @xml.find('//bpmn2:startEvent', namespace_prefixes).map(@create_workflow)
+        workflowend = @xml.find('//bpmn2:endEvent', namespace_prefixes).map(@create_workflowend)
         user_tasks = @xml.find('//bpmn2:userTask', namespace_prefixes).map(@create_user_task)
         script_tasks = @xml.find('//bpmn2:scriptTask', namespace_prefixes).map(@create_script_task)
         exclusive_gateways = @xml.find('//bpmn2:exclusiveGateway', namespace_prefixes).map(@create_exclusive_gateway)
@@ -109,14 +124,16 @@ class WorflowDefinitionBuilder
         to = @db.select('@rid').from('V').where({id:to_id}).limit(1).one()
 
         Promise.join from, to, (from, to) =>
-            if not from? or not to?
-                # HACK to get it going before we have all the bpmn elements in and mapped
-                return
+            if not from?
+                throw Error "#{from_id} does not exist"
+            if not to?
+                throw Error "#{to_id} does not exist"
             nextstep = new NextStep
             nextstep.from = from
             nextstep.to = to
             nextstep.set('id', xml_node.attr('id').value())
-#            nextstep.set('condition', condition)
+            if condition?
+                nextstep.set('condition', condition)
             return nextstep.create(@db)
 
     process_edges: ->
@@ -133,6 +150,8 @@ createSchema = (db) ->
         FormFieldValue
         ExclusiveGateway
         NextStep
+        Workflow
+        WorkflowEndEvent
     ]
     classCreationPromises = []
     for graph_class in graph_classes by 1
@@ -151,9 +170,8 @@ describe 'Persistent Workflow usage principals', ->
             name: @db_name
             type: 'graph'
             storage: 'memory'
-#        .tap ->
-#            server.logger.debug = console.log.bind(console, '[orientdb]')
         .tap (database) =>
+            server.logger.debug = console.log.bind(console, '[orientdb]')
             @db = database
         .tap createSchema
 
@@ -180,8 +198,3 @@ describe 'Persistent Workflow usage principals', ->
             .tap (builder) ->
                 builder.process_edges()
 
-###
-
-def process_sequence_flow(self, sequence_flow):
-
-###
