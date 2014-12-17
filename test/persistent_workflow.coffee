@@ -103,6 +103,18 @@ class WorflowDefinitionBuilder
         return Promise.settle(vertexes)
 
 
+createSchema = (db) ->
+    graph_classes = [
+        UserTask
+        ScriptTask
+        FormField
+        FormFieldValue
+        ExclusiveGateway
+    ]
+    classCreationPromises = []
+    for graph_class in graph_classes by 1
+        classCreationPromises.push(new graph_class().updateSchema(db))
+    return Promise.settle(classCreationPromises)
 
 describe 'Persistent Workflow usage principals', ->
     server_config = config.orient_db_config
@@ -116,20 +128,11 @@ describe 'Persistent Workflow usage principals', ->
             name: @db_name,
             type: 'graph',
             storage: 'memory'})
+        .tap ->
+            server.logger.debug = console.log.bind(console, '[orientdb]')
         .tap (database) =>
             @db = database
-        .tap =>
-            graph_classes = [
-                UserTask
-                ScriptTask
-                FormField
-                FormFieldValue
-                ExclusiveGateway
-            ]
-            classCreationPromises = []
-            for graph_class in graph_classes
-                classCreationPromises.push(new graph_class().updateSchema(@db))
-            return Promise.settle(classCreationPromises)
+        .tap createSchema
 
     after ->
         server.drop({name: @db_name })
