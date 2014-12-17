@@ -119,15 +119,18 @@ describe 'Persistent Workflow usage principals', ->
         .tap (database) =>
             @db = database
         .tap =>
-            new UserTask().updateSchema(@db)
-        .tap =>
-            new ScriptTask().updateSchema(@db)
-        .tap =>
-            new FormField().updateSchema(@db)
-        .tap =>
-            new FormFieldValue().updateSchema(@db)
-        .tap =>
-            new ExclusiveGateway().updateSchema(@db)
+            graph_classes = [
+                UserTask
+                ScriptTask
+                FormField
+                FormFieldValue
+                ExclusiveGateway
+            ]
+            classCreationPromises = []
+            for graph_class in graph_classes
+                classCreationPromises.push(new graph_class().updateSchema(@db))
+            return Promise.settle(classCreationPromises)
+
     after ->
         server.drop({name: @db_name })
 

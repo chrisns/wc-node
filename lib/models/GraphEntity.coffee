@@ -1,5 +1,5 @@
-_ = require('lodash')
-Promise = require('bluebird')
+_ = require 'lodash'
+Promise = require 'bluebird'
 
 class GraphEntity
     strictMode: true
