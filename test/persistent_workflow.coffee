@@ -20,6 +20,7 @@ ScriptTask = require '../lib/models/vertexes/ScriptTask'
 FormField = require '../lib/models/vertexes/FormField'
 FormFieldValue = require '../lib/models/vertexes/FormFieldValue'
 ExclusiveGateway = require '../lib/models/vertexes/ExclusiveGateway'
+NextStep = require '../lib/models/edges/NextStep'
 
 testXmlFilePath = __dirname + '/TestWorkflowSpec.bpmn'
 
@@ -95,12 +96,33 @@ class WorflowDefinitionBuilder
         return exclusivegateway.create(@db)
 
     process_vertexes: ->
-        vertexes = []
         user_tasks = @xml.find('//bpmn2:userTask', namespace_prefixes).map(@create_user_task)
         script_tasks = @xml.find('//bpmn2:scriptTask', namespace_prefixes).map(@create_script_task)
         exclusive_gateways = @xml.find('//bpmn2:exclusiveGateway', namespace_prefixes).map(@create_exclusive_gateway)
-        vertexes = vertexes.concat(user_tasks, script_tasks, exclusive_gateways)
-        return Promise.settle(vertexes)
+        return Promise.settle(user_tasks, script_tasks, exclusive_gateways)
+
+    create_sequence_flow: (xml_node) =>
+        from_id = xml_node.attr('sourceRef').value()
+        to_id = xml_node.attr('targetRef').value()
+        condition = xml_node.get('bpmn2:conditionExpression', namespace_prefixes)?.text()
+        from = @db.select('@rid').from('V').where({id:from_id}).limit(1).one()
+        to = @db.select('@rid').from('V').where({id:to_id}).limit(1).one()
+
+        Promise.join from, to, (from, to) =>
+            if not from? or not to?
+                # HACK to get it going before we have all the bpmn elements in and mapped
+                return
+            nextstep = new NextStep
+            nextstep.from = from
+            nextstep.to = to
+            nextstep.set('id', xml_node.attr('id').value())
+#            nextstep.set('condition', condition)
+            return nextstep.create(@db)
+
+    process_edges: ->
+        sequence_flows = @xml.find('//bpmn2:sequenceFlow', namespace_prefixes).map(@create_sequence_flow)
+        return Promise.settle(sequence_flows)
+
 
 
 createSchema = (db) ->
@@ -110,6 +132,7 @@ createSchema = (db) ->
         FormField
         FormFieldValue
         ExclusiveGateway
+        NextStep
     ]
     classCreationPromises = []
     for graph_class in graph_classes by 1
@@ -124,12 +147,12 @@ describe 'Persistent Workflow usage principals', ->
         @xmlfile = readXmlFromFile(testXmlFilePath)
 
         @db_name = 'test_' + randomId()
-        return server.create({
-            name: @db_name,
-            type: 'graph',
-            storage: 'memory'})
-        .tap ->
-            server.logger.debug = console.log.bind(console, '[orientdb]')
+        return server.create
+            name: @db_name
+            type: 'graph'
+            storage: 'memory'
+#        .tap ->
+#            server.logger.debug = console.log.bind(console, '[orientdb]')
         .tap (database) =>
             @db = database
         .tap createSchema
@@ -154,7 +177,8 @@ describe 'Persistent Workflow usage principals', ->
                 return new WorflowDefinitionBuilder(@db, xml)
             .tap (builder) ->
                 builder.process_vertexes()
-
+            .tap (builder) ->
+                builder.process_edges()
 
 ###
 
