@@ -8,7 +8,7 @@ class Vertex extends GraphEntity
     create: (db) ->
         @inbuilt_properties =
             '@class': @Name
-        return db.vertex.create(_.extend(@inbuilt_properties, @defined_properties ))
+        return db.vertex.create(_.extend(@inbuilt_properties, @properties ))
 
 
 module.exports = Vertex
