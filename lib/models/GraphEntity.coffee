@@ -4,7 +4,9 @@ Promise = require 'bluebird'
 class GraphEntity
     strictMode: true
     defined_properties: {}
-    properties: {}
+
+    constructor: ->
+        @properties = {}
 
     updateSchema: (db) ->
         return db.class.create(@Name, @SuperClass)
