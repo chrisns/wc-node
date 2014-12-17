@@ -1,8 +1,8 @@
-chai = require('chai')
-chaiAsPromised = require('chai-as-promised')
+chai = require 'chai'
+chaiAsPromised = require 'chai-as-promised'
 expect = chai.expect
-winston = require('winston')
-config = require('../config')
+winston = require 'winston'
+config = require '../config'
 chai.use(chaiAsPromised)
 chai.should()
 Oriento = require 'oriento'
@@ -19,6 +19,7 @@ UserTask = require '../lib/models/vertexes/UserTask'
 ScriptTask = require '../lib/models/vertexes/ScriptTask'
 FormField = require '../lib/models/vertexes/FormField'
 FormFieldValue = require '../lib/models/vertexes/FormFieldValue'
+ExclusiveGateway = require '../lib/models/vertexes/ExclusiveGateway'
 
 testXmlFilePath = __dirname + '/TestWorkflowSpec.bpmn'
 
@@ -86,11 +87,19 @@ class WorflowDefinitionBuilder
         scripttask.set('script', xml_node.get('bpmn2:script', namespace_prefixes).text())
         return scripttask.create(@db)
 
+    create_exclusive_gateway: (xml_node) =>
+        exclusivegateway = new ExclusiveGateway
+        exclusivegateway.set('name', xml_node.attr('name').value())
+        exclusivegateway.set('id', xml_node.attr('id').value())
+        #TODO: handle default flow
+        return exclusivegateway.create(@db)
+
     process_vertexes: ->
         vertexes = []
         user_tasks = @xml.find('//bpmn2:userTask', namespace_prefixes).map(@create_user_task)
         script_tasks = @xml.find('//bpmn2:scriptTask', namespace_prefixes).map(@create_script_task)
-        vertexes = vertexes.concat(user_tasks, )
+        exclusive_gateways = @xml.find('//bpmn2:exclusiveGateway', namespace_prefixes).map(@create_exclusive_gateway)
+        vertexes = vertexes.concat(user_tasks, script_tasks, exclusive_gateways)
         return Promise.settle(vertexes)
 
 
@@ -117,7 +126,8 @@ describe 'Persistent Workflow usage principals', ->
             new FormField().updateSchema(@db)
         .tap =>
             new FormFieldValue().updateSchema(@db)
-
+        .tap =>
+            new ExclusiveGateway().updateSchema(@db)
     after ->
         server.drop({name: @db_name })
 
@@ -138,3 +148,10 @@ describe 'Persistent Workflow usage principals', ->
                 return new WorflowDefinitionBuilder(@db, xml)
             .tap (builder) ->
                 builder.process_vertexes()
+
+
+###
+
+def process_sequence_flow(self, sequence_flow):
+
+###
