@@ -62,9 +62,12 @@ class WorflowDefinitionBuilder
     create_form_field: (xml_node) =>
         formfield = new FormField
         formfield.set('id', xml_node.attr('id').value())
-        formfield.set('label', xml_node.attr('label').value())
-        formfield.set('type', xml_node.attr('type')?.value())
-#        formfield.set('weight', xml_node.get('//camunda:property[@id="weight"]', namespace_prefixes).attr('value').value())
+        if xml_node.attr('label')?
+            formfield.set('label', xml_node.attr('label').value())
+        if xml_node.attr('type')?
+            formfield.set('type', xml_node.attr('type').value())
+        if xml_node.get('//camunda:property[@id="weight"]', namespace_prefixes)?
+            formfield.set('weight', parseInt(xml_node.get('//camunda:property[@id="weight"]', namespace_prefixes).attr('value').value()))
 #        TODO: handle default value
         return formfield.create(@db)
             .tap (formfield) =>
@@ -109,11 +112,6 @@ class WorflowDefinitionBuilder
         return workflowend.create(@db)
 
     process_vertexes: ->
-#        workflows = @xml.find('//bpmn2:startEvent', namespace_prefixes).map(@create_workflow)
-#        workflowend = @xml.find('//bpmn2:endEvent', namespace_prefixes).map(@create_workflowend)
-#        user_tasks = @xml.find('//bpmn2:userTask', namespace_prefixes).map(@create_user_task)
-#        script_tasks = @xml.find('//bpmn2:scriptTask', namespace_prefixes).map(@create_script_task)
-#        exclusive_gateways = @xml.find('//bpmn2:exclusiveGateway', namespace_prefixes).map(@create_exclusive_gateway)
         return Promise.settle [
             @xml.find('//bpmn2:startEvent', namespace_prefixes).map(@create_workflow)
             @xml.find('//bpmn2:endEvent', namespace_prefixes).map(@create_workflowend)
@@ -177,7 +175,7 @@ describe 'Persistent Workflow usage principals', ->
             type: 'graph'
             storage: 'memory'
         .tap (database) =>
-#            server.logger.debug = console.log.bind(console, '[orientdb]')
+            server.logger.debug = console.log.bind(console, '[orientdb]')
             @db = database
         .tap createSchema
 
@@ -201,6 +199,6 @@ describe 'Persistent Workflow usage principals', ->
                 return new WorflowDefinitionBuilder(@db, xml)
             .tap (builder) ->
                 builder.process_vertexes()
-            .tap (builder) ->
-                builder.process_edges()
+#            .tap (builder) ->
+#                builder.process_edges()
 

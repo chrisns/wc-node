@@ -11,7 +11,7 @@ class FormField extends Vertex
         id: 'string'
         label: 'string'
         type: 'string'
-        weight: 'small'
+        weight: 'short'
     }
 
 
