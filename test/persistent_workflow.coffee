@@ -159,14 +159,15 @@ createSchema = (db) ->
     ]
     classCreationPromises = []
     for graph_class in graph_classes by 1
-        classCreationPromises.push(new graph_class().updateSchema(db))
+        graphClass = new graph_class
+        classCreationPromises.push(graphClass.updateSchema(db))
     return Promise.settle classCreationPromises
 
 describe 'Persistent Workflow usage principals', ->
     server_config = config.orient_db_config
     server = Oriento(server_config)
 
-    before ->
+    beforeEach ->
         @xmlfile = readXmlFromFile(testXmlFilePath)
 
         @db_name = 'test_' + randomId()
@@ -175,11 +176,11 @@ describe 'Persistent Workflow usage principals', ->
             type: 'graph'
             storage: 'memory'
         .tap (database) =>
-            server.logger.debug = console.log.bind(console, '[orientdb]')
+#            server.logger.debug = console.log.bind(console, '[orientdb]')
             @db = database
         .tap createSchema
 
-    after ->
+    afterEach ->
         server.drop({name: @db_name })
 
     it 'should be able to get parse bpmn xml file with zero errors', ->
@@ -199,6 +200,6 @@ describe 'Persistent Workflow usage principals', ->
                 return new WorflowDefinitionBuilder(@db, xml)
             .tap (builder) ->
                 builder.process_vertexes()
-#            .tap (builder) ->
-#                builder.process_edges()
+            .tap (builder) ->
+                builder.process_edges()
 

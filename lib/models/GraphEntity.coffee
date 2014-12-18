@@ -14,7 +14,10 @@ class GraphEntity
             return db.class.get(@Name)
         .then (dbClass) =>
             propertyCreationPromises = _.map(@defined_properties, dbClass.property.create)
-            return Promise.settle(propertyCreationPromises)
+            return Promise.settle propertyCreationPromises
+#                .catch ->
+##                TODO: catch errors here, sometimes we're getting here creating the the properties more than once
+#                    return
 
     getDefinition: ->
         @validate()

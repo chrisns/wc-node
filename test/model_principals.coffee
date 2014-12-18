@@ -13,7 +13,7 @@ Vertex = require('../lib/models/Vertex')
 config = require('../config')
 
 class TestGraphObject extends Vertex
-    Name: 'Workflow'
+    Name: 'TestGraphObject'
     SuperClass: 'V'
     builtin: false
     schema: true
@@ -30,22 +30,21 @@ describe 'Model usage principals', ->
     server_config = config.orient_db_config
     server = Oriento(server_config)
 
-    before ->
-        @db_name = 'test_' + randomId()
-        return server.create({
-            name: @db_name,
-            type: 'graph',
-            storage: 'memory'})
-        .then (database) =>
-            @db = database
-
-    after ->
-        server.drop({
-            name: @db_name
-        })
-
     beforeEach ->
         @graphObject = new TestGraphObject
+        @db_name = 'test_' + randomId()
+        server.create
+            name: @db_name,
+            type: 'graph',
+            storage: 'memory'
+        .tap (database) =>
+            @db = database
+
+    afterEach ->
+        server.drop
+            name: @db_name
+
+
 
     it 'should be able to create itself', ->
         expect =>
@@ -57,7 +56,7 @@ describe 'Model usage principals', ->
         @graphObject.set('id', 'bar')
         @graphObject.strictMode = false
         expect(@graphObject.getDefinition()).to.eql({
-            '@class': 'Workflow'
+            '@class': 'TestGraphObject'
             'id': 'bar'
             'name': 'foo'
         })
