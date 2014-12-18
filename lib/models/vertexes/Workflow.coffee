@@ -6,7 +6,8 @@ class Workflow extends Vertex
     Name: 'Workflow'
     SuperClass: 'V'
     builtin: false
-
-
+    defined_properties: {
+        id: 'string'
+    }
 
 module.exports = Workflow
