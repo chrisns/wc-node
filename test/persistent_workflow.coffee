@@ -204,6 +204,6 @@ describe 'Persistent Workflow usage principals', ->
                 return new WorflowDefinitionBuilder(@db, xml)
             .tap (builder) ->
                 builder.process_vertexes()
-#            .tap (builder) ->
-#                builder.process_edges()
+            .tap (builder) ->
+                builder.process_edges()
 
