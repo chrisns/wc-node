@@ -5,8 +5,8 @@ class HasPredefinedAnswerOf extends Edge
     Name: 'HasPredefinedAnswerOf'
     SuperClass: 'E'
     builtin: false
-    defined_properties: {
-    }
+    schema: true
+    defined_properties: []
 
 
 

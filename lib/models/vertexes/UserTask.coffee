@@ -6,10 +6,17 @@ class UserTask extends Vertex
     Name: 'UserTask'
     SuperClass: 'V'
     builtin: false
-    defined_properties: {
-        name: 'string'
-        id: 'string'
-    }
+    schema: true
+    defined_properties: [
+            name: 'name'
+            type: 'string'
+        ,
+            name: 'id'
+            type: 'string'
+        ,
+            name: 'script'
+            type: 'string'
+    ]
 
 
 

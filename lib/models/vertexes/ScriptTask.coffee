@@ -6,12 +6,18 @@ class ScriptTask extends Vertex
     Name: 'ScriptTask'
     SuperClass: 'V'
     builtin: false
-    defined_properties: {
-        name: 'string'
-        id: 'string'
-        script: 'string'
-    }
-
+    schema: true
+    defined_properties: [
+            name: 'name'
+            type: 'string'
+        ,
+            name: 'id'
+            type: 'string'
+        ,
+            name: 'script'
+            type: 'string'
+        ,
+    ]
 
 
 module.exports = ScriptTask

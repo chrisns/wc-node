@@ -6,9 +6,11 @@ class WorkflowEndEvent extends Vertex
     Name: 'WorkflowEndEvent'
     SuperClass: 'V'
     builtin: false
-    defined_properties: {
-        id: 'string'
-    }
+    schema: true
+    defined_properties: [
+        name: 'id'
+        type: 'string'
+    ]
 
 
 module.exports = WorkflowEndEvent

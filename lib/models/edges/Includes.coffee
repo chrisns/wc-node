@@ -5,8 +5,8 @@ class Includes extends Edge
     Name: 'Includes'
     SuperClass: 'E'
     builtin: false
-    defined_properties: {
-    }
+    schema: true
+    defined_properties:[]
 
 
 

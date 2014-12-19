@@ -18,38 +18,39 @@ class TestGraphObject extends Vertex
     builtin: false
     schema: true
     strictMode: true
-    defined_properties: {
-        name: 'string'
-        id: 'string'
-        fa: 'link'
-    }
-
+    defined_properties: [
+            name: 'name'
+            type: 'string'
+        ,
+            name: 'id'
+            type: 'string'
+        ,
+            name: 'fa'
+            type: 'link'
+    ]
 
 
 describe 'Model usage principals', ->
-    server_config = config.orient_db_config
-    server = Oriento(server_config)
 
     beforeEach ->
         @graphObject = new TestGraphObject
-        @db_name = 'test_' + randomId()
-        server.create
-            name: @db_name,
-            type: 'graph',
-            storage: 'memory'
-        .tap (database) =>
-            @db = database
-
-    afterEach ->
-        server.drop
-            name: @db_name
-
-
 
     it 'should be able to create itself', ->
-        expect =>
-            @graphObject.updateSchema(@db)
-        .to.not.throw(Error)
+        server = Oriento(config.orient_db_config)
+        db_name = 'test_' + randomId()
+        graphObject = new TestGraphObject
+        database = server.create
+            name: db_name
+            type: 'graph'
+            storage: 'memory'
+#        .tap (database) =>
+#            server.logger.debug = console.log.bind(console, '[orientdb]')
+        .then (database) =>
+            @graphObject.updateSchema(database)
+        .finally ->
+            server.drop
+                name: db_name
+        expect(database).eventually.to.be.ok
 
     it 'should provide a valid definition', ->
         @graphObject.set('name', 'foo')

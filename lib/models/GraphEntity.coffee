@@ -3,21 +3,18 @@ Promise = require 'bluebird'
 
 class GraphEntity
     strictMode: true
-    defined_properties: {}
+    defined_properties: []
 
     constructor: ->
         @properties = {}
 
     updateSchema: (db) ->
         return db.class.create(@Name, @SuperClass)
-        .catch =>
-            return db.class.get(@Name)
         .then (dbClass) =>
-            propertyCreationPromises = _.map(@defined_properties, dbClass.property.create)
-            return Promise.settle propertyCreationPromises
-#                .catch ->
-##                TODO: catch errors here, sometimes we're getting here creating the the properties more than once
-#                    return
+            Promise.settle _.map(@defined_properties, dbClass.property.create)
+
+    getProperty: (key) ->
+        _.find(@defined_properties, {'name': key})
 
     getDefinition: ->
         @validate()
@@ -26,10 +23,10 @@ class GraphEntity
         return _.extend(inbuilt_properties, @properties)
 
     set: (key, value) ->
-        if not @defined_properties[key]? and @schema is true
+        if not @getProperty(key)? and @schema is true
             throw new Error('Not allowed')
-        if @defined_properties[key]?
-            formatter = 'format_' + @defined_properties[key]
+        if @getProperty(key)?
+            formatter = 'format_' + @getProperty(key).type
             @properties[key] = this[formatter](value)
         else
             @properties[key] = value
@@ -37,7 +34,7 @@ class GraphEntity
     validate: ->
         if @strictMode is not true
             return true
-        for key in Object.keys(@defined_properties)
+        for key in _.flatten(@defined_properties, 'name')
             if this[key] is undefined
                 throw Error 'Missing input'
 

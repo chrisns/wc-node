@@ -68,10 +68,11 @@ class WorflowDefinitionBuilder
             formfield.set('type', xml_node.attr('type').value())
         if xml_node.get('//camunda:property[@id="weight"]', namespace_prefixes)?
             formfield.set('weight', parseInt(xml_node.get('//camunda:property[@id="weight"]', namespace_prefixes).attr('value').value()))
-#        TODO: handle default value
-        return formfield.create(@db)
-            .tap (formfield) =>
-                Promise.settle xml_node.find('//camunda:value', namespace_prefixes).map(@create_form_field_value)
+        form_field_values = xml_node.find('//camunda:value', namespace_prefixes)
+#        TODO: handle default value and edges
+        formfield.create(@db)
+            .return form_field_values
+            .map @create_form_field_value
 
     create_form_field_value: (xml_node) =>
         formfieldvalue = new FormFieldValue
@@ -83,9 +84,12 @@ class WorflowDefinitionBuilder
         usertask = new UserTask
         usertask.set('name', xml_node.attr('name').value())
         usertask.set('id', xml_node.attr('id').value())
-        return usertask.create(@db)
-            .tap (usertask) =>
-                Promise.settle xml_node.find('//camunda:formField', namespace_prefixes).map(@create_form_field)
+        fields = xml_node.find('//camunda:formField', namespace_prefixes)
+        usertask.create(@db)
+            .return fields
+            .map @create_form_field
+            .then ->
+                return true
 
     create_script_task: (xml_node) =>
         scripttask = new ScriptTask
@@ -112,13 +116,14 @@ class WorflowDefinitionBuilder
         return workflowend.create(@db)
 
     process_vertexes: ->
-        return Promise.settle [
-            @xml.find('//bpmn2:startEvent', namespace_prefixes).map(@create_workflow)
-            @xml.find('//bpmn2:endEvent', namespace_prefixes).map(@create_workflowend)
-            @xml.find('//bpmn2:userTask', namespace_prefixes).map(@create_user_task)
-            @xml.find('//bpmn2:scriptTask', namespace_prefixes).map(@create_script_task)
-            @xml.find('//bpmn2:exclusiveGateway', namespace_prefixes).map(@create_exclusive_gateway)
+        vertexes = [
+            Promise.settle @xml.find('//bpmn2:startEvent', namespace_prefixes).map(@create_workflow)
+            Promise.settle @xml.find('//bpmn2:endEvent', namespace_prefixes).map(@create_workflowend)
+            Promise.settle @xml.find('//bpmn2:scriptTask', namespace_prefixes).map(@create_script_task)
+            Promise.settle @xml.find('//bpmn2:exclusiveGateway', namespace_prefixes).map(@create_exclusive_gateway)
+            Promise.settle @xml.find('//bpmn2:userTask', namespace_prefixes).map(@create_user_task)
         ]
+        Promise.settle vertexes
 
     create_sequence_flow: (xml_node) =>
         from_id = xml_node.attr('sourceRef').value()
@@ -141,9 +146,7 @@ class WorflowDefinitionBuilder
             return nextstep.create(@db)
 
     process_edges: ->
-        return Promise.settle [
-            @xml.find('//bpmn2:sequenceFlow', namespace_prefixes).map(@create_sequence_flow)
-        ]
+        return Promise.settle @xml.find('//bpmn2:sequenceFlow', namespace_prefixes).map(@create_sequence_flow)
 
 
 createSchema = (db) ->
@@ -165,23 +168,24 @@ createSchema = (db) ->
 
 describe 'Persistent Workflow usage principals', ->
     server_config = config.orient_db_config
-    server = Oriento(server_config)
 
     beforeEach ->
         @xmlfile = readXmlFromFile(testXmlFilePath)
-
+        @graphObject = new TestGraphObject
+        @server = Oriento(server_config)
         @db_name = 'test_' + randomId()
-        return server.create
+        return @server.create
             name: @db_name
             type: 'graph'
             storage: 'memory'
         .tap (database) =>
-#            server.logger.debug = console.log.bind(console, '[orientdb]')
+#            @server.logger.debug = console.log.bind(console, '[orientdb]')
             @db = database
         .tap createSchema
 
     afterEach ->
-        server.drop({name: @db_name })
+        @server.drop
+            name: @db_name
 
     it 'should be able to get parse bpmn xml file with zero errors', ->
         expect(@xmlfile).eventually.to.have.deep.property('errors').length(0)
@@ -200,6 +204,6 @@ describe 'Persistent Workflow usage principals', ->
                 return new WorflowDefinitionBuilder(@db, xml)
             .tap (builder) ->
                 builder.process_vertexes()
-            .tap (builder) ->
-                builder.process_edges()
+#            .tap (builder) ->
+#                builder.process_edges()
 

@@ -11,27 +11,24 @@ chai.should()
 
 describe 'Database usage principals', ->
     server_config = config.orient_db_config
-    server = Oriento(server_config)
 
     beforeEach ->
+        @server = Oriento(server_config)
         @db_name = 'test_' + randomId()
-        return server.create({
-            name: @db_name,
-            type: 'graph',
-            storage: 'memory'})
+        return @server.create
+            name: @db_name
+            type: 'graph'
+            storage: 'memory'
         .then (database) =>
             @db = database
 
     afterEach ->
-        server.drop({
+        @server.drop
             name: @db_name
-        })
-        .then =>
-            @db = {}
 
     it 'Database should exist', ->
-        exists = server.exists(@db_name)
-        return expect(exists).eventually.to.be.true
+        exists = @server.exists(@db_name)
+        expect(exists).eventually.to.be.true
 
     it 'Should be able to add a vertex', ->
         vertex = @db.vertex.create({

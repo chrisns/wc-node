@@ -5,10 +5,11 @@ class NextStep extends Edge
     Name: 'NextStep'
     SuperClass: 'E'
     builtin: false
-    defined_properties: {
-        condition: 'string'
-    }
-
+    schema: true
+    defined_properties: [
+        name: 'condition'
+        type: 'string'
+    ]
 
 
 module.exports = NextStep
