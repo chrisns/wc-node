@@ -23,7 +23,9 @@ ExclusiveGateway = require '../lib/models/vertexes/ExclusiveGateway'
 Workflow = require '../lib/models/vertexes/Workflow'
 WorkflowEndEvent = require '../lib/models/vertexes/WorkflowEndEvent'
 NextStep = require '../lib/models/edges/NextStep'
-
+Includes = require '../lib/models/edges/Includes'
+HasPredefinedAnswerOf = require '../lib/models/edges/HasPredefinedAnswerOf'
+HasDefaultAnswerOf = require '../lib/models/edges/HasDefaultAnswerOf'
 testXmlFilePath = __dirname + '/TestWorkflowSpec.bpmn'
 
 namespace_prefixes =
@@ -58,6 +60,10 @@ class WorflowDefinitionBuilder
     constructor: (database, xml) ->
         @db = database
         @xml = xml
+        @xml._find = @xml.find
+
+        @xml.find = (lookup) =>
+            return @xml._find(lookup, namespace_prefixes)
 
     create_form_field: (xml_node) =>
         formfield = new FormField
@@ -68,11 +74,42 @@ class WorflowDefinitionBuilder
             formfield.set('type', xml_node.attr('type').value())
         if xml_node.get('//camunda:property[@id="weight"]', namespace_prefixes)?
             formfield.set('weight', parseInt(xml_node.get('//camunda:property[@id="weight"]', namespace_prefixes).attr('value').value()))
-        form_field_values = xml_node.find('//camunda:value', namespace_prefixes)
 #        TODO: handle default value and edges
         formfield.create(@db)
-            .return form_field_values
-            .map @create_form_field_value
+
+    create_form_field_in_edge: (xml_node) =>
+        from_id = xml_node.get('ancestor::bpmn2:userTask', namespace_prefixes).attr('id').value()
+        to_id = xml_node.attr('id').value()
+        from = @_get_rid_from_id(from_id)
+        to = @_get_rid_from_id(to_id)
+        includes = new Includes
+        @_create_edge(from, to, includes)
+
+    create_form_field_value_in_edge: (xml_node) =>
+        from_id = xml_node.get('ancestor::camunda:formField', namespace_prefixes).attr('id').value()
+        to_id = xml_node.attr('id').value()
+        from = @_get_rid_from_id(from_id)
+        to = @_get_rid_from_id(to_id)
+        answer_of = new HasPredefinedAnswerOf
+        @_create_edge(from, to, answer_of)
+
+    create_form_field_default_value_in_edge: (xml_node) =>
+        from_id = xml_node.attr('id').value()
+        to_id  = xml_node.attr('defaultValue').value()
+        from = @_get_rid_from_id(from_id)
+        to = @_get_rid_from_id(to_id)
+        answer_of = new HasDefaultAnswerOf
+        @_create_edge(from, to, answer_of)
+
+    _create_edge: (from, to, edge) ->
+        Promise.join from, to, (from, to) =>
+            if not from?
+                throw Error "#{from_id} does not exist"
+            if not to?
+                throw Error "#{to_id} does not exist"
+            edge.from = from
+            edge.to = to
+            return edge.create(@db)
 
     create_form_field_value: (xml_node) =>
         formfieldvalue = new FormFieldValue
@@ -84,18 +121,13 @@ class WorflowDefinitionBuilder
         usertask = new UserTask
         usertask.set('name', xml_node.attr('name').value())
         usertask.set('id', xml_node.attr('id').value())
-        fields = xml_node.find('//camunda:formField', namespace_prefixes)
         usertask.create(@db)
-            .return fields
-            .map @create_form_field
-            .then ->
-                return true
 
     create_script_task: (xml_node) =>
         scripttask = new ScriptTask
         scripttask.set('name', xml_node.attr('name').value())
         scripttask.set('id', xml_node.attr('id').value())
-        scripttask.set('script', xml_node.get('bpmn2:script', namespace_prefixes)?.text())
+        scripttask.set('script', xml_node.get('bpmn2:script', namespace_prefixes).text())
         return scripttask.create(@db)
 
     create_exclusive_gateway: (xml_node) =>
@@ -117,36 +149,41 @@ class WorflowDefinitionBuilder
 
     process_vertexes: ->
         vertexes = [
-            Promise.settle @xml.find('//bpmn2:startEvent', namespace_prefixes).map(@create_workflow)
-            Promise.settle @xml.find('//bpmn2:endEvent', namespace_prefixes).map(@create_workflowend)
-            Promise.settle @xml.find('//bpmn2:scriptTask', namespace_prefixes).map(@create_script_task)
-            Promise.settle @xml.find('//bpmn2:exclusiveGateway', namespace_prefixes).map(@create_exclusive_gateway)
-            Promise.settle @xml.find('//bpmn2:userTask', namespace_prefixes).map(@create_user_task)
+            Promise.settle @xml.find('//bpmn2:startEvent').map(@create_workflow)
+            Promise.settle @xml.find('//bpmn2:endEvent').map(@create_workflowend)
+            Promise.settle @xml.find('//bpmn2:scriptTask').map(@create_script_task)
+            Promise.settle @xml.find('//bpmn2:exclusiveGateway').map(@create_exclusive_gateway)
+            Promise.settle @xml.find('//bpmn2:userTask').map(@create_user_task)
+            Promise.settle @xml.find('//camunda:formField').map(@create_form_field)
+            Promise.settle @xml.find('//camunda:value').map(@create_form_field_value)
         ]
         Promise.settle vertexes
+
+    _get_rid_from_id: (id) =>
+        @db.select('@rid').from('V').where({id:id}).limit(1).one()
 
     create_sequence_flow: (xml_node) =>
         from_id = xml_node.attr('sourceRef').value()
         to_id = xml_node.attr('targetRef').value()
         condition = xml_node.get('bpmn2:conditionExpression', namespace_prefixes)?.text()
-        from = @db.select('@rid').from('V').where({id:from_id}).limit(1).one()
-        to = @db.select('@rid').from('V').where({id:to_id}).limit(1).one()
+        from = @_get_rid_from_id(from_id)
+        to = @_get_rid_from_id(to_id)
 
-        Promise.join from, to, (from, to) =>
-            if not from?
-                throw Error "#{from_id} does not exist"
-            if not to?
-                throw Error "#{to_id} does not exist"
-            nextstep = new NextStep
-            nextstep.from = from
-            nextstep.to = to
-            nextstep.set('id', xml_node.attr('id').value())
-            if condition?
-                nextstep.set('condition', condition)
-            return nextstep.create(@db)
+        nextstep = new NextStep
+        if condition?
+            nextstep.set('condition', condition)
+        nextstep.set('id', xml_node.attr('id').value())
+
+        @_create_edge(from, to, nextstep)
 
     process_edges: ->
-        return Promise.settle @xml.find('//bpmn2:sequenceFlow', namespace_prefixes).map(@create_sequence_flow)
+        edges = [
+            Promise.settle @xml.find('//bpmn2:sequenceFlow').map(@create_sequence_flow)
+            Promise.settle @xml.find('//camunda:formField').map(@create_form_field_in_edge)
+            Promise.settle @xml.find('//camunda:value').map(@create_form_field_value_in_edge)
+            Promise.settle @xml.find('//camunda:formField[@defaultValue]').map(@create_form_field_default_value_in_edge)
+            ]
+        return Promise.settle edges
 
 
 createSchema = (db) ->
@@ -159,6 +196,9 @@ createSchema = (db) ->
         NextStep
         Workflow
         WorkflowEndEvent
+        Includes
+        HasPredefinedAnswerOf
+        HasDefaultAnswerOf
     ]
     classCreationPromises = []
     for graph_class in graph_classes by 1
