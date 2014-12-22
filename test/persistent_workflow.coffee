@@ -51,8 +51,7 @@ readXmlFromFile = (filepath) ->
         .then libxmljs.parseXmlString
 
 filterXmlToJustProcess = (xmldoc) ->
-    return new Promise (resolve, reject) ->
-        resolve xmldoc.get('//bpmn2:process', namespace_prefixes)
+    return xmldoc.get('//bpmn2:process', namespace_prefixes)
 
 
 class WorflowDefinitionBuilder
@@ -181,7 +180,7 @@ class WorflowDefinitionBuilder
             Promise.settle @xml.find('//camunda:formField').map(@create_form_field_in_edge)
             Promise.settle @xml.find('//camunda:value').map(@create_form_field_value_in_edge)
             Promise.settle @xml.find('//camunda:formField[@defaultValue]').map(@create_form_field_default_value_in_edge)
-            ]
+        ]
         return Promise.settle edges
 
 
