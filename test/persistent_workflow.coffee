@@ -26,7 +26,7 @@ NextStep = require '../lib/models/edges/NextStep'
 Includes = require '../lib/models/edges/Includes'
 HasPredefinedAnswerOf = require '../lib/models/edges/HasPredefinedAnswerOf'
 HasDefaultAnswerOf = require '../lib/models/edges/HasDefaultAnswerOf'
-testXmlFilePath = __dirname + '/TestWorkflowSpec.bpmn'
+testXmlFilePath = __dirname + '/fixtures/TestWorkflowSpec.bpmn'
 fs = Promise.promisifyAll(require("fs"))
 
 namespace_prefixes =
