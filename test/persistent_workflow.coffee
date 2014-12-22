@@ -27,6 +27,7 @@ Includes = require '../lib/models/edges/Includes'
 HasPredefinedAnswerOf = require '../lib/models/edges/HasPredefinedAnswerOf'
 HasDefaultAnswerOf = require '../lib/models/edges/HasDefaultAnswerOf'
 testXmlFilePath = __dirname + '/TestWorkflowSpec.bpmn'
+fs = Promise.promisifyAll(require("fs"))
 
 namespace_prefixes =
     bpmn2: 'http://www.omg.org/spec/BPMN/20100524/MODEL'
@@ -46,10 +47,8 @@ class TestGraphObject extends GraphEntity
 
 
 readXmlFromFile = (filepath) ->
-    return new Promise (resolve, reject) ->
-        filedata = fs.readFileSync(filepath, 'ascii')
-        xmldoc = libxmljs.parseXmlString(filedata)
-        resolve(xmldoc)
+    return fs.readFileAsync(filepath)
+        .then libxmljs.parseXmlString
 
 filterXmlToJustProcess = (xmldoc) ->
     return new Promise (resolve, reject) ->
