@@ -98,19 +98,33 @@ describe 'Persistent Workflow builder principals', ->
                 )
         expect(entities).eventually.to.eql([18, 12])
 
+    it 'it should be able to get an rid from an xml id', ->
+        dummy_object =
+            id : 'hello1234'
+        result = @db.vertex.create(dummy_object)
+            .then (vertex) =>
+                @builder._get_rid_from_id(dummy_object.id)
+        expect(result).eventually.to.have.deep.property('rid.cluster').at.least(0)
+            .then ->
+                expect(result).eventually.to.have.deep.property('rid.position').eql(0)
 
     xit 'it should be able to create a form field'
-
     xit 'it should be able to create a form field value'
     xit 'it should be ablt to create a user task'
     xit 'it should be able to create a script task'
     xit 'it should be able to create an exclusive gateway'
-    xit 'it should be able to create a workflow start event'
+    xit 'it should be able to create a workflow start event', ->
+        xml_node = mock_xml_node
+            id: 'test'
+        console.error(@builder.create_workflow(xml_node))
     xit 'it should be able to create a workflow end event'
-    xit 'it should be able to process all vertex creations'
-    xit 'it should be able to process all edge creations'
-    xit 'it should be able to an rid from an xml id'
+
     xit 'it should bee able to create a sequence flow'
     xit 'it should be able to find the next workflow step'
     xit 'it should be able to complete a workflow step'
     xit 'it should follow the right path from a conditional step'
+
+
+mock_xml_node = (attributes) ->
+    xml_node = new libxmljs.Document().node('mock_node').attr(attributes)
+    return xml_node
