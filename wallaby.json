@@ -1,0 +1,15 @@
+{
+  "files": [
+    "lib/**/*.coffee",
+    "models/**/*.coffee",
+    "routes/**/*.coffee",
+    "*.coffee"
+  ],
+
+  "tests": [
+    "test/**/*.coffee"
+  ],
+  "env": {
+    "type": "node"
+  }
+}
