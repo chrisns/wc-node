@@ -1,13 +1,13 @@
 {
   "files": [
-    "lib/**/*.coffee",
-    "models/**/*.coffee",
-    "routes/**/*.coffee",
-    "*.coffee"
+    "wc/api/**/*.coffee",
+    "wc/config/**/*.coffee",
+    "wc/assets/**/*.coffee",
+    "wc/tasks/**/*.coffee",
+    "wc/*.coffee"
   ],
-
   "tests": [
-    "test/**/*.coffee"
+    "wc/test/**/*.spec.coffee"
   ],
   "env": {
     "type": "node"
