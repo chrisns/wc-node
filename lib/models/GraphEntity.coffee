@@ -105,5 +105,4 @@ class GraphEntity
         throw Error 'Not implemented yet'
 
 
-
 module.exports = GraphEntity

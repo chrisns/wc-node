@@ -6,8 +6,7 @@ class Includes extends Edge
     SuperClass: 'E'
     builtin: false
     schema: true
-    defined_properties:[]
-
+    defined_properties: []
 
 
 module.exports = Includes

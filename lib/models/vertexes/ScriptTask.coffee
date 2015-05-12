@@ -8,15 +8,15 @@ class ScriptTask extends Vertex
     builtin: false
     schema: true
     defined_properties: [
-            name: 'name'
-            type: 'string'
-        ,
-            name: 'id'
-            type: 'string'
-        ,
-            name: 'script'
-            type: 'string'
-        ,
+        name: 'name'
+        type: 'string'
+    ,
+        name: 'id'
+        type: 'string'
+    ,
+        name: 'script'
+        type: 'string'
+    ,
     ]
 
 

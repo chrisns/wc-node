@@ -19,19 +19,18 @@ class TestGraphObject extends Vertex
     schema: true
     strictMode: true
     defined_properties: [
-            name: 'name'
-            type: 'string'
-        ,
-            name: 'id'
-            type: 'string'
-        ,
-            name: 'fa'
-            type: 'link'
+        name: 'name'
+        type: 'string'
+    ,
+        name: 'id'
+        type: 'string'
+    ,
+        name: 'fa'
+        type: 'link'
     ]
 
 
 describe 'Model usage principals', ->
-
     beforeEach ->
         @graphObject = new TestGraphObject
 
@@ -57,10 +56,11 @@ describe 'Model usage principals', ->
         @graphObject.set('id', 'bar')
         @graphObject.strictMode = false
         expect(@graphObject.getDefinition()).to.eql({
-            '@class': 'TestGraphObject'
-            'id': 'bar'
-            'name': 'foo'
-        })
+                '@class': 'TestGraphObject'
+                'id': 'bar'
+                'name': 'foo'
+            }
+        )
 
     it 'Should throw error on unexpected input against schema', ->
         expect =>

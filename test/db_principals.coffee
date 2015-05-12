@@ -32,10 +32,11 @@ describe 'Database usage principals', ->
 
     it 'Should be able to add a vertex', ->
         vertex = @db.vertex.create({
-            '@class': 'V'
-            key: 'value'
-            foo: 'bar'
-        })
+                '@class': 'V'
+                key: 'value'
+                foo: 'bar'
+            }
+        )
         return expect(vertex).eventually.to.have.deep.property('@rid')
 
     it 'Should be able to run a create transaction', ->

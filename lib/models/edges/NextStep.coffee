@@ -7,11 +7,11 @@ class NextStep extends Edge
     builtin: false
     schema: true
     defined_properties: [
-            name: 'condition'
-            type: 'string'
-        ,
-            name: 'id'
-            type: 'string'
+        name: 'condition'
+        type: 'string'
+    ,
+        name: 'id'
+        type: 'string'
     ]
 
 

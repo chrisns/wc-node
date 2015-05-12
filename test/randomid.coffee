@@ -4,7 +4,6 @@ expect = chai.expect
 
 
 describe 'Random ID Generator', ->
-
     it 'Should be able to create an id with correct length', ->
         random_id = randomId()
         return expect(random_id).to.have.length.of(19)

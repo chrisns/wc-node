@@ -9,5 +9,4 @@ class HasPredefinedAnswerOf extends Edge
     defined_properties: []
 
 
-
 module.exports = HasPredefinedAnswerOf

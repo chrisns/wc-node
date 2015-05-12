@@ -51,7 +51,9 @@ class WorflowDefinitionBuilder
         if xml_node.attr('type')?
             formfield.set('type', xml_node.attr('type').value())
         if xml_node.get('//camunda:property[@id="weight"]', namespace_prefixes)?
-            formfield.set('weight', parseInt(xml_node.get('//camunda:property[@id="weight"]', namespace_prefixes).attr('value').value()))
+            formfield.set('weight',
+                parseInt(xml_node.get('//camunda:property[@id="weight"]', namespace_prefixes).attr('value').value())
+            )
         formfield.create(@db)
 
     create_form_field_in_edge: (xml_node) =>
@@ -72,7 +74,7 @@ class WorflowDefinitionBuilder
 
     create_form_field_default_value_in_edge: (xml_node) =>
         from_id = xml_node.attr('id').value()
-        to_id  = xml_node.attr('defaultValue').value()
+        to_id = xml_node.attr('defaultValue').value()
         from = @_get_rid_from_id(from_id)
         to = @_get_rid_from_id(to_id)
         answer_of = new HasDefaultAnswerOf
@@ -137,7 +139,7 @@ class WorflowDefinitionBuilder
         Promise.settle vertexes
 
     _get_rid_from_id: (id) =>
-        @db.select('@rid').from('V').where({id:id}).limit(1).one()
+        @db.select('@rid').from('V').where({id: id}).limit(1).one()
 
     create_sequence_flow: (xml_node) =>
         from_id = xml_node.attr('sourceRef').value()

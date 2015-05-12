@@ -19,7 +19,7 @@ testXmlFilePath = __dirname + '/fixtures/TestWorkflowSpec.bpmn'
 
 readXmlFromFile = (filepath) ->
     fs.readFileAsync(filepath)
-        .then libxmljs.parseXmlString
+    .then libxmljs.parseXmlString
 
 filterXmlToJustProcess = (xmldoc) ->
     xmldoc.get('//bpmn2:process', namespace_prefixes)
@@ -70,18 +70,17 @@ describe 'BPMN xml parser', ->
 
 
 describe 'Persistent Workflow builder principals', ->
-
     beforeEach ->
         xmlfile = readXmlFromFile(testXmlFilePath)
-            .then filterXmlToJustProcess
-            .then (xml) =>
-                @xml = xml
+        .then filterXmlToJustProcess
+        .then (xml) =>
+            @xml = xml
 
         database = createTestDatabase(this)
         Promise.join(xmlfile, database)
-            .then =>
-                @builder = new WorflowDefinitionBuilder(@db, @xml)
-                @builder.create_schema()
+        .then =>
+            @builder = new WorflowDefinitionBuilder(@db, @xml)
+            @builder.create_schema()
 
     afterEach ->
         dropTestDatabase(this)
@@ -89,24 +88,24 @@ describe 'Persistent Workflow builder principals', ->
 
     it 'should be able to be able to build a workflow diagram', ->
         entities = @builder.process_vertexes()
-            .then =>
-                @builder.process_edges()
-            .then =>
-                Promise.join(
-                    @db.select('count(*)').from('V').scalar()
-                    @db.select('count(*)').from('E').scalar()
-                )
+        .then =>
+            @builder.process_edges()
+        .then =>
+            Promise.join(
+                @db.select('count(*)').from('V').scalar()
+                @db.select('count(*)').from('E').scalar()
+            )
         expect(entities).eventually.to.eql([18, 12])
 
     it 'it should be able to get an rid from an xml id', ->
         dummy_object =
-            id : 'hello1234'
+            id: 'hello1234'
         result = @db.vertex.create(dummy_object)
-            .then (vertex) =>
-                @builder._get_rid_from_id(dummy_object.id)
+        .then (vertex) =>
+            @builder._get_rid_from_id(dummy_object.id)
         expect(result).eventually.to.have.deep.property('rid.cluster').at.least(0)
-            .then ->
-                expect(result).eventually.to.have.deep.property('rid.position').eql(0)
+        .then ->
+            expect(result).eventually.to.have.deep.property('rid.position').eql(0)
 
     xit 'it should be able to create a form field'
     xit 'it should be able to create a form field value'

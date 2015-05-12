@@ -10,4 +10,5 @@ dev =
 switch process.env.NODE_ENV
     when 'production' then module.exports = prod
 
-    else module.exports = dev
+    else
+        module.exports = dev
