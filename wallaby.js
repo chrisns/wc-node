@@ -12,8 +12,10 @@ module.exports = function () {
     ],
     bootstrap: function (wallaby) {
       chai = require('chai');
+      var chaiAsPromised = require("chai-as-promised");
       expect = chai.expect;
       chai.should();
+      chai.use(chaiAsPromised);
       require('magic-globals');
       process.env.NODE_PATH = __base
       require('module').Module._initPaths();
@@ -21,6 +23,7 @@ module.exports = function () {
     },
     env: {
       type: "node"
-    }
+    },
+    debug: true
   }
 }

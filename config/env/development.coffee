@@ -10,4 +10,8 @@
 #
 ###
 
-module.exports = {}
+module.exports =
+  models:
+    migrate: 'drop'
+
+
