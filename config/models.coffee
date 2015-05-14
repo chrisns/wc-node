@@ -9,6 +9,6 @@
 # http://sailsjs.org/#/documentation/concepts/ORM
 ###
 
-module.exports.models =
-  connection: 'myLocalOrient'
-  migrate: 'alter'
+module.exports.models = {}
+#  connection: 'myLocalOrient'
+#  migrate: 'alter'

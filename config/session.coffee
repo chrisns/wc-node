@@ -12,4 +12,5 @@
 # http://sailsjs.org/#/documentation/reference/sails.config/sails.config.session.html
 ###
 
-module.exports.session = secret: '4b37f2d21047625bb3f172b0ae380dc8'
+module.exports.session =
+  secret: '4b37f2d21047625bb3f172b0ae380dc8'

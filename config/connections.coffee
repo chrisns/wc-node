@@ -19,18 +19,41 @@
 # http://sailsjs.org/#/documentation/reference/sails.config/sails.config.connections.html
 ###
 
-module.exports.connections = myLocalOrient:
-  adapter: 'sails-orientdb'
-  host: 'localhost'
-  port: 2424
-  user: 'root'
-  password: 'root'
-  database: 'db'
-  schema: true
-  options:
-    storage: 'memory'
-    databaseType: 'graph'
-    decodeURIComponent: true
-    removeCircularReferences: false
-    unsafeDrop: false
-    parameterized: true
+module.exports.connections =
+  myLocalOrient:
+    adapter: 'sails-orientdb'
+    host: 'localhost'
+    port: 2424
+    user: 'root'
+    password: 'root'
+    database: 'db'
+    schema: true
+    options:
+      storage: 'memory'
+      databaseType: 'graph'
+      decodeURIComponent: true
+      removeCircularReferences: false
+      unsafeDrop: false
+      parameterized: true
+
+  localDiskDb:
+    adapter: 'sails-disk'
+
+  test:
+    adapter: 'sails-memory'
+
+  testOrient:
+    adapter: 'sails-orientdb'
+    host: 'localhost'
+    port: 2424
+    user: 'root'
+    password: 'root'
+    database: 'test_' + (Math.random().toString(36) + '00000000000000000').slice(2, 10 + 2)
+    schema: true
+    options:
+      storage: 'memory'
+      databaseType: 'graph'
+      decodeURIComponent: true
+      removeCircularReferences: false
+      unsafeDrop: true
+      parameterized: true

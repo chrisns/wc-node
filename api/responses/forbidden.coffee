@@ -13,7 +13,7 @@
 ###
 
 module.exports = (data, options) ->
-  # Get access to `req`, `res`, & `sails`
+# Get access to `req`, `res`, & `sails`
   req = @req
   res = @res
   sails = req._sails
@@ -41,12 +41,12 @@ module.exports = (data, options) ->
   if options.view
     res.view options.view, data: data
   else
-    res.view '403', { data: data }, (err, html) ->
-      # If a view error occured, fall back to JSON(P).
+    res.view '403', {data: data}, (err, html) ->
+# If a view error occured, fall back to JSON(P).
       if err
-        #
-        # Additionally:
-        # • If the view was missing, ignore the error but provide a verbose log.
+#
+# Additionally:
+# • If the view was missing, ignore the error but provide a verbose log.
         if err.code == 'E_VIEW_FAILED'
           sails.log.verbose 'res.forbidden() :: Could not locate view for error page (sending JSON instead).  Details: ', err
         else

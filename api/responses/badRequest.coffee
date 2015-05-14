@@ -16,7 +16,7 @@
 ###
 
 module.exports = (data, options) ->
-  # Get access to `req`, `res`, & `sails`
+# Get access to `req`, `res`, & `sails`
   req = @req
   res = @res
   sails = req._sails
@@ -44,5 +44,5 @@ module.exports = (data, options) ->
   if options.view
     res.view options.view, data: data
   else
-    res.guessView { data: data }, ->
+    res.guessView {data: data}, ->
       res.jsonx data
