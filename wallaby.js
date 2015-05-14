@@ -12,6 +12,11 @@ module.exports = function () {
 
     bootstrap: function (wallaby) {
       if (global.sails) return;
+
+      wallaby.delayStart();
+
+      wallaby.testFramework.ui('bdd');
+
       require('magic-globals');
       process.env.NODE_PATH = __base;
       require('module').Module._initPaths();
@@ -49,50 +54,50 @@ module.exports = function () {
         return existsSync.apply(this, arguments);
       };
 
-      wallaby.delayStart();
-
-      wallaby.testFramework.ui('bdd');
-
       var Sails = require('sails');
       //var should = require('should');
 
       var Barrels = require('barrels');
 
       freeport(function (err, port) {
-        if (err) throw err;
+          if (err) throw err;
 
-        // Lift Sails with test database
-        global.sails = Sails.lift({
-          log: {
-            level: 'info'
-          },
-          models: {
-            connection: 'test',
-            migrate: 'drop'
-          },
-          port: port
-        }, function (err) {
-          if (err) {
-            if (err) throw err;
-            wallaby.start();
-          }
+          // Lift Sails with test database
+          global.sails = Sails.lift({
+            log: {
+              level: 'info'
+            },
+            models: {
+              connection: 'test',
+              migrate: 'drop'
+            },
+            port: port
+          }, function (err) {
+            if (err) {
+              if (err) throw err;
+              wallaby.start();
+            }
 
-          // Load fixtures
-          var barrels = new Barrels();
+            // Load fixtures
+            var barrels = new Barrels();
 
-          // Save original objects in `fixtures` variable
-          fixtures = barrels.data;
+            // Save original objects in `fixtures` variable
+            fixtures = barrels.data;
 
-          // Populate the DB
-          barrels.populate(function (err) {
-            if (err) throw err;
-            wallaby.start();
+            // Populate the DB
+            barrels.populate(function (err) {
+              if (err) throw err;
+              wallaby.start();
+            });
           });
-        });
-      });
+        }
+      )
+      ;
     },
     env: {
       type: 'node'
     }
-  };
-};
+  }
+    ;
+}
+;
