@@ -12,23 +12,24 @@
     "url": "git://git@bitbucket.org:chrisns/wc.git"
   },
   "dependencies": {
-    "bluebird": "^2.3.11",
+    "bcrypt": "^0.8.0",
+    "bluebird": "^2.9.25",
     "coffee-script": "^1.9.2",
-    "lodash": "^2.4.1",
-    "sails": "~0.11.0",
+    "ejs": "~0.8.4",
+    "lodash": "^2.4.2",
+    "sails": "^0.11.0",
     "sails-orientdb": "^0.10.50"
   },
   "devDependencies": {
-    "bcrypt": "0.8.0",
     "barrels": "^1.4.1",
     "chai": "^2.3.0",
     "chai-as-promised": "^5.0.0",
-    "coffeelint": "^1.6.1",
+    "coffeelint": "^1.9.7",
     "freeport": "^1.0.4",
     "magic-globals": "^0.4.4",
-    "mocha": "~2.0.1",
+    "mocha": "^2.2.5",
     "sails-disk": "^0.10.7",
     "sails-memory": "^0.10.3",
-    "supertest": "~0.15.0"
+    "supertest": "^1.0.1"
   }
 }
