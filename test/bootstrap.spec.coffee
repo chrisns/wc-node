@@ -1,44 +1,54 @@
-#Sails = require 'sails'
-#Barrels = require 'barrels'
-#require 'magic-globals'
-##require 'should'
-##require 'sails-memory'
-## Global before hook
-#chai = require('chai')
-#chaiAsPromised = require('chai-as-promised')
-#expect = chai.expect
-#chai.should()
-#chai.use chaiAsPromised
-##require 'magic-globals'
-##process.env.NODE_PATH = __base
-##require('module').Module._initPaths()
-##SailsOrientdbMochaHelper = require(__base + '/test/helpers/SailsOrientdbMochaHelper')
-##chai.use SailsOrientdbMochaHelper
-#
-#before (done) ->
-#  this.timeout(15000);
-#
-#  #  Sails.prototype.adapters['sails-memory'] = require 'sails-memory'
-#  # Lift Sails with test database
-#  Sails.lift {
-##    adapters:
-##      'sails-memory': require 'sails-memory'
-#    log:
-#      level: 'debug'
-#    models:
-#      connection: 'test'
-#      migrate: 'drop'
-#  }, (err, sails) ->
-#    if err
-#      return done(err)
-#    # Load fixtures
-#    barrels = new Barrels
-#    # Save original objects in `fixtures` variable
-#    fixtures = barrels.data
-#    # Populate the DB
-#    barrels.populate (err) ->
-#      done err, sails
-##  return null
-## Global after hook
-#after (done) ->
-#  sails.lower done
+require 'magic-globals'
+process.env.NODE_PATH = __base
+require('module').Module._initPaths()
+
+after (done) ->
+  sails.lower done
+
+before (done) ->
+  this.timeout(15000)
+
+  if global.sails
+    return done()
+  global.chai = require 'chai'
+  chaiAsPromised = require 'chai-as-promised'
+  global.expect = chai.expect
+  global.chai.should()
+  SailsOrientdbMochaHelper = require(__base + '/test/helpers/SailsOrientdbMochaHelper')
+  chaiAsPromised = require 'chai-as-promised'
+  global.chai.use chaiAsPromised
+  global.chai.use SailsOrientdbMochaHelper
+  freeport = require 'freeport'
+  path = require 'path'
+  fs = require 'fs'
+  existsSync = fs.existsSync
+
+  fs.existsSync = (filePath) ->
+    if filePath and filePath.indexOf(path.join('instrumented', 'node_modules'))
+      return true
+    existsSync.apply this, arguments
+
+  Sails = require 'sails'
+  Barrels = require 'barrels'
+  freeport (err, port) ->
+    if err
+      throw err
+    global.sails = Sails.lift({
+        log:
+          level: 'info'
+        models:
+          connection: 'test'
+          migrate: 'drop'
+        port: port
+      }, (err) ->
+      if err
+        if err
+          throw err
+        return done()
+      barrels = new Barrels
+      fixtures = barrels.data
+      barrels.populate (err) ->
+        if err
+          throw err
+        return done()
+    )

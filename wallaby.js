@@ -8,7 +8,10 @@ module.exports = function () {
       'views/**/*.ejs'
     ],
 
-    tests: ['test/**/*.spec.coffee'],
+    tests: [
+      'test/**/*.spec.coffee',
+      '!test/bootstrap.spec.coffee'
+    ],
 
     bootstrap: function (wallaby) {
       if (global.sails) return;

@@ -3,23 +3,23 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "test": "./node_modules/.bin/mocha --opts mocha.opts"
   },
   "main": "app.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/cns/wc.git"
+    "url": "git://git@bitbucket.org:chrisns/wc.git"
   },
   "dependencies": {
-    "bcrypt": "0.8.0",
     "bluebird": "^2.3.11",
     "coffee-script": "^1.9.2",
-    "ejs": "~0.8.4",
     "lodash": "^2.4.1",
     "sails": "~0.11.0",
     "sails-orientdb": "^0.10.50"
   },
   "devDependencies": {
+    "bcrypt": "0.8.0",
     "barrels": "^1.4.1",
     "chai": "^2.3.0",
     "chai-as-promised": "^5.0.0",
