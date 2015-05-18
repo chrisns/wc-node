@@ -4,6 +4,8 @@ node_js:
 
 before_script:
  - mkdir -p shippable/testresults
+ - npm install
+ - npm install -g mocha
 
 script:
   - mocha
