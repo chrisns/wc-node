@@ -34,6 +34,8 @@ before (done) ->
     if err
       throw err
     global.sails = Sails.lift({
+        hooks:
+          grunt: false
         log:
           level: 'info'
         models:
