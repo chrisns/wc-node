@@ -11,4 +11,4 @@ script:
 #  - mocha --opts mocha.opts
 #
 #after_script:
-  - mocha --opts mocha.opts -R xunit > shippable/testresults/result.xml
+  - ./node_modules/mocha/bin/mocha --opts mocha.opts -R xunit > shippable/testresults/result.xml
