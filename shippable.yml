@@ -6,7 +6,7 @@ before_script:
  - npm install
 
 script:
-  - npm coverage-test
+  - npm run-script coverage-test
 
 after_script:
   - npm run-script coverage-report
