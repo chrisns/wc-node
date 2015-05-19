@@ -3,9 +3,12 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "preinstall": "rm -rf node_modules",
+    "preinstall": "npm run-script clean; mkdir coverage; mkdir -p mkdir -p shippable/testresults; mkdir -p mkdir -p shippable/codecoverage",
     "start": "node app.js",
-    "test": "./node_modules/.bin/mocha --opts mocha.opts"
+    "test": "./node_modules/.bin/mocha",
+    "coverage-test": "multi='xunit=shippable/testresults/result.xml spec=-' ./node_modules/.bin/mocha --require coffee-coverage/register-istanbul -R mocha-multi",
+    "coverage-report": "./node_modules/.bin/istanbul report cobertura --dir shippable/codecoverage/",
+    "clean": "rm -rf shippable node_modules coverage"
   },
   "main": "app.js",
   "repository": {
@@ -25,8 +28,11 @@
     "barrels": "^1.4.1",
     "chai": "^2.3.0",
     "chai-as-promised": "^5.0.0",
+    "coffee-coverage": "^0.5.4",
     "coffeelint": "^1.9.7",
     "freeport": "^1.0.4",
+    "ibrik": "^2.0.0",
+    "istanbul": "^0.3.14",
     "magic-globals": "^0.4.4",
     "mocha": "^2.2.5",
     "mocha-multi": "^0.7.1",

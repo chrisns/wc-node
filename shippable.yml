@@ -2,12 +2,11 @@
 node_js:
   - 0.12.3
 
-env:
-  - multi='xunit=shippable/testresults/result.xml spec=-'
-
 before_script:
- - mkdir -p shippable/testresults
  - npm install
 
 script:
-  - ./node_modules/mocha/bin/_mocha -R mocha-multi
+  - npm coverage-test
+
+after_script:
+  - npm run-script coverage-report
