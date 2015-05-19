@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "preinstall": "npm run-script clean",
-    "postinstall": "mkdir coverage; mkdir -p shippable/testresults; mkdir -p mkdir -p shippable/codecoverage",
+    "postinstall": "mkdir -p coverage; mkdir -p shippable/testresults; mkdir -p mkdir -p shippable/codecoverage",
     "start": "node app.js",
     "test": "./node_modules/.bin/mocha",
     "coverage-test": "multi='xunit=shippable/testresults/result.xml spec=-' ./node_modules/.bin/mocha --require coffee-coverage/register-istanbul -R mocha-multi",
