@@ -67,6 +67,9 @@ module.exports = function () {
 
           // Lift Sails with test database
           global.sails = Sails.lift({
+            hooks: {
+              grunt: false
+            },
             log: {
               level: 'info'
             },
