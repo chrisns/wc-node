@@ -3,3 +3,4 @@
 /coverage/
 /xunit.xml
 /.tmp/
+/shippable/

@@ -1,14 +1,13 @@
 # version numbers, testing against two versions of node
 node_js:
-  - 0.10.26
+  - 0.12.3
+
+env:
+  - multi='xunit=shippable/testresults/result.xml spec=-'
 
 before_script:
  - mkdir -p shippable/testresults
  - npm install
- - npm install -g mocha
 
 script:
-#  - mocha --opts mocha.opts
-#
-#after_script:
-  - ./node_modules/mocha/bin/mocha --opts mocha.opts -R xunit > shippable/testresults/result.xml
+  - ./node_modules/mocha/bin/_mocha -R mocha-multi

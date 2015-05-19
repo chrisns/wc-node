@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "preinstall": "rm -r node_modules",
+    "preinstall": "rm -rf node_modules",
     "start": "node app.js",
     "test": "./node_modules/.bin/mocha --opts mocha.opts"
   },
@@ -29,6 +29,7 @@
     "freeport": "^1.0.4",
     "magic-globals": "^0.4.4",
     "mocha": "^2.2.5",
+    "mocha-multi": "^0.7.1",
     "sails-disk": "^0.10.7",
     "sails-memory": "^0.10.3",
     "supertest": "^1.0.1"
