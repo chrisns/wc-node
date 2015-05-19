@@ -8,7 +8,7 @@ before_script:
  - npm install -g mocha
 
 script:
-  - ./node_modules/.bin/mocha --opts mocha.opts
-
-after_script:
-  - ./node_modules/.bin/mocha --opts mocha.opts -R xunit > shippable/testresults/result.xml
+#  - mocha --opts mocha.opts
+#
+#after_script:
+  - mocha --opts mocha.opts -R xunit > shippable/testresults/result.xml
