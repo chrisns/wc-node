@@ -13,7 +13,7 @@
 // node node_modules/sails-orientdb/example/associations/many-to-many.js
 //////////////////////////////////////////////////////////////////////////////
 
-var setupWaterline = require('../raw/bootstrap');
+var setupWaterline = require('../../../node_modules/sails-orientdb/example/raw/bootstrap');
 
 var connections = {
   associations: {
@@ -100,33 +100,21 @@ setupWaterline({
 
   var team1, stadium1;
 
-  ontology.collections.team.create({seats: 1234})
+  ontology.collections.team.create({team: 'team1'})
     .then(function (team) {
       team1 = team;
 
       return ontology.collections.stadium.create([{name: 'fooanswer1'}, {name: 'fooanswer2'}]);
     })
     .then(function (stadiums) {
-      answer1 = stadiums[0];
+      stadium1 = stadiums[0];
       team1.stadiums.add(stadiums[0]);
       team1.stadiums.add(stadiums[1]);
 
       return team1.save();
     })
-    .then(function (res) {
-      //  return ontology.collections.team.findOne(team1.id).populate('stadium');
-      //})
-      //.then(function (populatedQuestion) {
-      //  console.log('Question', populatedQuestion.question, 'has the following answers:', populatedQuestion.answers, '\n');
-      //
-      //  return ontology.collections.answer.findOne(answer1.id)
-      //    .populate('questions');
-      //})
-      //.then(function (populatedAnswer) {
-      //  console.log('Answer', populatedAnswer.answer, 'has the following questions:', populatedAnswer.questions, '\n');
-      //  console.log('All done, have a nice day!\n');
+    .done(function () {
       process.exit(0);
     });
 
-})
-;
+});
