@@ -30,9 +30,9 @@ var connections = {
 };
 
 var collections = {
-  venue: {
-    tableName: 'venueTable',
-    identity: 'venue',
+  connex: {
+    tableName: 'connexTable',
+    identity: 'connex',
     connection: 'associations',
 
     attributes: {
@@ -67,7 +67,7 @@ var collections = {
       mascot: 'string',
       stadiums: {
         collection: 'Stadium',
-        through: 'venue',
+        through: 'connex',
         via: 'team',
         dominant: true
       }
@@ -83,7 +83,7 @@ var collections = {
       name: 'string',
       teams: {
         collection: 'Team',
-        through: 'venue',
+        through: 'connex',
         via: 'stadium'
       }
     }
@@ -98,19 +98,17 @@ setupWaterline({
 
   console.log('\nWaterline initialized\n');
 
-  var team1, stadium1;
+  var team1;
 
   ontology.collections.team.create({team: 'team1'})
     .then(function (team) {
       team1 = team;
 
-      return ontology.collections.stadium.create([{name: 'fooanswer1'}, {name: 'fooanswer2'}]);
+      return ontology.collections.stadium.create({name: 'fooanswer1'});
     })
-    .then(function (stadiums) {
-      stadium1 = stadiums[0];
-      team1.stadiums.add(stadiums[0]);
-      team1.stadiums.add(stadiums[1]);
+    .then(function (stadium) {
 
+      team1.stadiums.add(stadium);
       return team1.save();
     })
     .done(function () {
