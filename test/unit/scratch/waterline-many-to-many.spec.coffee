@@ -1,4 +1,5 @@
-setupWaterline = require '../../../node_modules/sails-orientdb/example/raw/bootstrap'
+Promise = require 'bluebird'
+setupWaterline = Promise.promisify require '../../../node_modules/sails-orientdb/example/raw/bootstrap'
 connections =
   associations:
     adapter: 'sails-orientdb'
@@ -8,62 +9,61 @@ connections =
     password: 'root'
     database: 'example-waterline-manyToMany'
     options:
+      databaseType: 'graph'
+      unsafeDrop: 'true'
       storage: 'memory'
 collections =
-  connex:
-    tableName: 'connexTable'
-    identity: 'connex'
+  celebrity:
+    migrate: 'drop'
+    tableName: 'celebrityTable'
+    identity: 'celebrity'
     connection: 'associations'
-    orientdbClass: 'myclass'
     attributes:
-      seats: 'integer'
-      friend:
-        columnName: '@in',
-        type: 'string',
-        foreignKey: true,
-        references: 'friend',
-        on: 'id',
-        onKey: 'id',
-        via: 'followee'
-      followee:
-        columnName: '@out',
-        type: 'string',
-        foreignKey: true,
-        references: 'friend',
-        on: 'id',
-        onKey: 'id',
-        via: 'friend'
+      name: 'string'
+      people:
+        collection: 'person'
+        through: 'likes'
+        via: 'celebrity'
   person:
+    migrate: 'drop'
     tableName: 'personTable'
     identity: 'person'
     connection: 'associations'
-#    attributes:
-#      name: 'string'
-#      stadiums:
-#        collection: 'Stadium'
-#        through: 'connex'
-#        via: 'team'
-#        dominant: true
-setupWaterline {
+    attributes:
+      name: 'string'
+      celebrities:
+        collection: 'celebrity'
+        through: 'likes'
+        via: 'person'
+  likes:
+    migrate: 'drop'
+    tableName: 'likesTable'
+    identity: 'likes'
+    connection: 'associations'
+    attributes:
+      since: 'date'
+      person:
+        model: 'person'
+        columnName: 'person'
+      celebrity:
+        model: 'celebrity'
+        columnName: 'celebrity'
+setupWaterline({
   collections: collections
   connections: connections
-}, (err, ontology) ->
-  if err
-    throw err
-  console.log '\nWaterline initialized\n'
-  #  team1 = undefined
-  ontology.collections.person.create [{name: "bob"}, {name: "jane"}]
-  .then (people) ->
-    ontology.collections.connex.create {seats: 12, friend: people[0], followee: people[1]}
-  .done ->
-    process.exit 0
-#  ontology.collections.team.create(team: 'team1').then((team) ->
-#    team1 = team
-#    ontology.collections.stadium.create name: 'fooanswer1'
-#  ).then((stadium) ->
-#    team1.stadiums.add stadium
-#    team1.save()
-#  ).done ->
-#    process.exit 0
-#    return
-#  return
+})
+.then (ontology) ->
+  Promise.join(
+    ontology.collections.celebrity.create({name: 'Megan Fox'}),
+    ontology.collections.person.create({name: 'John Smith'}),
+    (celebrity, person) ->
+      ontology.collections.likes.create
+        since: new Date()
+        celebrity: celebrity.id
+        person: person.id
+      .then (edge) ->
+        console.log edge
+        ontology.collections.celebrity.find(celebrity.id).populate('people').then console.log
+  )
+
+.finally process.exit

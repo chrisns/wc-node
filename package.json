@@ -23,7 +23,8 @@
     "ejs": "~0.8.4",
     "lodash": "^2.4.2",
     "sails": "^0.11.0",
-    "sails-orientdb": "^0.10.50"
+    "sails-orientdb": "^0.10.50",
+    "waterline": "^0.10.22"
   },
   "devDependencies": {
     "barrels": "^1.4.1",
