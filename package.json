@@ -21,8 +21,7 @@
     "ejs": "~0.8.4",
     "lodash": "^2.4.2",
     "sails": "balderdashy/sails",
-    "sails-orientdb": "appscot/sails-orientdb",
-    "waterline": "balderdashy/waterline"
+    "sails-orientdb": "appscot/sails-orientdb"
   },
   "devDependencies": {
     "barrels": "^1.4.1",
@@ -39,6 +38,6 @@
     "sails-disk": "^0.10.7",
     "sails-memory": "^0.10.3",
     "supertest": "^1.0.1",
-    "waterline": "^0.10.21"
+    "waterline": "balderdashy/waterline"
   }
 }
