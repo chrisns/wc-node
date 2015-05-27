@@ -3,6 +3,7 @@ node_js:
   - 0.12.3
 
 install:
+ - apt-get update
  - apt-get install -y default-jre
  - curl 'http://orientdb.com/download.php?file=orientdb-community-2.0.10.tar.gz' > /tmp/orient.tgz
  - tar -xf orient.tgz -C /tmp
