@@ -13,6 +13,7 @@ env:
   - ORIENTDB_ROOT_PASSWORD=root
 
 before_script:
+  - mkdir coverage
   - /tmp/orientdb-community-2.0.10/bin/server.sh &
 
 script:
