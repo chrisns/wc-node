@@ -22,7 +22,7 @@ before (done) ->
   path = require 'path'
   fs = require 'fs'
   existsSync = fs.existsSync
-
+  global.Promise = require 'bluebird'
   fs.existsSync = (filePath) ->
     if filePath and filePath.indexOf(path.join('instrumented', 'node_modules'))
       return true
@@ -37,7 +37,7 @@ before (done) ->
         hooks:
           grunt: false
         log:
-          level: 'info'
+          level: 'verbose'
         models:
           connection: 'test'
           migrate: 'drop'

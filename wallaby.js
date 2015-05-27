@@ -27,7 +27,7 @@ module.exports = function () {
       var chaiAsPromised = require('chai-as-promised');
       global.expect = chai.expect;
       global.chai.should();
-
+      global.Promise = require('bluebird');
       var SailsOrientdbMochaHelper = require(__base + '/test/helpers/SailsOrientdbMochaHelper')
       var chaiAsPromised = require('chai-as-promised');
       global.chai.use(chaiAsPromised);
