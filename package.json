@@ -38,6 +38,7 @@
     "sails-disk": "^0.10.7",
     "sails-memory": "^0.10.3",
     "supertest": "^1.0.1",
-    "waterline": "balderdashy/waterline"
+    "waterline": "balderdashy/waterline",
+    "chai-things": "^0.2.0"
   }
 }

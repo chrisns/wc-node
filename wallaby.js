@@ -32,6 +32,7 @@ module.exports = function () {
       var chaiAsPromised = require('chai-as-promised');
       global.chai.use(chaiAsPromised);
       global.chai.use(SailsOrientdbMochaHelper);
+      global.chai.use(require('chai-things'));
 
       var freeport = require('freeport');
       var path = require('path');

@@ -18,6 +18,7 @@ before (done) ->
   chaiAsPromised = require 'chai-as-promised'
   global.chai.use chaiAsPromised
   global.chai.use SailsOrientdbMochaHelper
+  global.chai.use require 'chai-things'
   freeport = require 'freeport'
   path = require 'path'
   fs = require 'fs'
