@@ -1,6 +1,6 @@
 # version numbers, testing against two versions of node
 node_js:
-  - 0.12.3
+  - 4.0.0
 
 install:
  - apt-get update
@@ -14,11 +14,11 @@ env:
 
 before_script:
   - mkdir coverage
-  - /tmp/orientdb-community-2.0.10/bin/server.sh &
+  - /tmp/orientdb-community-2.1.2/bin/server.sh &
 
 script:
   - npm run-script coverage-test
 
 after_script:
   - npm run-script coverage-report
-  - /tmp/orientdb-community-2.0.10/bin/shutdown.sh
+  - /tmp/orientdb-community-2.1.2/bin/shutdown.sh
