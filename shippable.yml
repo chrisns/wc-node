@@ -3,10 +3,6 @@ node_js:
   - 4.0.0
 
 install:
-# - apt-get update
-# - apt-get install -y default-jre
-# - curl 'http://orientdb.com/download.php?file=orientdb-community-2.1.2.tar.gz' > /tmp/orient.tgz
-# - tar -xf /tmp/orient.tgz -C /tmp
  - npm install
 
 env:
@@ -15,11 +11,11 @@ env:
 
 before_script:
   - mkdir coverage
-#  - /tmp/orientdb-community-2.1.2/bin/server.sh &
+  - /orientdb/bin/server.sh &
 
 script:
   - npm run-script coverage-test
 
 after_script:
   - npm run-script coverage-report
-#  - /tmp/orientdb-community-2.1.2/bin/shutdown.sh
+  - /orientdb/bin/shutdown.sh
