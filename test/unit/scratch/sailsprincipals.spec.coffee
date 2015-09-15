@@ -1,4 +1,4 @@
-describe 'sails scratch playground', ->
+describe.skip 'sails scratch playground', ->
   it 'should be able to create a workflow from the model', ->
     promise = Promise.all [
       person.create({name: 'Bill'})
